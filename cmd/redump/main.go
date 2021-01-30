@@ -6,41 +6,35 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/utils"
 	"strconv"
-	"sync"
 )
 
 func main(){
-	issues, err := redmine.GetIssues("http://localhost:8889", "")
-	var wg sync.WaitGroup
+	issueParam := redmine.IssueParam{ProjectId: 1, TrackerId: 1, Subject: "test", PriorityId: 1, StatusId: 1, AssignedToId:1}
+	err := redmine.CreateIssue("http://localhost:8889", "573f9544d1cc7512d4eed751b1d79d23210e964b", issueParam)
+	if err != nil {
+		panic(err)
+	}
+	issues, err := redmine.GetIssues("http://localhost:8889", "573f9544d1cc7512d4eed751b1d79d23210e964b")
+	txtCh := make(chan string, 10)
+	defer close(txtCh)
 	if err != nil {
 		panic(err)
 	}
 	for _, v := range issues {
-		wg.Add(1)
-		go func(id int){
-			data, err := redmine.GetIssue("http://localhost:8889", "", id)
-			if err != nil {
-				panic(err)
-			}
-			bolB, _ := json.Marshal(data)
-			err = utils.WriteFile(strconv.Itoa(id) + ".json", bolB)
-			if err != nil {
-			}
-			fmt.Println("Write: " + strconv.Itoa(id) + ".json")
-			wg.Done()
-		}(v.Id)
+		go run(txtCh, v)
+		fmt.Println(<-txtCh)
 	}
-	wg.Wait()
 }
 
-func run(wg sync.WaitGroup, issue *redmine.Issue) {
-	data, err := redmine.GetIssue("http://localhost:8889", "", issue.Id)
+func run(txtCh chan<- string, issue *redmine.Issue) {
+	data, err := redmine.GetIssue("http://localhost:8889", "573f9544d1cc7512d4eed751b1d79d23210e964b", issue.Id)
 	if err != nil {
 		panic(err)
 	}
 	bolB, _ := json.Marshal(data)
 	err = utils.WriteFile(strconv.Itoa(issue.Id) + ".json", bolB)
 	if err != nil {
+		txtCh <- "Failed: " + strconv.Itoa(issue.Id) + ".json"
 	}
-	wg.Done()
+	txtCh <- "Success: " + strconv.Itoa(issue.Id) + ".json"
 }
