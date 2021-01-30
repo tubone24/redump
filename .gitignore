@@ -19,3 +19,9 @@
 
 # redmine_mock
 docker/mock_redmine/data
+
+# gitkeep
+!.gitkeep
+
+# config
+config.toml

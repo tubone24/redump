@@ -118,15 +118,16 @@ type Issue struct{
 type Issues []*Issue
 
 type IssueParam struct {
-	ProjectId     int          `json:"project_id"`
-	TrackerId     int          `json:"tracker_id"`
-	StatusId      int          `json:"status_id"`
-	PriorityId    int          `json:"priority_id"`
-	Subject       string       `json:"subject"`
-	Description   string       `json:"description"`
-	AssignedToId  int          `json:"assigned_to_id"`
-	//ParentIssueId int          `json:"parent_issue_id"`
-	//CustomFields  CustomFields `json:"custom_fields"`
+	ProjectId     int          `json:"project_id,omitempty"`
+	TrackerId     int          `json:"tracker_id,omitempty"`
+	StatusId      int          `json:"status_id,omitempty"`
+	PriorityId    int          `json:"priority_id,omitempty"`
+	Subject       string       `json:"subject,omitempty"`
+	Description   string       `json:"description,omitempty"`
+	AssignedToId  int          `json:"assigned_to_id,omitempty"`
+	ParentIssueId int          `json:"parent_issue_id,omitempty"`
+	CustomFields  CustomFields `json:"custom_fields,omitempty"`
+	Notes string `json:"notes,omitempty"`
 }
 
 type IssueParamJson struct {
@@ -184,53 +185,31 @@ func GetIssue(url, key string, id int) (Issue, error) {
 	return issueResult.Issue, nil
 }
 
-type Option func(*IssueParam)
-
-func WithStatusId(id int) Option {
-	return func(c *IssueParam) {
-		c.StatusId = id
+func CreateIssue(url, key string, issue IssueParam) (int, error) {
+	issueJson, err := json.Marshal(IssueParamJson{Issue: issue})
+	if err != nil {
+		return 0, err
 	}
+	fmt.Println(string(issueJson))
+	body, err := utils.Post(url + "/issues.json?key=" + key, "application/json", issueJson)
+	if err != nil {
+		return 0, err
+	}
+	err = json.Unmarshal(body, &issueResult)
+	if err != nil {
+		return 0, err
+	}
+	return issueResult.Issue.Id, nil
 }
 
-func WithPriorityId(id int) Option {
-	return func(c *IssueParam) {
-		c.PriorityId = id
-	}
-}
-
-func WithDescription(description string) Option {
-	return func(c *IssueParam) {
-		c.Description = description
-	}
-}
-
-func WithParentIssueId(id int) Option {
-	return func(c *IssueParam) {
-		c.ParentIssueId = id
-	}
-}
-
-func WithCustomFields(customFields CustomFields) Option {
-	return func(c *IssueParam) {
-		c.CustomFields = customFields
-	}
-}
-
-func NewCreateIssueWithFOP(projectId, trackerId, assignedToId int, subject string, ops ...Option) *IssueParam {
-	a := IssueParam{ProjectId: projectId}
-	for _, option := range ops {
-		option(&a)
-	}
-	return &a
-}
-
-func CreateIssue(url, key string, issue IssueParam) error {
+func UpdateIssueJournals(url, key string, id int, journals []string) error {
+	issue := IssueParam{Notes: journals[0]}
 	issueJson, err := json.Marshal(IssueParamJson{Issue: issue})
 	if err != nil {
 		return err
 	}
 	fmt.Println(string(issueJson))
-	_, err = utils.Post(url + "/issues.json?key=" + key, "application/json", issueJson)
+	err = utils.Put(url + "/issues/" + strconv.Itoa(id) + ".json?key=" + key, "application/json", issueJson)
 	if err != nil {
 		return err
 	}
