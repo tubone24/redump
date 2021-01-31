@@ -12,11 +12,11 @@ func ConvertNewEnv(issue Issue) (*Issue, error){
 			case "project_id":
 				convertProjectId(&issue, mapping.Values)
 			case "tracker_id":
-				convertTrackerId(&issue, mapping.Values)
+				convertTrackerId(&issue, mapping.Values, mapping.Default)
 			case "status_id":
-				convertStatusId(&issue, mapping.Values)
+				convertStatusId(&issue, mapping.Values, mapping.Default)
 			case "priority_id":
-				convertPriorityId(&issue, mapping.Values)
+				convertPriorityId(&issue, mapping.Values, mapping.Default)
 			case "user_id":
 				convertUserIdToAssignedTo(&issue, mapping.Values, mapping.Default)
 				// Watcherはそのうちやる
@@ -36,31 +36,34 @@ func convertProjectId (issue *Issue, conf []config.MappingValue) {
 	}
 }
 
-func convertTrackerId (issue *Issue, conf []config.MappingValue) {
+func convertTrackerId (issue *Issue, conf []config.MappingValue, defaultValue int) {
 	for _, v := range conf {
 		if issue.Tracker.Id == v.Old {
 			issue.Tracker.Id = v.New
-			break
+			return
 		}
 	}
+	issue.Tracker.Id = defaultValue
 }
 
-func convertStatusId (issue *Issue, conf []config.MappingValue) {
+func convertStatusId (issue *Issue, conf []config.MappingValue, defaultValue int) {
 	for _, v := range conf {
 		if issue.Status.Id == v.Old {
 			issue.Status.Id = v.New
-			break
+			return
 		}
 	}
+	issue.Status.Id = defaultValue
 }
 
-func convertPriorityId (issue *Issue, conf []config.MappingValue) {
+func convertPriorityId (issue *Issue, conf []config.MappingValue, defaultValue int) {
 	for _, v := range conf {
 		if issue.Priority.Id == v.Old {
 			issue.Priority.Id = v.New
-			break
+			return
 		}
 	}
+	issue.Priority.Id = defaultValue
 }
 
 func convertUserIdToAssignedTo (issue *Issue, conf []config.MappingValue, defaultValue int) {
