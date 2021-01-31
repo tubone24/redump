@@ -1,3 +1,62 @@
 [server]
 url = "http://127.0.0.1:8889"
 key = "xxxxx"
+
+[new_server]
+url = "http://121.0.0.1:8889"
+key = "xxxxx"
+
+[[mappings]]
+  name = "project_id"
+  [[mappings.values]]
+    old = 1
+    new = 2
+  [[mappings.values]]
+    old = 2
+    new = 3
+
+[[mappings]]
+  name = "tracker_id"
+  [[mappings.values]]
+    old = 1
+    new = 1
+  [[mappings.values]]
+    old = 2
+    new = 3
+
+[[mappings]]
+  name = "status_id"
+  [[mappings.values]]
+    old = 1
+    new = 1
+  [[mappings.values]]
+    old = 2
+    new = 3
+
+[[mappings]]
+  name = "priority_id"
+  [[mappings.values]]
+    old = 1
+    new = 1
+  [[mappings.values]]
+    old = 2
+    new = 3
+
+[[mappings]]
+  name = "user_id"
+  default = 1
+  [[mappings.values]]
+    old = 1
+    new = 1
+  [[mappings.values]]
+    old = 2
+    new = 3
+
+[[mappings]]
+  name = "custom_field_id"
+  [[mappings.values]]
+    old = 1
+    new = 1
+  [[mappings.values]]
+    old = 2
+    new = 3

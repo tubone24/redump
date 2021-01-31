@@ -117,6 +117,12 @@ type Issue struct{
 
 type Issues []*Issue
 
+type Uploads struct {
+	Token string `json:"token,omitempty"`
+	FileName string `json:"filename,omitempty"`
+	ContentType string `json:"content_type,omitempty"`
+}
+
 type IssueParam struct {
 	ProjectId     int          `json:"project_id,omitempty"`
 	TrackerId     int          `json:"tracker_id,omitempty"`
@@ -128,10 +134,18 @@ type IssueParam struct {
 	ParentIssueId int          `json:"parent_issue_id,omitempty"`
 	CustomFields  CustomFields `json:"custom_fields,omitempty"`
 	Notes string `json:"notes,omitempty"`
+	Uploads []Uploads `json:"uploads,omitempty"`
 }
 
 type IssueParamJson struct {
 	Issue IssueParam `json:"issue"`
+}
+
+type FileParam struct {
+	FileName string
+	ContentType string
+	Contents []byte
+	Token string
 }
 
 var issuesResult struct {
@@ -143,6 +157,12 @@ var issuesResult struct {
 
 var issueResult struct {
 	Issue Issue `json:"issue"`
+}
+
+var UploadResult struct {
+	Upload struct {
+		Token string `json:"token"`
+	}
 }
 
 
@@ -158,7 +178,7 @@ func GetIssues(url, key string) (Issues, error){
 	}
 	fmt.Println(issuesResult.TotalCount)
 	for offset := 0; offset < issuesResult.TotalCount; offset+=100 {
-		body, err := utils.Get(url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset))
+		body, err := utils.Get(url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&sort=updated_on:asc")
 		if err != nil {
 			return nil, err
 		}
@@ -185,6 +205,18 @@ func GetIssue(url, key string, id int) (Issue, error) {
 	return issueResult.Issue, nil
 }
 
+func DownloadAttachmentFiles(key string, attachments Attachments) ([][]byte, error){
+	var result [][]byte
+	for _, file := range attachments {
+		body, err := utils.Get(file.ContentUrl + "?key=" + key)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, body)
+	}
+	return result, nil
+}
+
 func CreateIssue(url, key string, issue IssueParam) (int, error) {
 	issueJson, err := json.Marshal(IssueParamJson{Issue: issue})
 	if err != nil {
@@ -203,15 +235,41 @@ func CreateIssue(url, key string, issue IssueParam) (int, error) {
 }
 
 func UpdateIssueJournals(url, key string, id int, journals []string) error {
-	issue := IssueParam{Notes: journals[0]}
-	issueJson, err := json.Marshal(IssueParamJson{Issue: issue})
-	if err != nil {
-		return err
-	}
-	fmt.Println(string(issueJson))
-	err = utils.Put(url + "/issues/" + strconv.Itoa(id) + ".json?key=" + key, "application/json", issueJson)
-	if err != nil {
-		return err
+	for _, journal := range journals {
+		issue := IssueParam{Notes: journal}
+		issueJson, err := json.Marshal(IssueParamJson{Issue: issue})
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(issueJson))
+		err = utils.Put(url + "/issues/" + strconv.Itoa(id) + ".json?key=" + key, "application/json", issueJson)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+func UploadAttachmentFiles(url, key string, files []FileParam) ([]FileParam, error) {
+	var newFiles []FileParam
+	for _, file := range files {
+		body, err := utils.Post(url + "/uploads.json?key=" + key + "&filename=" + file.FileName, "application/octet-stream", file.Contents)
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal(body, &UploadResult)
+		if err != nil {
+			return nil, err
+		}
+		newFiles = append(newFiles, FileParam{FileName: file.FileName, ContentType: file.ContentType, Contents: file.Contents, Token: UploadResult.Upload.Token})
+	}
+	return newFiles, nil
+}
+
+func CreateJournalStrings(issue Issue) []string {
+	var notes []string
+	for _, journal := range issue.Journals {
+		notes = append(notes, journal.Notes)
+	}
+	return notes
 }

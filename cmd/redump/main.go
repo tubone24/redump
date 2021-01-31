@@ -9,18 +9,8 @@ import (
 	"strconv"
 )
 
-func main(){
+func main() {
 	config, err := config.GetConfig()
-	if err != nil {
-		panic(err)
-	}
-	issueParam := redmine.IssueParam{ProjectId: 1, TrackerId: 1, Subject: "test2", PriorityId: 1, StatusId: 1}
-	id, err := redmine.CreateIssue(config.ServerConfig.Url, config.ServerConfig.Key, issueParam)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(id)
-	err = redmine.UpdateIssueJournals(config.ServerConfig.Url, config.ServerConfig.Key, id, [] string{"Golang", "Java"})
 	if err != nil {
 		panic(err)
 	}
@@ -37,16 +27,74 @@ func main(){
 }
 
 func run(txtCh chan<- string, issue *redmine.Issue) {
-	config, err := config.GetConfig()
+	var uploadFiles []redmine.FileParam
+	conf, err := config.GetConfig()
 	if err != nil {
 		panic(err)
 	}
-	data, err := redmine.GetIssue(config.ServerConfig.Url, config.ServerConfig.Key, issue.Id)
+	detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issue.Id)
 	if err != nil {
 		panic(err)
 	}
-	bolB, _ := json.Marshal(data)
-	err = utils.WriteFile("data/" + strconv.Itoa(issue.Id) + ".json", bolB)
+	issueJson, _ := json.Marshal(detailIssue)
+	err = utils.WriteFile("data/"+strconv.Itoa(issue.Id)+".json", issueJson)
+	if detailIssue.Attachments != nil {
+		downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, detailIssue.Attachments)
+		if err != nil {
+			panic(err)
+		}
+		for index, file := range downloadBody {
+			err = utils.WriteFile("data/"+strconv.Itoa(issue.Id)+"_"+strconv.Itoa(index)+"_"+detailIssue.Attachments[index].FileName, file)
+			if err != nil {
+				panic(err)
+			}
+			fileParam := redmine.FileParam{FileName: detailIssue.Attachments[index].FileName, ContentType: utils.GetContentType(detailIssue.Attachments[index].FileName), Contents: file}
+			fileParams := []redmine.FileParam{fileParam}
+			uploadFile, err := redmine.UploadAttachmentFiles(conf.ServerConfig.Url, conf.ServerConfig.Key, fileParams)
+			fmt.Println(uploadFile[0].Token)
+			if err != nil {
+				panic(err)
+			}
+			uploadFiles = append(uploadFiles, uploadFile[0])
+		}
+	}
+	newIssue, err := redmine.ConvertNewEnv(detailIssue)
+	if err != nil {
+		panic(err)
+	}
+	var newIssueParam redmine.IssueParam
+	if newIssue.Attachments != nil {
+		var uploads []redmine.Uploads
+		for _, v := range uploadFiles {
+			uploads = append(uploads, redmine.Uploads{FileName: v.FileName, ContentType: v.ContentType, Token: v.Token})
+		}
+		newIssueParam = redmine.IssueParam{
+			ProjectId: newIssue.Project.Id,
+			TrackerId: newIssue.Tracker.Id,
+			StatusId: newIssue.Status.Id,
+			PriorityId: newIssue.Priority.Id,
+			AssignedToId: newIssue.AssignedTo.Id,
+			Subject:newIssue.Subject,
+			Description: newIssue.Description,
+			CustomFields: newIssue.CustomFields,
+			Uploads: uploads}
+	} else {
+		newIssueParam = redmine.IssueParam{
+			ProjectId: newIssue.Project.Id,
+			TrackerId: newIssue.Tracker.Id,
+			StatusId: newIssue.Status.Id,
+			PriorityId: newIssue.Priority.Id,
+			AssignedToId: newIssue.AssignedTo.Id,
+			Subject:newIssue.Subject,
+			Description: newIssue.Description,
+			CustomFields: newIssue.CustomFields}
+	}
+	issueId, err := redmine.CreateIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, newIssueParam)
+	if err != nil {
+		panic(err)
+	}
+	notes := redmine.CreateJournalStrings(*newIssue)
+	err = redmine.UpdateIssueJournals(conf.ServerConfig.Url, conf.ServerConfig.Key, issueId, notes)
 	if err != nil {
 		txtCh <- "Failed: " + strconv.Itoa(issue.Id) + ".json"
 	}

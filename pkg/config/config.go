@@ -7,8 +7,21 @@ type ServerConfig struct {
 	Key string `toml:"key"`
 }
 
+type MappingValue struct {
+	Old int `toml:"old"`
+	New int `toml:"new"`
+}
+
+type Mapping struct {
+	Name string `toml:"name"`
+	Default int `toml:"default"`
+	Values []MappingValue `toml:"values"`
+}
+
 type Config struct {
 	ServerConfig ServerConfig `toml:"server"`
+	NewServerConfig ServerConfig `toml:"new_server"`
+	Mappings []Mapping `toml:"mappings"`
 }
 
 func GetConfig() (*Config, error) {
