@@ -7,6 +7,7 @@ import (
 	"github.com/tubone24/redump/pkg/utils"
 	"github.com/tubone24/redump/pkg/config"
 	"strconv"
+	"time"
 )
 
 func Migrate(projectId int) {
@@ -22,6 +23,7 @@ func Migrate(projectId int) {
 	}
 	for _, v := range issues {
 		go runMigrate(txtCh, v)
+		time.Sleep(time.Millisecond * time.Duration(config.ServerConfig.Sleep))
 		fmt.Println(<-txtCh)
 	}
 }
@@ -50,7 +52,7 @@ func runMigrate(txtCh chan<- string, issue *redmine.Issue) {
 			}
 			fileParam := redmine.FileParam{FileName: detailIssue.Attachments[index].FileName, ContentType: utils.GetContentType(detailIssue.Attachments[index].FileName), Contents: file}
 			fileParams := []redmine.FileParam{fileParam}
-			uploadFile, err := redmine.UploadAttachmentFiles(conf.ServerConfig.Url, conf.ServerConfig.Key, fileParams)
+			uploadFile, err := redmine.UploadAttachmentFiles(conf.NewServerConfig.Url, conf.NewServerConfig.Key, fileParams)
 			fmt.Println(uploadFile[0].Token)
 			if err != nil {
 				panic(err)
@@ -89,12 +91,12 @@ func runMigrate(txtCh chan<- string, issue *redmine.Issue) {
 			Description: newIssue.Description,
 			CustomFields: newIssue.CustomFields}
 	}
-	issueId, err := redmine.CreateIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, newIssueParam)
+	issueId, err := redmine.CreateIssue(conf.NewServerConfig.Url, conf.NewServerConfig.Key, newIssueParam)
 	if err != nil {
 		panic(err)
 	}
 	notes := redmine.CreateJournalStrings(*newIssue)
-	err = redmine.UpdateIssueJournals(conf.ServerConfig.Url, conf.ServerConfig.Key, issueId, notes)
+	err = redmine.UpdateIssueJournals(conf.NewServerConfig.Url, conf.NewServerConfig.Key, issueId, notes)
 	if err != nil {
 		txtCh <- "Failed: " + strconv.Itoa(issue.Id) + ".json"
 	}

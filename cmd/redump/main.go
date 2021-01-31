@@ -8,11 +8,13 @@ import (
 
 
 func main() {
-	usage := `Redump.
+	usage := `REDUMP
+A tool to migrate data in your Redmine without admin accounts.
 
 Usage:
   redump migrate
   redump list
+  redump dump [-c|--concurrency]
   redump -h | --help
   redump --version
 
@@ -25,7 +27,6 @@ Options:
 		panic(err)
 	}
 	arguments, _ := docopt.ParseDoc(usage)
-	//fmt.Println(arguments)
 	flag, err := arguments.Bool("migrate")
 	if flag {
 		cmd.Migrate(cfg.ServerConfig.ProjectId)
@@ -33,6 +34,11 @@ Options:
 	flag, err = arguments.Bool("list")
 	if flag {
 		cmd.ListAll(cfg.ServerConfig.ProjectId)
+	}
+	flag, err = arguments.Bool("dump")
+	concurrency, err := arguments.Bool("--concurrency")
+	if flag {
+		cmd.Dump(cfg.ServerConfig.ProjectId, concurrency)
 	}
 
 }

@@ -6,6 +6,7 @@ type ServerConfig struct {
 	Url string `toml:"url"`
 	Key string `toml:"key"`
 	ProjectId int `toml:"project_id"`
+	Sleep int `toml:"sleep"`
 }
 
 type MappingValue struct {

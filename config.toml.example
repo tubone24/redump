@@ -2,6 +2,7 @@
 url = "http://127.0.0.1:8889"
 key = "xxxxx"
 project_id = 7
+sleep = 500
 
 [new_server]
 url = "http://121.0.0.1:8889"
