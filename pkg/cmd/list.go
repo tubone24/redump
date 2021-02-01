@@ -5,14 +5,15 @@ import (
 	"github.com/tubone24/redump/pkg/redmine"
 	"github.com/tubone24/redump/pkg/utils"
 	"github.com/goccy/go-json"
+	"github.com/deckarep/golang-set"
 )
 
 func ListAll(projectId int) {
-	config, err := config.GetConfig()
+	conf, err := config.GetConfig()
 	if err != nil {
 		panic(err)
 	}
-	issues, err := redmine.GetIssues(config.ServerConfig.Url, config.ServerConfig.Key, projectId)
+	issues, err := redmine.GetIssues(conf.ServerConfig.Url, conf.ServerConfig.Key, projectId)
 	_, err = ListProjectId(issues)
 	if err != nil {
 		panic(err)
@@ -41,80 +42,159 @@ func ListAll(projectId int) {
 
 func ListProjectId(issues redmine.Issues) ([]redmine.Project, error) {
 	var result []redmine.Project
+	var unMarshalProject redmine.Project
+	s2 := mapset.NewSet()
 	for _, issue := range issues {
-		result = append(result, issue.Project)
+		// result = append(result, issue.Project)
+		projectIdJson, err := json.Marshal(issue.Project)
+		if err != nil {
+			return nil, err
+		}
+		s2.Add(string(projectIdJson))
 	}
-	projectIdJson, err := json.Marshal(result)
+	for _, v := range s2.ToSlice() {
+		err := json.Unmarshal([]byte(v.(string)), &unMarshalProject)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, unMarshalProject)
+	}
+	projectJson, err := json.Marshal(result)
 	if err != nil {
 		return nil, err
 	}
-	err = utils.WriteFile("data/project_id.json", projectIdJson)
+	err = utils.WriteFile("data/project_id.json", projectJson)
 	return result, nil
 }
 
 func ListTrackerId(issues redmine.Issues) ([]redmine.Tracker, error) {
+	s2 := mapset.NewSet()
 	var result []redmine.Tracker
+	var unMarshalTracker redmine.Tracker
 	for _, issue := range issues {
-		result = append(result, issue.Tracker)
+		trackerJson, err := json.Marshal(issue.Tracker)
+		if err != nil {
+			return nil, err
+		}
+		s2.Add(string(trackerJson))
 	}
-	trackerIdJson, err := json.Marshal(result)
+	for _, v := range s2.ToSlice() {
+		err := json.Unmarshal([]byte(v.(string)), &unMarshalTracker)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, unMarshalTracker)
+	}
+	trackerJson, err := json.Marshal(result)
 	if err != nil {
 		return nil, err
 	}
-	err = utils.WriteFile("data/tracker_id.json", trackerIdJson)
+	err = utils.WriteFile("data/tracker_id.json", trackerJson)
 	return result, nil
 }
 
 func ListStatusId(issues redmine.Issues) ([]redmine.Status, error) {
+	s2 := mapset.NewSet()
 	var result []redmine.Status
+	var unMarshalStatus redmine.Status
 	for _, issue := range issues {
-		result = append(result, issue.Status)
+		statusJson, err := json.Marshal(issue.Status)
+		if err != nil {
+			return nil, err
+		}
+		s2.Add(string(statusJson))
 	}
-	statusIdJson, err := json.Marshal(result)
+	for _, v := range s2.ToSlice() {
+		err := json.Unmarshal([]byte(v.(string)), &unMarshalStatus)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, unMarshalStatus)
+	}
+	statusJson, err := json.Marshal(result)
 	if err != nil {
 		return nil, err
 	}
-	err = utils.WriteFile("data/status_id.json", statusIdJson)
+	err = utils.WriteFile("data/status_id.json", statusJson)
 	return result, nil
 }
 
 func ListPriorityId(issues redmine.Issues) ([]redmine.Priority, error) {
+	s2 := mapset.NewSet()
 	var result []redmine.Priority
+	var unMarshalPriority redmine.Priority
 	for _, issue := range issues {
-		result = append(result, issue.Priority)
+		priorityJson, err := json.Marshal(issue.Priority)
+		if err != nil {
+			return nil, err
+		}
+		s2.Add(string(priorityJson))
 	}
-	priorityIdJson, err := json.Marshal(result)
+	for _, v := range s2.ToSlice() {
+		err := json.Unmarshal([]byte(v.(string)), &unMarshalPriority)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, unMarshalPriority)
+	}
+	priorityJson, err := json.Marshal(result)
 	if err != nil {
 		return nil, err
 	}
-	err = utils.WriteFile("data/priority_id.json", priorityIdJson)
+	err = utils.WriteFile("data/priority_id.json", priorityJson)
 	return result, nil
 }
 
 func ListUserIdAssignedTo(issues redmine.Issues) ([]redmine.AssignedTo, error) {
+	s2 := mapset.NewSet()
 	var result []redmine.AssignedTo
+	var unMarshalAssignedTo redmine.AssignedTo
 	for _, issue := range issues {
-		result = append(result, issue.AssignedTo)
+		assignedToJson, err := json.Marshal(issue.AssignedTo)
+		if err != nil {
+			return nil, err
+		}
+		s2.Add(string(assignedToJson))
 	}
-	userIdJson, err := json.Marshal(result)
+	for _, v := range s2.ToSlice() {
+		err := json.Unmarshal([]byte(v.(string)), &unMarshalAssignedTo)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, unMarshalAssignedTo)
+	}
+	userJson, err := json.Marshal(result)
 	if err != nil {
 		return nil, err
 	}
-	err = utils.WriteFile("data/userId.json", userIdJson)
+	err = utils.WriteFile("data/userId.json", userJson)
 	return result, nil
 }
 
 func ListCustomFieldsId(issues redmine.Issues) ([]redmine.CustomField, error) {
+	s2 := mapset.NewSet()
 	var result []redmine.CustomField
+	var unMarshalCustomField redmine.CustomField
 	for _, issue := range issues {
 		for _, customField := range issue.CustomFields {
-			result = append(result, *customField)
+			customFieldJson, err := json.Marshal(customField)
+			if err != nil {
+				return nil, err
+			}
+			s2.Add(string(customFieldJson))
 		}
 	}
-	customFieldsIdJson, err := json.Marshal(result)
+	for _, v := range s2.ToSlice() {
+		err := json.Unmarshal([]byte(v.(string)), &unMarshalCustomField)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, unMarshalCustomField)
+	}
+	customFieldsJson, err := json.Marshal(result)
 	if err != nil {
 		return nil, err
 	}
-	err = utils.WriteFile("data/custom_fields_id.json", customFieldsIdJson)
+	err = utils.WriteFile("data/custom_fields_id.json", customFieldsJson)
 	return result, nil
 }

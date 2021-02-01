@@ -169,9 +169,9 @@ var UploadResult struct {
 func GetIssues(url, key string, projectId int) (Issues, error){
 	var issuesUrl string
 	if projectId == 0 {
-		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0"
+		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*"
 	} else {
-		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&project_id=" + strconv.Itoa(projectId)
+		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*&project_id=" + strconv.Itoa(projectId)
 	}
 	var issues Issues
 	body, err := utils.Get(issuesUrl)
@@ -185,9 +185,9 @@ func GetIssues(url, key string, projectId int) (Issues, error){
 	fmt.Println(issuesResult.TotalCount)
 	for offset := 0; offset < issuesResult.TotalCount; offset+=100 {
 		if projectId == 0 {
-			issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&sort=updated_on:asc"
+			issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=*&sort=updated_on:asc"
 		} else {
-			issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&sort=updated_on:asc&project_id=" + strconv.Itoa(projectId)
+			issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=*&sort=updated_on:asc&project_id=" + strconv.Itoa(projectId)
 		}
 		body, err := utils.Get(issuesUrl)
 		if err != nil {
