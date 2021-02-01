@@ -165,6 +165,14 @@ var UploadResult struct {
 	}
 }
 
+func unmarshalByteIssue(content []byte) (Issue, error) {
+	var emptyIssue Issue
+	err := json.Unmarshal(content, &issuesResult)
+	if err != nil {
+		return emptyIssue, err
+	}
+	return issueResult.Issue, nil
+}
 
 func GetIssues(url, key string, projectId int) (Issues, error){
 	var issuesUrl string
@@ -178,8 +186,8 @@ func GetIssues(url, key string, projectId int) (Issues, error){
 	if err != nil {
 		return nil, err
 	}
-	err2 := json.Unmarshal(body, &issuesResult)
-	if err2 != nil {
+	err = json.Unmarshal(body, &issuesResult)
+	if err != nil {
 		return nil, err
 	}
 	fmt.Println(issuesResult.TotalCount)
@@ -208,11 +216,10 @@ func GetIssue(url, key string, id int) (Issue, error) {
 	if err != nil {
 		return issue, err
 	}
-	err2 := json.Unmarshal(body, &issueResult)
-	if err2 != nil {
+	err = json.Unmarshal(body, &issueResult)
+	if err != nil {
 		return issue, err
 	}
-	//fmt.Println(issueResult)
 	return issueResult.Issue, nil
 }
 
@@ -226,6 +233,45 @@ func DownloadAttachmentFiles(key string, attachments Attachments) ([][]byte, err
 		result = append(result, body)
 	}
 	return result, nil
+}
+
+func CreateIssueFromByteSlice(content []byte) (*Issue, error) {
+	err := json.Unmarshal(content, &issueResult)
+	if err != nil {
+		return nil, err
+	}
+	return &issueResult.Issue, nil
+}
+
+func CreateIssueParam(issue Issue, uploadFiles []FileParam) IssueParam {
+	var issueParam IssueParam
+	if issue.Attachments != nil {
+		var uploads []Uploads
+		for _, v := range uploadFiles {
+			uploads = append(uploads, Uploads{FileName: v.FileName, ContentType: v.ContentType, Token: v.Token})
+		}
+		issueParam = IssueParam{
+			ProjectId: issue.Project.Id,
+			TrackerId: issue.Tracker.Id,
+			StatusId: issue.Status.Id,
+			PriorityId: issue.Priority.Id,
+			AssignedToId: issue.AssignedTo.Id,
+			Subject: issue.Subject,
+			Description: issue.Description,
+			CustomFields: issue.CustomFields,
+			Uploads: uploads}
+	} else {
+		issueParam = IssueParam{
+			ProjectId: issue.Project.Id,
+			TrackerId: issue.Tracker.Id,
+			StatusId: issue.Status.Id,
+			PriorityId: issue.Priority.Id,
+			AssignedToId: issue.AssignedTo.Id,
+			Subject: issue.Subject,
+			Description: issue.Description,
+			CustomFields: issue.CustomFields}
+	}
+	return issueParam
 }
 
 func CreateIssue(url, key string, issue IssueParam) (int, error) {

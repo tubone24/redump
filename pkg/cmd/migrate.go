@@ -10,22 +10,23 @@ import (
 	"time"
 )
 
-func Migrate(projectId int) {
+func Migrate(projectId int) error {
 	config, err := config.GetConfig()
 	if err != nil {
-		panic(err)
+		return err
 	}
 	issues, err := redmine.GetIssues(config.ServerConfig.Url, config.ServerConfig.Key, projectId)
 	txtCh := make(chan string, 10)
 	defer close(txtCh)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	for _, v := range issues {
 		go runMigrate(txtCh, v)
 		time.Sleep(time.Millisecond * time.Duration(config.ServerConfig.Sleep))
 		fmt.Println(<-txtCh)
 	}
+	return nil
 }
 
 func runMigrate(txtCh chan<- string, issue *redmine.Issue) {
@@ -64,33 +65,7 @@ func runMigrate(txtCh chan<- string, issue *redmine.Issue) {
 	if err != nil {
 		panic(err)
 	}
-	var newIssueParam redmine.IssueParam
-	if newIssue.Attachments != nil {
-		var uploads []redmine.Uploads
-		for _, v := range uploadFiles {
-			uploads = append(uploads, redmine.Uploads{FileName: v.FileName, ContentType: v.ContentType, Token: v.Token})
-		}
-		newIssueParam = redmine.IssueParam{
-			ProjectId: newIssue.Project.Id,
-			TrackerId: newIssue.Tracker.Id,
-			StatusId: newIssue.Status.Id,
-			PriorityId: newIssue.Priority.Id,
-			AssignedToId: newIssue.AssignedTo.Id,
-			Subject:newIssue.Subject,
-			Description: newIssue.Description,
-			CustomFields: newIssue.CustomFields,
-			Uploads: uploads}
-	} else {
-		newIssueParam = redmine.IssueParam{
-			ProjectId: newIssue.Project.Id,
-			TrackerId: newIssue.Tracker.Id,
-			StatusId: newIssue.Status.Id,
-			PriorityId: newIssue.Priority.Id,
-			AssignedToId: newIssue.AssignedTo.Id,
-			Subject:newIssue.Subject,
-			Description: newIssue.Description,
-			CustomFields: newIssue.CustomFields}
-	}
+	newIssueParam := redmine.CreateIssueParam(*newIssue, uploadFiles)
 	issueId, err := redmine.CreateIssue(conf.NewServerConfig.Url, conf.NewServerConfig.Key, newIssueParam)
 	if err != nil {
 		panic(err)

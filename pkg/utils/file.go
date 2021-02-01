@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -17,6 +18,30 @@ func WriteFile(filename string, output []byte) error {
 		return err
 	}
 	return nil
+}
+
+func ReadFile(file string) ([]byte, error) {
+	const bufferSize = 256
+	var content []byte
+	fp, err := os.Open(file)
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+	buffer := make([]byte, bufferSize)
+	for {
+		n, err := fp.Read(buffer)
+		if 0 < n {
+			content = append(content, buffer...)
+		}
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	return content, nil
 }
 
 func GetContentType(key string) string {

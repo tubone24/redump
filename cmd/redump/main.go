@@ -15,6 +15,7 @@ Usage:
   redump migrate
   redump list
   redump dump [-c|--concurrency]
+  redump restore
   redump -h | --help
   redump --version
 
@@ -29,16 +30,29 @@ Options:
 	arguments, _ := docopt.ParseDoc(usage)
 	flag, err := arguments.Bool("migrate")
 	if flag {
-		cmd.Migrate(cfg.ServerConfig.ProjectId)
+		err = cmd.Migrate(cfg.ServerConfig.ProjectId)
+		if err != nil {
+			panic(err)
+		}
 	}
 	flag, err = arguments.Bool("list")
 	if flag {
-		cmd.ListAll(cfg.ServerConfig.ProjectId)
+		err = cmd.ListAll(cfg.ServerConfig.ProjectId)
+		if err != nil {
+			panic(err)
+		}
 	}
 	flag, err = arguments.Bool("dump")
 	concurrency, err := arguments.Bool("--concurrency")
 	if flag {
 		cmd.Dump(cfg.ServerConfig.ProjectId, concurrency)
+	}
+	flag, err = arguments.Bool("restore")
+	if flag {
+		err = cmd.RestoreDataFromLocal()
+		if err != nil {
+			panic(err)
+		}
 	}
 
 }

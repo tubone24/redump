@@ -8,36 +8,37 @@ import (
 	"github.com/deckarep/golang-set"
 )
 
-func ListAll(projectId int) {
+func ListAll(projectId int) error {
 	conf, err := config.GetConfig()
 	if err != nil {
-		panic(err)
+		return err
 	}
 	issues, err := redmine.GetIssues(conf.ServerConfig.Url, conf.ServerConfig.Key, projectId)
 	_, err = ListProjectId(issues)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	_, err = ListTrackerId(issues)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	_, err = ListStatusId(issues)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	_, err = ListPriorityId(issues)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	_, err = ListUserIdAssignedTo(issues)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	_, err = ListCustomFieldsId(issues)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 func ListProjectId(issues redmine.Issues) ([]redmine.Project, error) {
