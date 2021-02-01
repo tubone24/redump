@@ -5,6 +5,7 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/utils"
 	"strconv"
+	"net/url"
 )
 
 var dat map[string]interface{}
@@ -236,11 +237,12 @@ func DownloadAttachmentFiles(key string, attachments Attachments) ([][]byte, err
 }
 
 func CreateIssueFromByteSlice(content []byte) (*Issue, error) {
-	err := json.Unmarshal(content, &issueResult)
+	var issue Issue
+	err := json.Unmarshal(content, &issue)
 	if err != nil {
 		return nil, err
 	}
-	return &issueResult.Issue, nil
+	return &issue, nil
 }
 
 func CreateIssueParam(issue Issue, uploadFiles []FileParam) IssueParam {
@@ -293,6 +295,9 @@ func CreateIssue(url, key string, issue IssueParam) (int, error) {
 
 func UpdateIssueJournals(url, key string, id int, journals []string) error {
 	for _, journal := range journals {
+		if journal == "" {
+			continue
+		}
 		issue := IssueParam{Notes: journal}
 		issueJson, err := json.Marshal(IssueParamJson{Issue: issue})
 		if err != nil {
@@ -307,10 +312,13 @@ func UpdateIssueJournals(url, key string, id int, journals []string) error {
 	return nil
 }
 
-func UploadAttachmentFiles(url, key string, files []FileParam) ([]FileParam, error) {
+func UploadAttachmentFiles(u, key string, files []FileParam) ([]FileParam, error) {
 	var newFiles []FileParam
 	for _, file := range files {
-		body, err := utils.Post(url + "/uploads.json?key=" + key + "&filename=" + file.FileName, "application/octet-stream", file.Contents)
+		params := url.Values{}
+		params.Set("key", key)
+		params.Add("filename", file.FileName)
+		body, err := utils.Post(u+ "/uploads.json?" + params.Encode(), "application/octet-stream", file.Contents)
 		if err != nil {
 			return nil, err
 		}

@@ -67,7 +67,6 @@ func Put(url, contentType string, data []byte) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp)
 	if resp.StatusCode >= http.StatusBadRequest {
 		fmt.Println(resp.StatusCode)
 		return &HttpClientError{StatusCode: resp.StatusCode}

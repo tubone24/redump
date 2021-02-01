@@ -1,6 +1,8 @@
 package redmine
 
-import "github.com/tubone24/redump/pkg/config"
+import (
+	"github.com/tubone24/redump/pkg/config"
+)
 
 func ConvertNewEnv(issue Issue) (*Issue, error){
 	conf, err := config.GetConfig()
@@ -10,81 +12,85 @@ func ConvertNewEnv(issue Issue) (*Issue, error){
 	for _, mapping := range conf.Mappings {
 		switch mapping.Name {
 			case "project_id":
-				convertProjectId(&issue, mapping.Values)
+				issue.Project.Id = convertProjectId(&issue, mapping.Values, mapping.Default)
 			case "tracker_id":
-				convertTrackerId(&issue, mapping.Values, mapping.Default)
+				issue.Tracker.Id = convertTrackerId(&issue, mapping.Values, mapping.Default)
 			case "status_id":
-				convertStatusId(&issue, mapping.Values, mapping.Default)
+				issue.Status.Id = convertStatusId(&issue, mapping.Values, mapping.Default)
 			case "priority_id":
-				convertPriorityId(&issue, mapping.Values, mapping.Default)
+				issue.Priority.Id = convertPriorityId(&issue, mapping.Values, mapping.Default)
 			case "user_id":
-				convertUserIdToAssignedTo(&issue, mapping.Values, mapping.Default)
+				issue.AssignedTo.Id = convertUserIdToAssignedTo(&issue, mapping.Values, mapping.Default)
 				// Watcherはそのうちやる
 			case "custom_field_id":
-				convertCustomFieldsId(&issue, mapping.Values)
+				for i, v := range convertCustomFieldsId(&issue, mapping.Values, mapping.Default) {
+					issue.CustomFields[i].Id = v
+				}
 		}
 	}
 	return &issue, nil
 }
 
-func convertProjectId (issue *Issue, conf []config.MappingValue) {
+func convertProjectId (issue *Issue, conf []config.MappingValue, defaultValue int) int {
 	for _, v := range conf {
 		if issue.Project.Id == v.Old {
-			issue.Project.Id = v.New
-			break
+			return v.New
 		}
 	}
+	return defaultValue
 }
 
-func convertTrackerId (issue *Issue, conf []config.MappingValue, defaultValue int) {
+func convertTrackerId (issue *Issue, conf []config.MappingValue, defaultValue int) int {
 	for _, v := range conf {
 		if issue.Tracker.Id == v.Old {
-			issue.Tracker.Id = v.New
-			return
+			return v.New
 		}
 	}
-	issue.Tracker.Id = defaultValue
+	return defaultValue
 }
 
-func convertStatusId (issue *Issue, conf []config.MappingValue, defaultValue int) {
+func convertStatusId (issue *Issue, conf []config.MappingValue, defaultValue int) int {
 	for _, v := range conf {
 		if issue.Status.Id == v.Old {
-			issue.Status.Id = v.New
-			return
+			return v.New
 		}
 	}
-	issue.Status.Id = defaultValue
+	return defaultValue
 }
 
-func convertPriorityId (issue *Issue, conf []config.MappingValue, defaultValue int) {
+func convertPriorityId (issue *Issue, conf []config.MappingValue, defaultValue int) int {
 	for _, v := range conf {
 		if issue.Priority.Id == v.Old {
-			issue.Priority.Id = v.New
-			return
+			return v.New
 		}
 	}
-	issue.Priority.Id = defaultValue
+	return defaultValue
 }
 
-func convertUserIdToAssignedTo (issue *Issue, conf []config.MappingValue, defaultValue int) {
+func convertUserIdToAssignedTo (issue *Issue, conf []config.MappingValue, defaultValue int) int {
 	for _, v := range conf {
 		if issue.AssignedTo.Id == v.Old {
-			issue.AssignedTo.Id = v.New
-			return
+			return v.New
 		}
 	}
-	issue.AssignedTo.Id = defaultValue
+	return defaultValue
 }
 
-func convertCustomFieldsId (issue *Issue, conf []config.MappingValue) {
+func convertCustomFieldsId (issue *Issue, conf []config.MappingValue, defaultValue int) []int {
+	var result []int
 	if issue.CustomFields != nil {
-		for _, v := range conf {
-			for _, v2 := range issue.CustomFields {
-				if v2.Id == v.Old {
-					v2.Id = v.New
+		for _, v := range issue.CustomFields {
+			for i2, v2 := range conf {
+				if v.Id == v2.Old {
+					result = append(result, v2.New)
 					break
+				} else {
+					if i2 + 1 == len(conf) {
+						result = append(result, defaultValue)
+					}
 				}
 			}
 		}
 	}
+	return result
 }

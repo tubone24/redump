@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -124,3 +125,12 @@ func GetContentType(key string) string {
 		return "application/x-www-form-urlencoded"
 	}
 }
+
+func SanitizeInvalidFileName(str string) (result string) {
+	fmt.Println(str)
+	result = strings.Replace(strings.Replace(strings.Replace(strings.Replace(strings.Replace(str, " ", "", -1), "　", "", -1), "\\", "", -1), "゚", "", -1), "゙", "", -1)
+	fmt.Println(result)
+	return
+}
+
+

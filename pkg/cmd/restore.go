@@ -6,16 +6,17 @@ import (
 	"github.com/tubone24/redump/pkg/utils"
 	"github.com/tubone24/redump/pkg/config"
 	"strconv"
+	"time"
 )
 
 func RestoreDataFromLocal() error {
-	var uploadFiles []redmine.FileParam
 	conf, err := config.GetConfig()
 	if err != nil {
 		return err
 	}
 	jsonFiles, _ := filepath.Glob("data/*.json")
 	for _, file := range jsonFiles {
+		var uploadFiles []redmine.FileParam
 		issueJsonBytes, err := utils.ReadFile(file)
 		if err != nil {
 			return err
@@ -30,7 +31,7 @@ func RestoreDataFromLocal() error {
 		}
 		if convertedIssue.Attachments != nil {
 			for index, attachment := range convertedIssue.Attachments {
-				filename := strconv.Itoa(convertedIssue.Id) + "_" + strconv.Itoa(index) + "_" + attachment.FileName
+				filename := "data/" + strconv.Itoa(convertedIssue.Id) + "_" + strconv.Itoa(index) + "_" + attachment.FileName
 				contentBytes, err := utils.ReadFile(filename)
 				if err != nil {
 					return err
@@ -51,6 +52,7 @@ func RestoreDataFromLocal() error {
 		}
 		notes := redmine.CreateJournalStrings(*convertedIssue)
 		err = redmine.UpdateIssueJournals(conf.NewServerConfig.Url, conf.NewServerConfig.Key, issueId, notes)
+		time.Sleep(time.Millisecond * time.Duration(conf.ServerConfig.Sleep))
 	}
 	return nil
 }
