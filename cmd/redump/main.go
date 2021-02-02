@@ -35,7 +35,7 @@ Options:
 	}
 	if cmd.DocOptConf.Migrate {
 		if cmd.DocOptConf.Issue && cmd.DocOptConf.Number != 0 {
-			//
+			cmd.MigrateOneIssue(cmd.DocOptConf.Number)
 		} else {
 			err = cmd.Migrate(cfg.ServerConfig.ProjectId)
 			if err != nil {
@@ -51,16 +51,19 @@ Options:
 	}
 	if cmd.DocOptConf.Dump {
 		if cmd.DocOptConf.Issue && cmd.DocOptConf.Number != 0 {
-			//
+			cmd.DumpOneIssue(cmd.DocOptConf.Number)
 		} else {
 			cmd.Dump(cfg.ServerConfig.ProjectId, cmd.DocOptConf.Concurrency)
 		}
 	}
 	if cmd.DocOptConf.Restore {
 		if cmd.DocOptConf.Issue && cmd.DocOptConf.Number != 0 {
-			//
+			err = cmd.RestoreDataFromLocal(cfg.ServerConfig.ProjectId, cmd.DocOptConf.Number)
+			if err != nil {
+				panic(err)
+			}
 		} else {
-			err = cmd.RestoreDataFromLocal(cfg.ServerConfig.ProjectId)
+			err = cmd.RestoreDataFromLocal(cfg.ServerConfig.ProjectId, 0)
 			if err != nil {
 				panic(err)
 			}

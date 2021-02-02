@@ -128,7 +128,7 @@ func GetContentType(key string) string {
 
 func SanitizeInvalidFileName(str string) (result string) {
 	fmt.Println(str)
-	result = strings.Replace(strings.Replace(strings.Replace(strings.Replace(strings.Replace(str, " ", "", -1), "　", "", -1), "\\", "", -1), "゚", "", -1), "゙", "", -1)
+	result = strings.Replace(strings.Replace(str, " ", "_", -1), "　", "_", -1)
 	fmt.Println(result)
 	return
 }

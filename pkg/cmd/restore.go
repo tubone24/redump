@@ -9,12 +9,17 @@ import (
 	"time"
 )
 
-func RestoreDataFromLocal(projectId int) error {
+func RestoreDataFromLocal(projectId, issueId int) error {
 	conf, err := config.GetConfig()
 	if err != nil {
 		return err
 	}
-	jsonFiles, _ := filepath.Glob("data/issues/*.json")
+	var jsonFiles []string
+	if issueId != 0 {
+		jsonFiles, _ = filepath.Glob("data/issues/" + strconv.Itoa(issueId) + ".json")
+	} else {
+		jsonFiles, _ = filepath.Glob("data/issues/*.json")
+	}
 	for _, file := range jsonFiles {
 		var uploadFiles []redmine.FileParam
 		issueJsonBytes, err := utils.ReadFile(file)

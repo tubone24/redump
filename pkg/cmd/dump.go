@@ -52,38 +52,45 @@ func Dump(projectId int, concurrency bool) {
 		wg.Wait()
 	} else {
 		for _, v := range issues {
-			go runDump(txtCh, v)
+			go runDump(txtCh, v.Id)
 			time.Sleep(time.Millisecond * time.Duration(conf.ServerConfig.Sleep))
 			fmt.Println(<-txtCh)
 		}
 	}
 }
 
-func runDump(txtCh chan<- string, issue *redmine.Issue) {
+func DumpOneIssue(issueId int) {
+	txtCh := make(chan string, 10)
+	defer close(txtCh)
+	go runDump(txtCh, issueId)
+	fmt.Println(<-txtCh)
+}
+
+func runDump(txtCh chan<- string, issueId int) {
 	conf, err := config.GetConfig()
 	if err != nil {
 		panic(err)
 	}
-	detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issue.Id)
+	detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issueId)
 	if err != nil {
 		panic(err)
 	}
 	issueJson, _ := json.Marshal(detailIssue)
-	err = utils.WriteFile("data/issues/"+strconv.Itoa(issue.Id)+".json", issueJson)
+	err = utils.WriteFile("data/issues/"+strconv.Itoa(issueId)+".json", issueJson)
 	if detailIssue.Attachments != nil {
 		downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, detailIssue.Attachments)
 		if err != nil {
 			panic(err)
 		}
 		for index, file := range downloadBody {
-			err = utils.WriteFile("data/issues/attachments/"+strconv.Itoa(issue.Id)+"_"+strconv.Itoa(index)+"_"+detailIssue.Attachments[index].FileName, file)
+			err = utils.WriteFile("data/issues/attachments/"+strconv.Itoa(issueId)+"_"+strconv.Itoa(index)+"_"+detailIssue.Attachments[index].FileName, file)
 			if err != nil {
 				panic(err)
 			}
 		}
 	}
 	if err != nil {
-		txtCh <- "Failed: " + strconv.Itoa(issue.Id) + ".json"
+		txtCh <- "Failed: " + strconv.Itoa(issueId) + ".json"
 	}
-	txtCh <- "Success: " + strconv.Itoa(issue.Id) + ".json"
+	txtCh <- "Success: " + strconv.Itoa(issueId) + ".json"
 }
