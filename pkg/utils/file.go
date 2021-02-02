@@ -59,7 +59,7 @@ func GetContentType(key string) string {
 		return "text/html"
 	case ".css":
 		return "text/css"
-	case ".js":
+	case ".js", ".mjs":
 		return "text/javascript"
 	case ".png":
 		return "image/png"
@@ -99,7 +99,7 @@ func GetContentType(key string) string {
 		return "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 	case ".zip":
 		return "application/zip"
-	case ".lzh":
+	case ".lzh", ".lha":
 		return "application/x-lzh"
 	case ".tar.gz":
 		return "application/x-tar"
@@ -119,8 +119,104 @@ func GetContentType(key string) string {
 		return "application/x-7z-compressed"
 	case ".xml":
 		return "application/xml"
-	case ".bin":
+	case ".bin", ".class", ".dll", ".dmg", ".dms", ".dpc", ".dpt", ".dpv", ".exe", ".mvr", ".so", ".wpi", ".cab":
 		return "application/octet-stream"
+	case ".aac":
+		return "audio/aac"
+	case ".abw":
+		return "application/x-abiword"
+	case ".arc":
+		return "application/x-freearc"
+	case ".avi":
+		return "video/x-msvideo"
+	case ".azw":
+		return "application/vnd.amazon.ebook"
+	case ".csh":
+		return "application/x-csh"
+	case ".eot":
+		return "application/vnd.ms-fontobject"
+	case ".epub":
+		return "application/epub+zip"
+	case ".ico":
+		return "image/vnd.microsoft.icon"
+	case ".ics":
+		return "text/calendar"
+	case ".jar":
+		return "application/java-archive"
+	case ".jsonld":
+		return "application/ld+json"
+	case ".mid", ".midi":
+		return "audio/midi"
+	case ".mpkg":
+		return "application/vnd.apple.installer+xml"
+	case ".odp":
+		return "application/vnd.oasis.opendocument.presentation"
+	case ".ods":
+		return "application/vnd.oasis.opendocument.spreadsheet"
+	case ".odt":
+		return "application/vnd.oasis.opendocument.text"
+	case ".oga":
+		return "audio/ogg"
+	case ".ogv":
+		return "video/ogg"
+	case ".ogx":
+		return "application/ogg"
+	case ".opus":
+		return "audio/opus"
+	case ".otf":
+		return "font/otf"
+	case ".php":
+		return "application/x-httpd-php"
+	case ".rtf":
+		return "application/rtf"
+	case ".sh":
+		return "application/x-sh"
+	case ".swf":
+		return "application/x-shockwave-flash"
+	case ".tif", ".tiff":
+		return "image/tiff"
+	case ".ts":
+		return "video/mp2t"
+	case ".ttf":
+		return "font/ttf"
+	case ".vsd":
+		return "application/vnd.visio"
+	case ".wav":
+		return "audio/wav"
+	case ".weba":
+		return "audio/webm"
+	case ".webm":
+		return "video/webm"
+	case ".webp":
+		return "image/webp"
+	case ".woff":
+		return "font/woff"
+	case ".woff2":
+		return "font/woff2"
+	case ".xhtml":
+		return "application/xhtml+xml"
+	case ".xul":
+		return "application/vnd.mozilla.xul+xml"
+	case ".3gp":
+		return "video/3gpp"
+	case ".3g2":
+		return "video/3gpp2"
+	case ".jtd":
+		return "application/x-js-taro"
+	case ".mov", ".qt":
+		return "video/quicktime"
+	case ".vcf":
+		return "text/x-vcard"
+	case ".vcs":
+		return "text/x-vcalendar"
+	case ".kml":
+		return "application/vnd.google-earth.kml+xml"
+	case ".kmz":
+		return "application/vnd.google-earth.kmz"
+	case ".latex":
+		return "application/x-latex"
+	case ".tex":
+		return "application/x-tex"
 	default:
 		return "application/x-www-form-urlencoded"
 	}
