@@ -180,7 +180,7 @@ func unmarshalByteIssue(content []byte) (Issue, error) {
 	return issueResult.Issue, nil
 }
 
-func GetIssues(url, key string, projectId int) (Issues, error) {
+func GetIssues(url, key string, projectId, timeout int) (Issues, error) {
 	var issuesUrl string
 	if projectId == 0 {
 		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*"
@@ -188,7 +188,8 @@ func GetIssues(url, key string, projectId int) (Issues, error) {
 		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*&project_id=" + strconv.Itoa(projectId)
 	}
 	var issues Issues
-	body, err := utils.Get(issuesUrl)
+	client := utils.NewHttpClient(timeout)
+	body, err := client.Get(issuesUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +204,7 @@ func GetIssues(url, key string, projectId int) (Issues, error) {
 		} else {
 			issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=*&sort=updated_on:asc&project_id=" + strconv.Itoa(projectId)
 		}
-		body, err := utils.Get(issuesUrl)
+		body, err := client.Get(issuesUrl)
 		if err != nil {
 			return nil, err
 		}
@@ -216,9 +217,10 @@ func GetIssues(url, key string, projectId int) (Issues, error) {
 	return issues, nil
 }
 
-func GetIssue(url, key string, id int) (Issue, error) {
+func GetIssue(url, key string, id, timeout int) (Issue, error) {
 	var issue Issue
-	body, err := utils.Get(url + "/issues/" + strconv.Itoa(id) + ".json?key=" + key + "&include=attachments,journals,watchers")
+	client := utils.NewHttpClient(timeout)
+	body, err := client.Get(url + "/issues/" + strconv.Itoa(id) + ".json?key=" + key + "&include=attachments,journals,watchers")
 	if err != nil {
 		return issue, err
 	}
@@ -229,10 +231,11 @@ func GetIssue(url, key string, id int) (Issue, error) {
 	return issueResult.Issue, nil
 }
 
-func DownloadAttachmentFiles(key string, attachments Attachments) ([][]byte, error) {
+func DownloadAttachmentFiles(key string, timeout int, attachments Attachments) ([][]byte, error) {
 	var result [][]byte
+	client := utils.NewHttpClient(timeout)
 	for _, file := range attachments {
-		body, err := utils.Get(file.ContentUrl + "?key=" + key)
+		body, err := client.Get(file.ContentUrl + "?key=" + key)
 		if err != nil {
 			return nil, err
 		}
@@ -281,13 +284,14 @@ func CreateIssueParam(issue Issue, uploadFiles []FileParam) IssueParam {
 	return issueParam
 }
 
-func CreateIssue(url, key string, issue IssueParam) (int, error) {
+func CreateIssue(url, key string, timeout int, issue IssueParam) (int, error) {
 	issueJson, err := json.Marshal(IssueParamJson{Issue: issue})
 	if err != nil {
 		return 0, err
 	}
 	fmt.Println(string(issueJson))
-	body, err := utils.Post(url+"/issues.json?key="+key, "application/json", issueJson)
+	client := utils.NewHttpClient(timeout)
+	body, err := client.Post(url+"/issues.json?key="+key, "application/json", issueJson)
 	if err != nil {
 		return 0, err
 	}
@@ -298,7 +302,7 @@ func CreateIssue(url, key string, issue IssueParam) (int, error) {
 	return issueResult.Issue.Id, nil
 }
 
-func UpdateIssueJournals(url, key string, id int, journals []string) error {
+func UpdateIssueJournals(url, key string, id, timeout int, journals []string) error {
 	for _, journal := range journals {
 		if journal == "" {
 			continue
@@ -309,7 +313,8 @@ func UpdateIssueJournals(url, key string, id int, journals []string) error {
 			return err
 		}
 		fmt.Println(string(issueJson))
-		err = utils.Put(url+"/issues/"+strconv.Itoa(id)+".json?key="+key, "application/json", issueJson)
+		client := utils.NewHttpClient(timeout)
+		err = client.Put(url+"/issues/"+strconv.Itoa(id)+".json?key="+key, "application/json", issueJson)
 		if err != nil {
 			return err
 		}
@@ -317,13 +322,14 @@ func UpdateIssueJournals(url, key string, id int, journals []string) error {
 	return nil
 }
 
-func UploadAttachmentFiles(u, key string, files []FileParam) ([]FileParam, error) {
+func UploadAttachmentFiles(u, key string, timeout int, files []FileParam) ([]FileParam, error) {
 	var newFiles []FileParam
 	for _, file := range files {
 		params := url.Values{}
 		params.Set("key", key)
 		params.Add("filename", file.FileName)
-		body, err := utils.Post(u+"/uploads.json?"+params.Encode(), "application/octet-stream", file.Contents)
+		client := utils.NewHttpClient(timeout)
+		body, err := client.Post(u+"/uploads.json?"+params.Encode(), "application/octet-stream", file.Contents)
 		if err != nil {
 			return nil, err
 		}
@@ -344,7 +350,7 @@ func CreateJournalStrings(issue Issue) []string {
 	return notes
 }
 
-func UpdateWatchers(url, key string, id int, issue Issue) error {
+func UpdateWatchers(url, key string, id, timeout int, issue Issue) error {
 	watcherSet := mapset.NewSet()
 	for _, watcher := range issue.Watchers {
 		watcherSet.Add(watcher.Id)
@@ -355,7 +361,8 @@ func UpdateWatchers(url, key string, id int, issue Issue) error {
 		if err != nil {
 			return err
 		}
-		_, err = utils.Post(url+"/issues/"+strconv.Itoa(id)+"/watchers.json?key="+key, "application/json", watcherJson)
+		client := utils.NewHttpClient(timeout)
+		_, err = client.Post(url+"/issues/"+strconv.Itoa(id)+"/watchers.json?key="+key, "application/json", watcherJson)
 		if err != nil {
 			return err
 		}
@@ -363,8 +370,9 @@ func UpdateWatchers(url, key string, id int, issue Issue) error {
 	return nil
 }
 
-func DeleteIssue(url, key string, id int) error {
-	err := utils.Delete(url+"/issues/"+strconv.Itoa(id)+".json?key="+key)
+func DeleteIssue(url, key string, id, timeout int) error {
+	client := utils.NewHttpClient(timeout)
+	err := client.Delete(url+"/issues/"+strconv.Itoa(id)+".json?key="+key)
 	if err != nil {
 		return err
 	}

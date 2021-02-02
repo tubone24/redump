@@ -15,7 +15,7 @@ func Migrate(projectId int) error {
 	if err != nil {
 		return err
 	}
-	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId)
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout)
 	txtCh := make(chan string, 10)
 	defer close(txtCh)
 	if err != nil {
@@ -38,18 +38,18 @@ func MigrateOneIssue(issueId int) {
 
 func runMigrateIssue(txtCh chan<- string, issueId int) {
 	var uploadFiles []redmine.FileParam
-	conf, err := config.GetConfig()
+	cfg, err := config.GetConfig()
 	if err != nil {
 		panic(err)
 	}
-	detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issueId)
+	detailIssue, err := redmine.GetIssue(cfg.ServerConfig.Url, cfg.ServerConfig.Key, issueId, cfg.ServerConfig.Timeout)
 	if err != nil {
 		panic(err)
 	}
 	issueJson, _ := json.Marshal(detailIssue)
 	err = utils.WriteFile("data/issues/"+strconv.Itoa(issueId)+".json", issueJson)
 	if detailIssue.Attachments != nil {
-		downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, detailIssue.Attachments)
+		downloadBody, err := redmine.DownloadAttachmentFiles(cfg.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments)
 		if err != nil {
 			panic(err)
 		}
@@ -60,7 +60,7 @@ func runMigrateIssue(txtCh chan<- string, issueId int) {
 			}
 			fileParam := redmine.FileParam{FileName: detailIssue.Attachments[index].FileName, ContentType: utils.GetContentType(detailIssue.Attachments[index].FileName), Contents: file}
 			fileParams := []redmine.FileParam{fileParam}
-			uploadFile, err := redmine.UploadAttachmentFiles(conf.NewServerConfig.Url, conf.NewServerConfig.Key, fileParams)
+			uploadFile, err := redmine.UploadAttachmentFiles(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.ServerConfig.Timeout, fileParams)
 			fmt.Println(uploadFile[0].Token)
 			if err != nil {
 				panic(err)
@@ -73,16 +73,16 @@ func runMigrateIssue(txtCh chan<- string, issueId int) {
 		panic(err)
 	}
 	newIssueParam := redmine.CreateIssueParam(*newIssue, uploadFiles)
-	newIssueId, err := redmine.CreateIssue(conf.NewServerConfig.Url, conf.NewServerConfig.Key, newIssueParam)
+	newIssueId, err := redmine.CreateIssue(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.ServerConfig.Timeout, newIssueParam)
 	if err != nil {
 		panic(err)
 	}
 	notes := redmine.CreateJournalStrings(*newIssue)
-	err = redmine.UpdateIssueJournals(conf.NewServerConfig.Url, conf.NewServerConfig.Key, newIssueId, notes)
+	err = redmine.UpdateIssueJournals(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, newIssueId, cfg.ServerConfig.Timeout, notes)
 	if err != nil {
 		panic(err)
 	}
-	err = redmine.UpdateWatchers(conf.NewServerConfig.Url, conf.NewServerConfig.Key, newIssueId, *newIssue)
+	err = redmine.UpdateWatchers(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, newIssueId, cfg.ServerConfig.Timeout, *newIssue)
 	if err != nil {
 		txtCh <- "Failed: " + strconv.Itoa(issueId) + ".json"
 	}

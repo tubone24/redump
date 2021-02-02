@@ -29,14 +29,14 @@ func DeleteServerAllIssuesConcurrency(old bool) error {
 	scanner.Scan()
 	if scanner.Text() == "y" {
 		var wg sync.WaitGroup
-		issues, err := redmine.GetIssues(serverUrl, serverKey, 0)
+		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout)
 		if err != nil {
 			return err
 		}
 		for _, v := range issues {
 			go func(issue *redmine.Issue){
 				wg.Add(1)
-				err := redmine.DeleteIssue(serverUrl, serverKey, issue.Id)
+				err := redmine.DeleteIssue(serverUrl, serverKey, issue.Id, cfg.ServerConfig.Timeout)
 				fmt.Println(issue.Id)
 				if err != nil {
 					panic(err)
@@ -68,12 +68,12 @@ func DeleteServerAllIssues(old bool) error {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	if scanner.Text() == "y" {
-		issues, err := redmine.GetIssues(serverUrl, serverKey, 0)
+		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout)
 		if err != nil {
 			return err
 		}
 		for _, v := range issues {
-			err := redmine.DeleteIssue(serverUrl, serverKey, v.Id)
+			err := redmine.DeleteIssue(serverUrl, serverKey, v.Id, cfg.ServerConfig.Timeout)
 			fmt.Println(v.Id)
 			if err != nil {
 				return err

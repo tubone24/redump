@@ -2,10 +2,67 @@ package utils
 
 import (
 	"bytes"
+	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
+
+type Api struct {
+	timeout int
+	httpclient *http.Client
+}
+
+func NewHttpClient(timeout int, opts ...Option) *Api {
+	api := &Api{
+		timeout: timeout,
+		httpclient: http.DefaultClient,
+	}
+
+	for _, opt := range opts {
+		opt(api)
+	}
+
+	return api
+}
+
+type Option func(*Api)
+
+func OptionHTTPClient(c *http.Client) Option {
+	return func(api *Api) {
+		api.httpclient = c
+	}
+}
+
+func (api *Api) request(ctx context.Context, req *http.Request) (*http.Response, error) {
+	req = req.WithContext(ctx)
+
+	respCh := make(chan *http.Response)
+	errCh := make(chan error)
+
+	go func() {
+		resp, err := api.httpclient.Do(req)
+		if err != nil {
+			errCh <- err
+			return
+		}
+
+		respCh <- resp
+	}()
+
+	select {
+	case resp := <-respCh:
+		return resp, nil
+
+	case err := <-errCh:
+		return nil, err
+
+	case <-ctx.Done():
+		return nil, errors.New("HTTP request cancelled")
+	}
+}
 
 type HttpClientError struct {
 	StatusCode int
@@ -15,13 +72,14 @@ func (e *HttpClientError) Error() string {
 	return "HTTP Client error!"
 }
 
-func Get(url string) ([]byte, error) {
-	client := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
+func (api *Api) Get(url string) ([]byte, error) {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
 	}
-	resp, err := client.Get(url)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(api.timeout)*time.Millisecond)
+	defer cancel()
+	resp, err := api.request(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -36,13 +94,15 @@ func Get(url string) ([]byte, error) {
 	return body, nil
 }
 
-func Post(url, contentType string, data []byte) ([]byte, error) {
-	client := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
+func (api *Api) Post(url, contentType string, data []byte) ([]byte, error) {
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(data))
+	if err != nil {
+		return nil, err
 	}
-	resp, err := client.Post(url, contentType, bytes.NewBuffer(data))
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(api.timeout)*time.Millisecond)
+	defer cancel()
+	req.Header.Set("Content-Type", contentType)
+	resp, err := api.request(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -57,13 +117,15 @@ func Post(url, contentType string, data []byte) ([]byte, error) {
 	return body, nil
 }
 
-func Put(url, contentType string, data []byte) error {
-	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(data))
+func (api *Api) Put(url, contentType string, data []byte) error {
+	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(data))
 	if err != nil {
 		return err
 	}
 	req.Header.Set("Content-Type", contentType)
-	resp, err := http.DefaultClient.Do(req)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(api.timeout)*time.Millisecond)
+	defer cancel()
+	resp, err := api.request(ctx, req)
 	if err != nil {
 		return err
 	}
@@ -74,12 +136,14 @@ func Put(url, contentType string, data []byte) error {
 	return nil
 }
 
-func Delete(url string) error {
-	req, err := http.NewRequest("DELETE", url, nil)
+func (api *Api) Delete(url string) error {
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return err
 	}
-	resp, err := http.DefaultClient.Do(req)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(api.timeout)*time.Millisecond)
+	defer cancel()
+	resp, err := api.request(ctx, req)
 	if err != nil {
 		return err
 	}

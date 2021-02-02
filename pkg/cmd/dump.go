@@ -12,29 +12,29 @@ import (
 )
 
 func Dump(projectId int, concurrency bool) {
-	conf, err := config.GetConfig()
+	cfg, err := config.GetConfig()
 	if err != nil {
 		panic(err)
 	}
-	issues, err := redmine.GetIssues(conf.ServerConfig.Url, conf.ServerConfig.Key, projectId)
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout)
+	if err != nil {
+		panic(err)
+	}
 	txtCh := make(chan string, 10)
 	var wg sync.WaitGroup
 	defer close(txtCh)
-	if err != nil {
-		panic(err)
-	}
 	if concurrency {
 		for _, v := range issues {
 			wg.Add(1)
 			go func(issue redmine.Issue, conf config.Config) {
-				detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issue.Id)
+				detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issue.Id, cfg.ServerConfig.Timeout)
 				if err != nil {
 					panic(err)
 				}
 				issueJson, _ := json.Marshal(detailIssue)
 				err = utils.WriteFile("data/issues/"+strconv.Itoa(issue.Id)+".json", issueJson)
 				if detailIssue.Attachments != nil {
-					downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, detailIssue.Attachments)
+					downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments)
 					if err != nil {
 						panic(err)
 					}
@@ -47,13 +47,13 @@ func Dump(projectId int, concurrency bool) {
 				}
 				wg.Done()
 				fmt.Println("Success: " + strconv.Itoa(issue.Id) + ".json")
-			}(*v, *conf)
+			}(*v, *cfg)
 		}
 		wg.Wait()
 	} else {
 		for _, v := range issues {
 			go runDump(txtCh, v.Id)
-			time.Sleep(time.Millisecond * time.Duration(conf.ServerConfig.Sleep))
+			time.Sleep(time.Millisecond * time.Duration(cfg.ServerConfig.Sleep))
 			fmt.Println(<-txtCh)
 		}
 	}
@@ -67,18 +67,18 @@ func DumpOneIssue(issueId int) {
 }
 
 func runDump(txtCh chan<- string, issueId int) {
-	conf, err := config.GetConfig()
+	cfg, err := config.GetConfig()
 	if err != nil {
 		panic(err)
 	}
-	detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issueId)
+	detailIssue, err := redmine.GetIssue(cfg.ServerConfig.Url, cfg.ServerConfig.Key, issueId, cfg.ServerConfig.Timeout)
 	if err != nil {
 		panic(err)
 	}
 	issueJson, _ := json.Marshal(detailIssue)
 	err = utils.WriteFile("data/issues/"+strconv.Itoa(issueId)+".json", issueJson)
 	if detailIssue.Attachments != nil {
-		downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, detailIssue.Attachments)
+		downloadBody, err := redmine.DownloadAttachmentFiles(cfg.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments)
 		if err != nil {
 			panic(err)
 		}

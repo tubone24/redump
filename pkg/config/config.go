@@ -7,6 +7,7 @@ type ServerConfig struct {
 	Key       string `toml:"key"`
 	ProjectId int    `toml:"project_id"`
 	Sleep     int    `toml:"sleep"`
+	Timeout   int    `toml:"timeout"`
 }
 
 type MappingValue struct {
