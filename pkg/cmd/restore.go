@@ -55,6 +55,13 @@ func RestoreDataFromLocal(projectId int) error {
 		}
 		notes := redmine.CreateJournalStrings(*convertedIssue)
 		err = redmine.UpdateIssueJournals(conf.NewServerConfig.Url, conf.NewServerConfig.Key, issueId, notes)
+		if err != nil {
+			return err
+		}
+		err = redmine.UpdateWatchers(conf.NewServerConfig.Url, conf.NewServerConfig.Key, issueId, *convertedIssue)
+		if err != nil {
+			return err
+		}
 		time.Sleep(time.Millisecond * time.Duration(conf.ServerConfig.Sleep))
 	}
 	return nil

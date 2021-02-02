@@ -3,10 +3,10 @@ package config
 import "github.com/BurntSushi/toml"
 
 type ServerConfig struct {
-	Url string `toml:"url"`
-	Key string `toml:"key"`
-	ProjectId int `toml:"project_id"`
-	Sleep int `toml:"sleep"`
+	Url       string `toml:"url"`
+	Key       string `toml:"key"`
+	ProjectId int    `toml:"project_id"`
+	Sleep     int    `toml:"sleep"`
 }
 
 type MappingValue struct {
@@ -15,15 +15,15 @@ type MappingValue struct {
 }
 
 type Mapping struct {
-	Name string `toml:"name"`
-	Default int `toml:"default"`
-	Values []MappingValue `toml:"values"`
+	Name    string         `toml:"name"`
+	Default int            `toml:"default"`
+	Values  []MappingValue `toml:"values"`
 }
 
 type Config struct {
-	ServerConfig ServerConfig `toml:"server"`
+	ServerConfig    ServerConfig `toml:"server"`
 	NewServerConfig ServerConfig `toml:"new_server"`
-	Mappings []Mapping `toml:"mappings"`
+	Mappings        []Mapping    `toml:"mappings"`
 }
 
 func GetConfig() (*Config, error) {

@@ -2,73 +2,74 @@ package redmine
 
 import (
 	"fmt"
+	mapset "github.com/deckarep/golang-set"
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/utils"
-	"strconv"
 	"net/url"
+	"strconv"
 )
 
 var dat map[string]interface{}
 
 type Project struct {
-	Id int `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type Tracker struct {
-	Id int `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type Status struct {
-	Id int `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type Priority struct {
-	Id int `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type Author struct {
-	Id int `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type AssignedTo struct {
-	Id int `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type CustomField struct {
-	Id int `json:"id"`
-	Name string `json:"name"`
-	Multiple bool `json:"multiple"`
-	Value interface{} `json:"value"`
+	Id       int         `json:"id"`
+	Name     string      `json:"name"`
+	Multiple bool        `json:"multiple"`
+	Value    interface{} `json:"value"`
 }
 
 type CustomFields []*CustomField
 
 type Attachment struct {
-	Id int `json:"id"`
-	FileName string `json:"filename"`
-	FileSize int64 `json:"filesize"`
+	Id          int    `json:"id"`
+	FileName    string `json:"filename"`
+	FileSize    int64  `json:"filesize"`
 	Description string `json:"description"`
-	ContentUrl string `json:"content_url"`
-	Author Author
-	CreatedOn string `json:"created_on"`
+	ContentUrl  string `json:"content_url"`
+	Author      Author
+	CreatedOn   string `json:"created_on"`
 }
 
 type Attachments []*Attachment
 
 type User struct {
-	Id int `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 type Detail struct {
 	Property string `json:"property"`
-	Name string `json:"name"`
+	Name     string `json:"name"`
 	NewValue string `json:"new_value"`
 	OldValue string `json:"old_value"`
 }
@@ -76,51 +77,51 @@ type Detail struct {
 type Details []*Detail
 
 type Journal struct {
-	Id int `json:"id"`
-	User User `json:"user"`
-	Notes string `json:"notes"`
-	CreatedOn string `json:"created_on"`
-	Details Details `json:"details"`
+	Id        int     `json:"id"`
+	User      User    `json:"user"`
+	Notes     string  `json:"notes"`
+	CreatedOn string  `json:"created_on"`
+	Details   Details `json:"details"`
 }
 
 type Journals []*Journal
 
 type Watcher struct {
-	Id int
+	Id   int
 	Name string
 }
 
 type Watchers []*Watcher
 
-type Issue struct{
-	Id int `json:"id"`
-	Project Project `json:"project"`
-	Tracker Tracker `json:"tracker"`
-	Status Status `json:"status"`
-	Priority Priority `json:"priority"`
-	Author Author `json:"author"`
-	AssignedTo AssignedTo `json:"assigned_to"`
-	Subject string `json:"subject"`
-	Description string `json:"description"`
-	StartDate string `json:"start_date"`
-	DueDate string `json:"due_date"`
-	DoneRatio int `json:"done_ratio"`
-	CustomFields CustomFields `json:"custom_fields"`
-	IsPrivate bool `json:"is_private"`
-	EstimatedHours string `json:"estimated_hours"`
-	CreatedOn string `json:"created_on"`
-	UpdatedOn string `json:"updated_on"`
-	ClosedOn string `json:"closed_on"`
-	Attachments Attachments `json:"attachments"`
-	Journals Journals `json:"journals"`
-	Watchers Watchers `json:"watchers"`
+type Issue struct {
+	Id             int          `json:"id"`
+	Project        Project      `json:"project"`
+	Tracker        Tracker      `json:"tracker"`
+	Status         Status       `json:"status"`
+	Priority       Priority     `json:"priority"`
+	Author         Author       `json:"author"`
+	AssignedTo     AssignedTo   `json:"assigned_to"`
+	Subject        string       `json:"subject"`
+	Description    string       `json:"description"`
+	StartDate      string       `json:"start_date"`
+	DueDate        string       `json:"due_date"`
+	DoneRatio      int          `json:"done_ratio"`
+	CustomFields   CustomFields `json:"custom_fields"`
+	IsPrivate      bool         `json:"is_private"`
+	EstimatedHours string       `json:"estimated_hours"`
+	CreatedOn      string       `json:"created_on"`
+	UpdatedOn      string       `json:"updated_on"`
+	ClosedOn       string       `json:"closed_on"`
+	Attachments    Attachments  `json:"attachments"`
+	Journals       Journals     `json:"journals"`
+	Watchers       Watchers     `json:"watchers"`
 }
 
 type Issues []*Issue
 
 type Uploads struct {
-	Token string `json:"token,omitempty"`
-	FileName string `json:"filename,omitempty"`
+	Token       string `json:"token,omitempty"`
+	FileName    string `json:"filename,omitempty"`
 	ContentType string `json:"content_type,omitempty"`
 }
 
@@ -134,8 +135,8 @@ type IssueParam struct {
 	AssignedToId  int          `json:"assigned_to_id,omitempty"`
 	ParentIssueId int          `json:"parent_issue_id,omitempty"`
 	CustomFields  CustomFields `json:"custom_fields,omitempty"`
-	Notes string `json:"notes,omitempty"`
-	Uploads []Uploads `json:"uploads,omitempty"`
+	Notes         string       `json:"notes,omitempty"`
+	Uploads       []Uploads    `json:"uploads,omitempty"`
 }
 
 type IssueParamJson struct {
@@ -143,17 +144,21 @@ type IssueParamJson struct {
 }
 
 type FileParam struct {
-	FileName string
+	FileName    string
 	ContentType string
-	Contents []byte
-	Token string
+	Contents    []byte
+	Token       string
+}
+
+type WatcherParam struct {
+	UserId int `json:"user_id"`
 }
 
 var issuesResult struct {
-	Issues Issues `json:"issues"`
-	TotalCount int `json:"total_count"`
-	Offset int `json:"offset"`
-	Limit int `json:"limit"`
+	Issues     Issues `json:"issues"`
+	TotalCount int    `json:"total_count"`
+	Offset     int    `json:"offset"`
+	Limit      int    `json:"limit"`
 }
 
 var issueResult struct {
@@ -175,7 +180,7 @@ func unmarshalByteIssue(content []byte) (Issue, error) {
 	return issueResult.Issue, nil
 }
 
-func GetIssues(url, key string, projectId int) (Issues, error){
+func GetIssues(url, key string, projectId int) (Issues, error) {
 	var issuesUrl string
 	if projectId == 0 {
 		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*"
@@ -192,7 +197,7 @@ func GetIssues(url, key string, projectId int) (Issues, error){
 		return nil, err
 	}
 	fmt.Println(issuesResult.TotalCount)
-	for offset := 0; offset < issuesResult.TotalCount; offset+=100 {
+	for offset := 0; offset < issuesResult.TotalCount; offset += 100 {
 		if projectId == 0 {
 			issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=*&sort=updated_on:asc"
 		} else {
@@ -224,7 +229,7 @@ func GetIssue(url, key string, id int) (Issue, error) {
 	return issueResult.Issue, nil
 }
 
-func DownloadAttachmentFiles(key string, attachments Attachments) ([][]byte, error){
+func DownloadAttachmentFiles(key string, attachments Attachments) ([][]byte, error) {
 	var result [][]byte
 	for _, file := range attachments {
 		body, err := utils.Get(file.ContentUrl + "?key=" + key)
@@ -253,24 +258,24 @@ func CreateIssueParam(issue Issue, uploadFiles []FileParam) IssueParam {
 			uploads = append(uploads, Uploads{FileName: v.FileName, ContentType: v.ContentType, Token: v.Token})
 		}
 		issueParam = IssueParam{
-			ProjectId: issue.Project.Id,
-			TrackerId: issue.Tracker.Id,
-			StatusId: issue.Status.Id,
-			PriorityId: issue.Priority.Id,
+			ProjectId:    issue.Project.Id,
+			TrackerId:    issue.Tracker.Id,
+			StatusId:     issue.Status.Id,
+			PriorityId:   issue.Priority.Id,
 			AssignedToId: issue.AssignedTo.Id,
-			Subject: issue.Subject,
-			Description: issue.Description,
+			Subject:      issue.Subject,
+			Description:  issue.Description,
 			CustomFields: issue.CustomFields,
-			Uploads: uploads}
+			Uploads:      uploads}
 	} else {
 		issueParam = IssueParam{
-			ProjectId: issue.Project.Id,
-			TrackerId: issue.Tracker.Id,
-			StatusId: issue.Status.Id,
-			PriorityId: issue.Priority.Id,
+			ProjectId:    issue.Project.Id,
+			TrackerId:    issue.Tracker.Id,
+			StatusId:     issue.Status.Id,
+			PriorityId:   issue.Priority.Id,
 			AssignedToId: issue.AssignedTo.Id,
-			Subject: issue.Subject,
-			Description: issue.Description,
+			Subject:      issue.Subject,
+			Description:  issue.Description,
 			CustomFields: issue.CustomFields}
 	}
 	return issueParam
@@ -282,7 +287,7 @@ func CreateIssue(url, key string, issue IssueParam) (int, error) {
 		return 0, err
 	}
 	fmt.Println(string(issueJson))
-	body, err := utils.Post(url + "/issues.json?key=" + key, "application/json", issueJson)
+	body, err := utils.Post(url+"/issues.json?key="+key, "application/json", issueJson)
 	if err != nil {
 		return 0, err
 	}
@@ -304,7 +309,7 @@ func UpdateIssueJournals(url, key string, id int, journals []string) error {
 			return err
 		}
 		fmt.Println(string(issueJson))
-		err = utils.Put(url + "/issues/" + strconv.Itoa(id) + ".json?key=" + key, "application/json", issueJson)
+		err = utils.Put(url+"/issues/"+strconv.Itoa(id)+".json?key="+key, "application/json", issueJson)
 		if err != nil {
 			return err
 		}
@@ -318,7 +323,7 @@ func UploadAttachmentFiles(u, key string, files []FileParam) ([]FileParam, error
 		params := url.Values{}
 		params.Set("key", key)
 		params.Add("filename", file.FileName)
-		body, err := utils.Post(u+ "/uploads.json?" + params.Encode(), "application/octet-stream", file.Contents)
+		body, err := utils.Post(u+"/uploads.json?"+params.Encode(), "application/octet-stream", file.Contents)
 		if err != nil {
 			return nil, err
 		}
@@ -337,4 +342,23 @@ func CreateJournalStrings(issue Issue) []string {
 		notes = append(notes, journal.Notes)
 	}
 	return notes
+}
+
+func UpdateWatchers(url, key string, id int, issue Issue) error {
+	watcherSet := mapset.NewSet()
+	for _, watcher := range issue.Watchers {
+		watcherSet.Add(watcher.Id)
+	}
+	for _, watcherId := range watcherSet.ToSlice() {
+		watcherJson, err := json.Marshal(WatcherParam{UserId: watcherId.(int)})
+		fmt.Println(string(watcherJson))
+		if err != nil {
+			return err
+		}
+		_, err = utils.Post(url+"/issues/"+strconv.Itoa(id)+"/watchers.json?key="+key, "application/json", watcherJson)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

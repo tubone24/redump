@@ -9,7 +9,7 @@ import (
 )
 
 func WriteFile(filename string, output []byte) error {
-	file, err  := os.Create(filename)
+	file, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
@@ -132,5 +132,3 @@ func SanitizeInvalidFileName(str string) (result string) {
 	fmt.Println(result)
 	return
 }
-
-

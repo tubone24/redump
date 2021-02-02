@@ -73,6 +73,10 @@ func runMigrate(txtCh chan<- string, issue *redmine.Issue) {
 	notes := redmine.CreateJournalStrings(*newIssue)
 	err = redmine.UpdateIssueJournals(conf.NewServerConfig.Url, conf.NewServerConfig.Key, issueId, notes)
 	if err != nil {
+		panic(err)
+	}
+	err = redmine.UpdateWatchers(conf.NewServerConfig.Url, conf.NewServerConfig.Key, issueId, *newIssue)
+	if err != nil {
 		txtCh <- "Failed: " + strconv.Itoa(issue.Id) + ".json"
 	}
 	txtCh <- "Success: " + strconv.Itoa(issue.Id) + ".json"

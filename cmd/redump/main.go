@@ -1,57 +1,69 @@
 package main
 
 import (
+	"github.com/docopt/docopt-go"
 	"github.com/tubone24/redump/pkg/cmd"
 	"github.com/tubone24/redump/pkg/config"
-	"github.com/docopt/docopt-go"
 )
-
 
 func main() {
 	usage := `REDUMP
 A tool to migrate data in your Redmine without admin accounts.
 
 Usage:
-  redump migrate
+  redump migrate [-i|--issue <number>]
   redump list
-  redump dump [-c|--concurrency]
-  redump restore
-  redump -h | --help
+  redump dump [-c|--concurrency] [-i|--issue <number>]
+  redump restore [-i|--issue <number>]
+  redump -h|--help
   redump --version
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.`
+  -h --help                  Show this screen.
+  -c --concurrency           Concurrency Request Danger!
+  -i --issue                 Specify Issues
+  --version                  Show version.`
 
 	cfg, err := config.GetConfig()
 	if err != nil {
 		panic(err)
 	}
 	arguments, _ := docopt.ParseDoc(usage)
-	flag, err := arguments.Bool("migrate")
-	if flag {
-		err = cmd.Migrate(cfg.ServerConfig.ProjectId)
-		if err != nil {
-			panic(err)
+	err = arguments.Bind(&cmd.DocOptConf)
+	if err != nil {
+		panic(err)
+	}
+	if cmd.DocOptConf.Migrate {
+		if cmd.DocOptConf.Issue && cmd.DocOptConf.Number != 0 {
+			//
+		} else {
+			err = cmd.Migrate(cfg.ServerConfig.ProjectId)
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
-	flag, err = arguments.Bool("list")
-	if flag {
+	if cmd.DocOptConf.List {
 		err = cmd.ListAll(cfg.ServerConfig.ProjectId)
 		if err != nil {
 			panic(err)
 		}
 	}
-	flag, err = arguments.Bool("dump")
-	concurrency, err := arguments.Bool("--concurrency")
-	if flag {
-		cmd.Dump(cfg.ServerConfig.ProjectId, concurrency)
+	if cmd.DocOptConf.Dump {
+		if cmd.DocOptConf.Issue && cmd.DocOptConf.Number != 0 {
+			//
+		} else {
+			cmd.Dump(cfg.ServerConfig.ProjectId, cmd.DocOptConf.Concurrency)
+		}
 	}
-	flag, err = arguments.Bool("restore")
-	if flag {
-		err = cmd.RestoreDataFromLocal(cfg.ServerConfig.ProjectId)
-		if err != nil {
-			panic(err)
+	if cmd.DocOptConf.Restore {
+		if cmd.DocOptConf.Issue && cmd.DocOptConf.Number != 0 {
+			//
+		} else {
+			err = cmd.RestoreDataFromLocal(cfg.ServerConfig.ProjectId)
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 
