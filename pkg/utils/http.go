@@ -73,3 +73,19 @@ func Put(url, contentType string, data []byte) error {
 	}
 	return nil
 }
+
+func Delete(url string) error {
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return err
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode >= http.StatusBadRequest {
+		fmt.Println(resp.StatusCode)
+		return &HttpClientError{StatusCode: resp.StatusCode}
+	}
+	return nil
+}

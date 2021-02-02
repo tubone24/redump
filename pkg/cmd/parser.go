@@ -5,6 +5,8 @@ var DocOptConf struct {
 	List        bool `docopt:"list"`
 	Dump        bool `docopt:"dump"`
 	Restore     bool `docopt:"restore"`
+	Clear       bool `docopt:"clear"`
+	Old         bool `docopt:"-o,--old"`
 	Help        bool `docopt:"-h,--help"`
 	Version     bool `docopt:"-v,--version"`
 	Concurrency bool `docopt:"-c,--concurrency"`

@@ -15,6 +15,7 @@ Usage:
   redump list
   redump dump [-c|--concurrency] [-i|--issue <number>]
   redump restore [-i|--issue <number>]
+  redump clear [-o|--old]
   redump -h|--help
   redump --version
 
@@ -22,6 +23,7 @@ Options:
   -h --help                  Show this screen.
   -c --concurrency           Concurrency Request Danger!
   -i --issue                 Specify Issues
+  -o --old                   Old Server
   --version                  Show version.`
 
 	cfg, err := config.GetConfig()
@@ -67,6 +69,12 @@ Options:
 			if err != nil {
 				panic(err)
 			}
+		}
+	}
+	if cmd.DocOptConf.Clear {
+		err = cmd.DeleteServerAllIssues(cmd.DocOptConf.Old)
+		if err != nil {
+			panic(err)
 		}
 	}
 

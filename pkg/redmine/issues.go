@@ -362,3 +362,11 @@ func UpdateWatchers(url, key string, id int, issue Issue) error {
 	}
 	return nil
 }
+
+func DeleteIssue(url, key string, id int) error {
+	err := utils.Delete(url+"/issues/"+strconv.Itoa(id)+".json?key="+key)
+	if err != nil {
+		return err
+	}
+	return nil
+}
