@@ -49,7 +49,7 @@ Options:
 	}
 	flag, err = arguments.Bool("restore")
 	if flag {
-		err = cmd.RestoreDataFromLocal()
+		err = cmd.RestoreDataFromLocal(cfg.ServerConfig.ProjectId)
 		if err != nil {
 			panic(err)
 		}

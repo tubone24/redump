@@ -1,20 +1,20 @@
 package cmd
 
 import (
-	"path/filepath"
+	"github.com/tubone24/redump/pkg/config"
 	"github.com/tubone24/redump/pkg/redmine"
 	"github.com/tubone24/redump/pkg/utils"
-	"github.com/tubone24/redump/pkg/config"
+	"path/filepath"
 	"strconv"
 	"time"
 )
 
-func RestoreDataFromLocal() error {
+func RestoreDataFromLocal(projectId int) error {
 	conf, err := config.GetConfig()
 	if err != nil {
 		return err
 	}
-	jsonFiles, _ := filepath.Glob("data/*.json")
+	jsonFiles, _ := filepath.Glob("data/issues/*.json")
 	for _, file := range jsonFiles {
 		var uploadFiles []redmine.FileParam
 		issueJsonBytes, err := utils.ReadFile(file)
@@ -25,13 +25,16 @@ func RestoreDataFromLocal() error {
 		if err != nil {
 			return err
 		}
+		if issue.Project.Id != projectId {
+			continue
+		}
 		convertedIssue, err := redmine.ConvertNewEnv(*issue)
 		if err != nil {
 			return err
 		}
 		if convertedIssue.Attachments != nil {
 			for index, attachment := range convertedIssue.Attachments {
-				filename := "data/" + strconv.Itoa(convertedIssue.Id) + "_" + strconv.Itoa(index) + "_" + attachment.FileName
+				filename := "data/issues/attachments/" + strconv.Itoa(convertedIssue.Id) + "_" + strconv.Itoa(index) + "_" + attachment.FileName
 				contentBytes, err := utils.ReadFile(filename)
 				if err != nil {
 					return err

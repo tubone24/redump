@@ -11,11 +11,11 @@ import (
 )
 
 func Migrate(projectId int) error {
-	config, err := config.GetConfig()
+	cfg, err := config.GetConfig()
 	if err != nil {
 		return err
 	}
-	issues, err := redmine.GetIssues(config.ServerConfig.Url, config.ServerConfig.Key, projectId)
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId)
 	txtCh := make(chan string, 10)
 	defer close(txtCh)
 	if err != nil {
@@ -23,7 +23,7 @@ func Migrate(projectId int) error {
 	}
 	for _, v := range issues {
 		go runMigrate(txtCh, v)
-		time.Sleep(time.Millisecond * time.Duration(config.ServerConfig.Sleep))
+		time.Sleep(time.Millisecond * time.Duration(cfg.ServerConfig.Sleep))
 		fmt.Println(<-txtCh)
 	}
 	return nil
@@ -40,14 +40,14 @@ func runMigrate(txtCh chan<- string, issue *redmine.Issue) {
 		panic(err)
 	}
 	issueJson, _ := json.Marshal(detailIssue)
-	err = utils.WriteFile("data/"+strconv.Itoa(issue.Id)+".json", issueJson)
+	err = utils.WriteFile("data/issues/"+strconv.Itoa(issue.Id)+".json", issueJson)
 	if detailIssue.Attachments != nil {
 		downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, detailIssue.Attachments)
 		if err != nil {
 			panic(err)
 		}
 		for index, file := range downloadBody {
-			err = utils.WriteFile("data/"+strconv.Itoa(issue.Id)+"_"+strconv.Itoa(index)+"_"+detailIssue.Attachments[index].FileName, file)
+			err = utils.WriteFile("data/issues/attachments/"+strconv.Itoa(issue.Id)+"_"+strconv.Itoa(index)+"_"+detailIssue.Attachments[index].FileName, file)
 			if err != nil {
 				panic(err)
 			}
