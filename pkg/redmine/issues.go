@@ -372,7 +372,7 @@ func UpdateWatchers(url, key string, id, timeout int, issue Issue) error {
 
 func DeleteIssue(url, key string, id, timeout int) error {
 	client := utils.NewHttpClient(timeout)
-	err := client.Delete(url+"/issues/"+strconv.Itoa(id)+".json?key="+key)
+	err := client.Delete(url + "/issues/" + strconv.Itoa(id) + ".json?key=" + key)
 	if err != nil {
 		return err
 	}

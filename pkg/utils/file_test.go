@@ -7,7 +7,7 @@ import (
 
 func TestGetContentType(t *testing.T) {
 	patterns := []struct {
-		key string
+		key      string
 		expected string
 	}{
 		{"test.txt", "text/plain"},

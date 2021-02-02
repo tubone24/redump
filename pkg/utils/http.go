@@ -11,13 +11,13 @@ import (
 )
 
 type Api struct {
-	timeout int
+	timeout    int
 	httpclient *http.Client
 }
 
 func NewHttpClient(timeout int, opts ...Option) *Api {
 	api := &Api{
-		timeout: timeout,
+		timeout:    timeout,
 		httpclient: http.DefaultClient,
 	}
 

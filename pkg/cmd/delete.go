@@ -34,7 +34,7 @@ func DeleteServerAllIssuesConcurrency(old bool) error {
 			return err
 		}
 		for _, v := range issues {
-			go func(issue *redmine.Issue){
+			go func(issue *redmine.Issue) {
 				wg.Add(1)
 				err := redmine.DeleteIssue(serverUrl, serverKey, issue.Id, cfg.ServerConfig.Timeout)
 				fmt.Println(issue.Id)
