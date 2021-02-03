@@ -11,7 +11,7 @@ import (
 
 //socket: too many open files
 func DeleteServerAllIssuesConcurrency(old bool) error {
-	cfg, err := config.GetConfig()
+	cfg, err := config.GetConfig("")
 	if err != nil {
 		return err
 	}
@@ -29,14 +29,14 @@ func DeleteServerAllIssuesConcurrency(old bool) error {
 	scanner.Scan()
 	if scanner.Text() == "y" {
 		var wg sync.WaitGroup
-		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout)
+		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout, nil)
 		if err != nil {
 			return err
 		}
 		for _, v := range issues {
 			go func(issue *redmine.Issue) {
 				wg.Add(1)
-				err := redmine.DeleteIssue(serverUrl, serverKey, issue.Id, cfg.ServerConfig.Timeout)
+				err := redmine.DeleteIssue(serverUrl, serverKey, issue.Id, cfg.ServerConfig.Timeout, nil)
 				fmt.Println(issue.Id)
 				if err != nil {
 					panic(err)
@@ -51,7 +51,7 @@ func DeleteServerAllIssuesConcurrency(old bool) error {
 }
 
 func DeleteServerAllIssues(old bool) error {
-	cfg, err := config.GetConfig()
+	cfg, err := config.GetConfig("")
 	if err != nil {
 		return err
 	}
@@ -68,12 +68,12 @@ func DeleteServerAllIssues(old bool) error {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	if scanner.Text() == "y" {
-		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout)
+		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout, nil)
 		if err != nil {
 			return err
 		}
 		for _, v := range issues {
-			err := redmine.DeleteIssue(serverUrl, serverKey, v.Id, cfg.ServerConfig.Timeout)
+			err := redmine.DeleteIssue(serverUrl, serverKey, v.Id, cfg.ServerConfig.Timeout, nil)
 			fmt.Println(v.Id)
 			if err != nil {
 				return err

@@ -26,7 +26,7 @@ Options:
   -o --old                   Old Server
   --version                  Show version.`
 
-	cfg, err := config.GetConfig()
+	cfg, err := config.GetConfig("")
 	if err != nil {
 		panic(err)
 	}

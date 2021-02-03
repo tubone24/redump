@@ -9,11 +9,11 @@ import (
 )
 
 func ListAll(projectId int) error {
-	cfg, err := config.GetConfig()
+	cfg, err := config.GetConfig("")
 	if err != nil {
 		return err
 	}
-	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout)
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, nil)
 	_, err = ListProjectId(issues)
 	if err != nil {
 		return err

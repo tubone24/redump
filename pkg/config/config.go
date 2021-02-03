@@ -27,11 +27,18 @@ type Config struct {
 	Mappings        []Mapping    `toml:"mappings"`
 }
 
-func GetConfig() (*Config, error) {
+func GetConfig(configPath string) (*Config, error) {
 	var config Config
-	_, err := toml.DecodeFile("config.toml", &config)
-	if err != nil {
-		return nil, err
+	if configPath == "" {
+		_, err := toml.DecodeFile("config.toml", &config)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		_, err := toml.DecodeFile(configPath, &config)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &config, nil
 }

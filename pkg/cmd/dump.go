@@ -12,11 +12,11 @@ import (
 )
 
 func Dump(projectId int, concurrency bool) {
-	cfg, err := config.GetConfig()
+	cfg, err := config.GetConfig("")
 	if err != nil {
 		panic(err)
 	}
-	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout)
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -27,14 +27,14 @@ func Dump(projectId int, concurrency bool) {
 		for _, v := range issues {
 			wg.Add(1)
 			go func(issue redmine.Issue, conf config.Config) {
-				detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issue.Id, cfg.ServerConfig.Timeout)
+				detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issue.Id, cfg.ServerConfig.Timeout, nil)
 				if err != nil {
 					panic(err)
 				}
 				issueJson, _ := json.Marshal(detailIssue)
 				err = utils.WriteFile("data/issues/"+strconv.Itoa(issue.Id)+".json", issueJson)
 				if detailIssue.Attachments != nil {
-					downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments)
+					downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments, nil)
 					if err != nil {
 						panic(err)
 					}
@@ -67,18 +67,18 @@ func DumpOneIssue(issueId int) {
 }
 
 func runDump(txtCh chan<- string, issueId int) {
-	cfg, err := config.GetConfig()
+	cfg, err := config.GetConfig("")
 	if err != nil {
 		panic(err)
 	}
-	detailIssue, err := redmine.GetIssue(cfg.ServerConfig.Url, cfg.ServerConfig.Key, issueId, cfg.ServerConfig.Timeout)
+	detailIssue, err := redmine.GetIssue(cfg.ServerConfig.Url, cfg.ServerConfig.Key, issueId, cfg.ServerConfig.Timeout, nil)
 	if err != nil {
 		panic(err)
 	}
 	issueJson, _ := json.Marshal(detailIssue)
 	err = utils.WriteFile("data/issues/"+strconv.Itoa(issueId)+".json", issueJson)
 	if detailIssue.Attachments != nil {
-		downloadBody, err := redmine.DownloadAttachmentFiles(cfg.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments)
+		downloadBody, err := redmine.DownloadAttachmentFiles(cfg.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments, nil)
 		if err != nil {
 			panic(err)
 		}

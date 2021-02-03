@@ -7,4 +7,7 @@ set-mock-redmine:
 	cd docker/mock_redmine && docker-compose up -d
 
 test:
-	go test ./...
+	go test -v ./...
+
+build:
+	go build cmd/redump/main.go

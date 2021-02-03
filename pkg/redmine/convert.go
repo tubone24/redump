@@ -5,7 +5,7 @@ import (
 )
 
 func ConvertNewEnv(issue Issue) (*Issue, error) {
-	conf, err := config.GetConfig()
+	conf, err := config.GetConfig("")
 	if err != nil {
 		return nil, err
 	}
