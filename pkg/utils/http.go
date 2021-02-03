@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -69,7 +70,7 @@ type HttpClientError struct {
 }
 
 func (e *HttpClientError) Error() string {
-	return "HTTP Client error!"
+	return "HTTP Client error!: " + strconv.Itoa(e.StatusCode)
 }
 
 func (api *Api) Get(url string) ([]byte, error) {
