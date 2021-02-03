@@ -11,18 +11,19 @@ You can use the API to retrieve tickets in Redmine, save them in JSON format, an
 ![TestAndBuild](https://github.com/tubone24/redump/workflows/TestAndBuild/badge.svg)
 
 ```
-REDUMP
-A tool to migrate data in your Redmine without admin accounts.
-
-
 Usage:
-  redump migrate
+  redump migrate [-i|--issue <number>]
   redump list
-  redump dump [-c|--concurrency]
-  redump -h | --help
+  redump dump [-c|--concurrency] [-i|--issue <number>]
+  redump restore [-i|--issue <number>]
+  redump clear [-o|--old]
+  redump -h|--help
   redump --version
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
+  -h --help                  Show this screen.
+  -c --concurrency           Concurrency Request Danger!
+  -i --issue                 Specify Issues
+  -o --old                   Old Server
+  --version                  Show version.
 ```
