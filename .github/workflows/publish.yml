@@ -46,7 +46,7 @@ jobs:
         with:
           upload_url: ${{ steps.update_release.outputs.upload_url }}
           asset_path: ./main${{ matrix.asset_name_suffix }}
-          asset_name: redump${{ matrix.asset_name_suffix }}
+          asset_name: redump_{{ runner.os }}_${{ steps.get_version.outputs.VERSION }}${{ matrix.asset_name_suffix }}
           asset_content_type: ${{ matrix.asset_content_type }}
   update-release-note:
     runs-on: ubuntu-latest
