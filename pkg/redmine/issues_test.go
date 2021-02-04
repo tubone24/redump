@@ -80,6 +80,48 @@ var issueJson = redmine.Issue{
 		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
 }
 
+var issueJsonNoAttachments = redmine.Issue{
+	Id:      1,
+	Project: redmine.Project{Id: 1, Name: "testProject"},
+	Tracker: redmine.Tracker{Id: 1, Name: "doing"},
+	Status:  redmine.Status{Id: 1, Name: "test"}, Priority: redmine.Priority{Id: 1, Name: "High"},
+	Author:      redmine.Author{Id: 1, Name: "testUser"},
+	AssignedTo:  redmine.AssignedTo{Id: 1, Name: "testUser"},
+	Subject:     "test1",
+	Description: "testtesttesttest",
+	StartDate:   "2020-01-01T00:00:00Z",
+	CustomFields: redmine.CustomFields{&redmine.CustomField{
+		Id:       1,
+		Name:     "customField1",
+		Multiple: true,
+		Value:    []string{"aaaa", "bbb", "ccc"}}},
+	CreatedOn: "2020-01-01T00:00:00Z",
+	UpdatedOn: "2020-01-01T00:00:00Z",
+	Attachments: nil,
+	Journals: redmine.Journals{&redmine.Journal{
+		Id:        1,
+		User:      redmine.User{Id: 1, Name: "testUser"},
+		Notes:     "testtest",
+		CreatedOn: "2020-01-01T00:00:00Z"},
+		&redmine.Journal{
+			Id:        2,
+			User:      redmine.User{Id: 1, Name: "testUser"},
+			Notes:     "testtest2",
+			CreatedOn: "2020-01-01T00:00:00Z"},
+		&redmine.Journal{
+			Id:        3,
+			User:      redmine.User{Id: 1, Name: "testUser"},
+			Notes:     "testtest",
+			CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+				Property: "change",
+				Name:     "upload",
+				OldValue: "aaa",
+				NewValue: "bbb"}},},
+	},
+	Watchers: redmine.Watchers{&redmine.Watcher{
+		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+}
+
 func clientIssues(t *testing.T, respTime time.Duration, resp *http.Response) *http.Client {
 	var issuesResult struct {
 		Issues     redmine.Issues `json:"issues"`
@@ -236,5 +278,49 @@ func TestCreateIssueParam(t *testing.T) {
 	}
 	if issueParam.Subject != issueJson.Subject {
 		t.Errorf("expected: %s, actual %s", issueJson.Subject, issueParam.Subject)
+	}
+	if issueParam.Description != issueJson.Description {
+		t.Errorf("expected: %s, actual %s", issueJson.Subject, issueParam.Subject)
+	}
+	if issueParam.AssignedToId != issueJson.AssignedTo.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.AssignedTo.Id, issueParam.AssignedToId)
+	}
+	if issueParam.CustomFields[0].Id != issueJson.CustomFields[0].Id {
+		t.Errorf("expected: %d, actual %d", issueJson.CustomFields[0].Id, issueParam.CustomFields[0].Id)
+	}
+	if issueParam.Uploads[0].FileName != issueJson.Attachments[0].FileName {
+		t.Errorf("expected: %s, actual %s", issueJson.Attachments[0].FileName, issueParam.Uploads[0].FileName)
+	}
+}
+
+func TestCreateIssueParamNoFile(t *testing.T) {
+	var uploadFiles []redmine.FileParam
+	issueParam := redmine.CreateIssueParam(issueJsonNoAttachments, uploadFiles)
+	if issueParam.ProjectId != issueJson.Project.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Project.Id, issueParam.ProjectId)
+	}
+	if issueParam.TrackerId != issueJson.Tracker.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Tracker.Id, issueParam.TrackerId)
+	}
+	if issueParam.StatusId != issueJson.Status.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Status.Id, issueParam.StatusId)
+	}
+	if issueParam.PriorityId != issueJson.Priority.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Priority.Id, issueParam.PriorityId)
+	}
+	if issueParam.Subject != issueJson.Subject {
+		t.Errorf("expected: %s, actual %s", issueJson.Subject, issueParam.Subject)
+	}
+	if issueParam.Description != issueJson.Description {
+		t.Errorf("expected: %s, actual %s", issueJson.Subject, issueParam.Subject)
+	}
+	if issueParam.AssignedToId != issueJson.AssignedTo.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.AssignedTo.Id, issueParam.AssignedToId)
+	}
+	if issueParam.CustomFields[0].Id != issueJson.CustomFields[0].Id {
+		t.Errorf("expected: %d, actual %d", issueJson.CustomFields[0].Id, issueParam.CustomFields[0].Id)
+	}
+	if issueParam.Uploads != nil {
+		t.Errorf("expected: nil, actual %s", issueParam.Uploads)
 	}
 }
