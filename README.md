@@ -34,6 +34,8 @@ This is because I try to make this tool.
 
 ### Quick Install
 
+[Download binary!](https://github.com/tubone24/redump/releases)
+
 ### Manual Install
 
 #### System Requirements

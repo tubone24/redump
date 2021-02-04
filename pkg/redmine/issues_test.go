@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/redmine"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 )
@@ -20,6 +23,13 @@ func NewTestClient(fn RoundTripFunc) *http.Client {
 	return &http.Client{
 		Transport: RoundTripFunc(fn),
 	}
+}
+
+var uploadFile = redmine.FileParam{
+	FileName: "test.png",
+	ContentType: "image/png",
+	Contents: []byte{},
+	Token: "tokentoken",
 }
 
 var issueJson = redmine.Issue{
@@ -137,6 +147,7 @@ func clientDownloadAttachments(t *testing.T, respTime time.Duration, resp *http.
 		if resp != nil {
 			return resp
 		}
+		t.Helper()
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Body:       ioutil.NopCloser(bytes.NewBuffer(b)),
@@ -172,5 +183,58 @@ func TestDownloadAttachmentFiles(t *testing.T) {
 	}
 	if string(resp[0]) != "test" {
 		t.Errorf("expected: %s, actual %s", string(resp[0]), "test")
+	}
+}
+
+func TestCreateIssueFromByteSlice(t *testing.T) {
+	const bufferSize = 256
+	var content []byte
+	dir, _ := os.Getwd()
+	filename := filepath.FromSlash(dir + "/../../tests/test_assets/2463.json")
+	fp, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+	buffer := make([]byte, bufferSize)
+	for {
+		n, err := fp.Read(buffer)
+		if 0 < n {
+			content = append(content, buffer...)
+		}
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Errorf("Error occured: %s", err)
+		}
+	}
+	resp, err := redmine.CreateIssueFromByteSlice(content)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	if resp.Id != 2463 {
+		t.Errorf("expected: %d, actual %d", 2463, resp.Id)
+	}
+}
+
+func TestCreateIssueParam(t *testing.T) {
+	var uploadFiles []redmine.FileParam
+	uploadFiles = append(uploadFiles, uploadFile)
+	issueParam := redmine.CreateIssueParam(issueJson, uploadFiles)
+	if issueParam.ProjectId != issueJson.Project.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Project.Id, issueParam.ProjectId)
+	}
+	if issueParam.TrackerId != issueJson.Tracker.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Tracker.Id, issueParam.TrackerId)
+	}
+	if issueParam.StatusId != issueJson.Status.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Status.Id, issueParam.StatusId)
+	}
+	if issueParam.PriorityId != issueJson.Priority.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Priority.Id, issueParam.PriorityId)
+	}
+	if issueParam.Subject != issueJson.Subject {
+		t.Errorf("expected: %s, actual %s", issueJson.Subject, issueParam.Subject)
 	}
 }

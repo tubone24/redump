@@ -49,7 +49,7 @@ func client(t *testing.T, respTime time.Duration, resp *http.Response) *http.Cli
 	})
 }
 
-func TestApi_Get(t *testing.T) {
+func TestApiGet(t *testing.T) {
 	cases := map[string]struct {
 		client               *http.Client
 		expectHasError       bool
@@ -126,6 +126,244 @@ func TestApi_Get(t *testing.T) {
 
 			if string(resp) != c.expectedText {
 				t.Errorf("unexpected response's text. expected '%s', actual '%s'", c.expectedText, string(resp))
+			}
+		})
+	}
+}
+
+func TestApiPost(t *testing.T) {
+	cases := map[string]struct {
+		client               *http.Client
+		expectHasError       bool
+		timeout              int
+		expectedErrorMessage string
+		expectedText         string
+	}{
+		"normal": {
+			client:         client(t, 0, nil),
+			expectHasError: false,
+			timeout: 10000,
+			expectedText:   "{\"Status\":\"OK\"}",
+		},
+		"204NoContent": {
+			client:         client(t, 0, &http.Response{
+				StatusCode: http.StatusNoContent,
+				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("{\"Status\":\"OK\"}"))),
+				Header:     make(http.Header),
+			}),
+			expectHasError: false,
+			timeout: 10000,
+			expectedText:   "{\"Status\":\"OK\"}",
+		},
+		"timeout": {
+			client:         client(t, 0, nil),
+			expectHasError: true,
+			timeout: 0,
+			expectedErrorMessage: "HTTP request cancelled",
+		},
+		"500Error": {
+			client:         client(t, 0, &http.Response{
+				StatusCode: http.StatusInternalServerError,
+				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
+				Header:     make(http.Header),
+			}),
+			expectHasError: true,
+			timeout: 10000,
+			expectedErrorMessage: "HTTP Client error!: 500",
+		},
+		"400Error": {
+			client:         client(t, 0, &http.Response{
+				StatusCode: http.StatusBadRequest,
+				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
+				Header:     make(http.Header),
+			}),
+			expectHasError: true,
+			timeout: 10000,
+			expectedErrorMessage: "HTTP Client error!: 400",
+		},
+	}
+
+	for name, c := range cases {
+		t.Run(name, func(t *testing.T) {
+			e := utils.NewHttpClient(c.timeout, utils.OptionHTTPClient(c.client))
+
+			resp, err := e.Post("https://example.com", "application/json", []byte("test"))
+
+			if c.expectHasError {
+				if err == nil {
+					t.Errorf("expected error but no errors ouccured")
+					return
+				}
+
+				if err.Error() != c.expectedErrorMessage {
+					t.Errorf("unexpected error message. expected '%s', actual '%s'", c.expectedErrorMessage, err.Error())
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf(err.Error())
+				return
+			}
+
+			if string(resp) != c.expectedText {
+				t.Errorf("unexpected response's text. expected '%s', actual '%s'", c.expectedText, string(resp))
+			}
+		})
+	}
+}
+
+func TestApiPut(t *testing.T) {
+	cases := map[string]struct {
+		client               *http.Client
+		expectHasError       bool
+		timeout              int
+		expectedErrorMessage string
+		expectedText         string
+	}{
+		"normal": {
+			client:         client(t, 0, nil),
+			expectHasError: false,
+			timeout: 10000,
+			expectedText:   "{\"Status\":\"OK\"}",
+		},
+		"204NoContent": {
+			client:         client(t, 0, &http.Response{
+				StatusCode: http.StatusNoContent,
+				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("{\"Status\":\"OK\"}"))),
+				Header:     make(http.Header),
+			}),
+			expectHasError: false,
+			timeout: 10000,
+			expectedText:   "{\"Status\":\"OK\"}",
+		},
+		"timeout": {
+			client:         client(t, 0, nil),
+			expectHasError: true,
+			timeout: 0,
+			expectedErrorMessage: "HTTP request cancelled",
+		},
+		"500Error": {
+			client:         client(t, 0, &http.Response{
+				StatusCode: http.StatusInternalServerError,
+				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
+				Header:     make(http.Header),
+			}),
+			expectHasError: true,
+			timeout: 10000,
+			expectedErrorMessage: "HTTP Client error!: 500",
+		},
+		"400Error": {
+			client:         client(t, 0, &http.Response{
+				StatusCode: http.StatusBadRequest,
+				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
+				Header:     make(http.Header),
+			}),
+			expectHasError: true,
+			timeout: 10000,
+			expectedErrorMessage: "HTTP Client error!: 400",
+		},
+	}
+
+	for name, c := range cases {
+		t.Run(name, func(t *testing.T) {
+			e := utils.NewHttpClient(c.timeout, utils.OptionHTTPClient(c.client))
+
+			err := e.Put("https://example.com", "application/json", []byte("test"))
+
+			if c.expectHasError {
+				if err == nil {
+					t.Errorf("expected error but no errors ouccured")
+					return
+				}
+
+				if err.Error() != c.expectedErrorMessage {
+					t.Errorf("unexpected error message. expected '%s', actual '%s'", c.expectedErrorMessage, err.Error())
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf(err.Error())
+				return
+			}
+		})
+	}
+}
+
+func TestApiDelete(t *testing.T) {
+	cases := map[string]struct {
+		client               *http.Client
+		expectHasError       bool
+		timeout              int
+		expectedErrorMessage string
+		expectedText         string
+	}{
+		"normal": {
+			client:         client(t, 0, nil),
+			expectHasError: false,
+			timeout: 10000,
+			expectedText:   "{\"Status\":\"OK\"}",
+		},
+		"204NoContent": {
+			client:         client(t, 0, &http.Response{
+				StatusCode: http.StatusNoContent,
+				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("{\"Status\":\"OK\"}"))),
+				Header:     make(http.Header),
+			}),
+			expectHasError: false,
+			timeout: 10000,
+			expectedText:   "{\"Status\":\"OK\"}",
+		},
+		"timeout": {
+			client:         client(t, 0, nil),
+			expectHasError: true,
+			timeout: 0,
+			expectedErrorMessage: "HTTP request cancelled",
+		},
+		"500Error": {
+			client:         client(t, 0, &http.Response{
+				StatusCode: http.StatusInternalServerError,
+				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
+				Header:     make(http.Header),
+			}),
+			expectHasError: true,
+			timeout: 10000,
+			expectedErrorMessage: "HTTP Client error!: 500",
+		},
+		"400Error": {
+			client:         client(t, 0, &http.Response{
+				StatusCode: http.StatusBadRequest,
+				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
+				Header:     make(http.Header),
+			}),
+			expectHasError: true,
+			timeout: 10000,
+			expectedErrorMessage: "HTTP Client error!: 400",
+		},
+	}
+
+	for name, c := range cases {
+		t.Run(name, func(t *testing.T) {
+			e := utils.NewHttpClient(c.timeout, utils.OptionHTTPClient(c.client))
+
+			err := e.Delete("https://example.com")
+
+			if c.expectHasError {
+				if err == nil {
+					t.Errorf("expected error but no errors ouccured")
+					return
+				}
+
+				if err.Error() != c.expectedErrorMessage {
+					t.Errorf("unexpected error message. expected '%s', actual '%s'", c.expectedErrorMessage, err.Error())
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf(err.Error())
+				return
 			}
 		})
 	}
