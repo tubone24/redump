@@ -2,31 +2,37 @@ package redmine
 
 import (
 	"github.com/tubone24/redump/pkg/config"
+	"github.com/goccy/go-json"
 )
 
 func ConvertNewEnv(issue Issue, conf config.Config) (*Issue, error) {
+	var newIssue Issue
+	err := DeepCopy(&newIssue, &issue)
+	if err != nil {
+		return nil, err
+	}
 	for _, mapping := range conf.Mappings {
 		switch mapping.Name {
 		case "project_id":
-			issue.Project.Id = convertProjectId(&issue, mapping.Values, mapping.Default)
+			newIssue.Project.Id = convertProjectId(&issue, mapping.Values, mapping.Default)
 		case "tracker_id":
-			issue.Tracker.Id = convertTrackerId(&issue, mapping.Values, mapping.Default)
+			newIssue.Tracker.Id = convertTrackerId(&issue, mapping.Values, mapping.Default)
 		case "status_id":
-			issue.Status.Id = convertStatusId(&issue, mapping.Values, mapping.Default)
+			newIssue.Status.Id = convertStatusId(&issue, mapping.Values, mapping.Default)
 		case "priority_id":
-			issue.Priority.Id = convertPriorityId(&issue, mapping.Values, mapping.Default)
+			newIssue.Priority.Id = convertPriorityId(&issue, mapping.Values, mapping.Default)
 		case "user_id":
-			issue.AssignedTo.Id = convertUserIdToAssignedTo(&issue, mapping.Values, mapping.Default)
+			newIssue.AssignedTo.Id = convertUserIdToAssignedTo(&issue, mapping.Values, mapping.Default)
 			for i, v := range convertWatcherId(&issue, mapping.Values, mapping.Default) {
-				issue.Watchers[i].Id = v
+				newIssue.Watchers[i].Id = v
 			}
 		case "custom_field_id":
 			for i, v := range convertCustomFieldsId(&issue, mapping.Values, mapping.Default) {
-				issue.CustomFields[i].Id = v
+				newIssue.CustomFields[i].Id = v
 			}
 		}
 	}
-	return &issue, nil
+	return &newIssue, nil
 }
 
 func convertProjectId(issue *Issue, conf []config.MappingValue, defaultValue int) int {
@@ -110,4 +116,16 @@ func convertWatcherId(issue *Issue, conf []config.MappingValue, defaultValue int
 		}
 	}
 	return result
+}
+
+func DeepCopy(dst interface{}, src interface{}) error {
+	bytes, err := json.Marshal(src)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, dst)
+	if err != nil {
+		return err
+	}
+	return nil
 }
