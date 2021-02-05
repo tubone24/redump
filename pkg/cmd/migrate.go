@@ -68,7 +68,7 @@ func runMigrateIssue(txtCh chan<- string, issueId int) {
 			uploadFiles = append(uploadFiles, uploadFile[0])
 		}
 	}
-	newIssue, err := redmine.ConvertNewEnv(detailIssue)
+	newIssue, err := redmine.ConvertNewEnv(detailIssue, *cfg)
 	if err != nil {
 		panic(err)
 	}

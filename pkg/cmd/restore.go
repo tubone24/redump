@@ -33,7 +33,7 @@ func RestoreDataFromLocal(projectId, issueId int) error {
 		if issue.Project.Id != projectId {
 			continue
 		}
-		convertedIssue, err := redmine.ConvertNewEnv(*issue)
+		convertedIssue, err := redmine.ConvertNewEnv(*issue, *cfg)
 		if err != nil {
 			return err
 		}

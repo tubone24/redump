@@ -4,11 +4,7 @@ import (
 	"github.com/tubone24/redump/pkg/config"
 )
 
-func ConvertNewEnv(issue Issue) (*Issue, error) {
-	conf, err := config.GetConfig("")
-	if err != nil {
-		return nil, err
-	}
+func ConvertNewEnv(issue Issue, conf config.Config) (*Issue, error) {
 	for _, mapping := range conf.Mappings {
 		switch mapping.Name {
 		case "project_id":
