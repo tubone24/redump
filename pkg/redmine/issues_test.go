@@ -122,6 +122,27 @@ var issueJsonNoAttachments = redmine.Issue{
 		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
 }
 
+var issueJsonParam = redmine.IssueParam{
+	ProjectId: 1,
+	TrackerId: 1,
+	StatusId: 1,
+	PriorityId: 1,
+	Subject: "test1",
+	Description: "testtesttesttest",
+	AssignedToId: 1,
+	CustomFields: redmine.CustomFields{
+		&redmine.CustomField{Id: 1},
+	},
+	Notes: "testNote",
+	Uploads: []redmine.Uploads{
+		redmine.Uploads{
+			Token: "aaa",
+			FileName: "aaa.png",
+			ContentType: "image/png",
+		},
+	},
+}
+
 func clientIssues(t *testing.T, respTime time.Duration, resp *http.Response) *http.Client {
 	var issuesResult struct {
 		Issues     redmine.Issues `json:"issues"`
@@ -322,5 +343,22 @@ func TestCreateIssueParamNoFile(t *testing.T) {
 	}
 	if issueParam.Uploads != nil {
 		t.Errorf("expected: nil, actual %s", issueParam.Uploads)
+	}
+}
+
+func TestCreateIssue(t *testing.T) {
+	issueId, err := redmine.CreateIssue("http://example.com", "xxxx", 10000, issueJsonParam, clientIssue(t, 1000, nil))
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	if issueId != issueJson.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Id, issueId)
+	}
+}
+
+func TestCreateJournalStrings(t *testing.T) {
+	notes := redmine.CreateJournalStrings(issueJson)
+	if notes[0] != issueJson.Journals[0].Notes {
+		t.Errorf("expected: %s, actual %s", issueJson.Journals[0].Notes, notes[0])
 	}
 }

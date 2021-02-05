@@ -10,8 +10,6 @@ import (
 	"strconv"
 )
 
-var dat map[string]interface{}
-
 type Project struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
