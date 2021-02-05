@@ -371,3 +371,28 @@ func TestUpdateIssueJournals(t *testing.T) {
 	}
 }
 
+func TestDeleteIssue(t *testing.T) {
+	err := redmine.DeleteIssue("http://examole.com", "xxxxx", 1, 10000, clientIssues(t, 1000, nil))
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+}
+
+func TestUpdateWatchers(t *testing.T) {
+	err := redmine.UpdateWatchers("http://example.com", "xxxxx", 1, 10000, issueJson, clientIssues(t, 1000, nil))
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+}
+
+func TestUploadAttachmentFiles(t *testing.T) {
+	var uploadFiles []redmine.FileParam
+	uploadFiles = append(uploadFiles, uploadFile)
+	resp, err := redmine.UploadAttachmentFiles("http://example.com", "xxxxx", 10000, uploadFiles, clientIssues(t, 1000, nil))
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	if resp[0].FileName != uploadFile.FileName {
+		t.Errorf("expected: %s, actual %s", uploadFile.FileName, resp[0].FileName)
+	}
+}
