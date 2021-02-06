@@ -31,6 +31,13 @@ If the project can use the Redmine API, I thought I could use the Redmine API to
 
 This is because I try to make this tool.
 
+### Features
+
+- You can save Redmine Isssues in JSON format with attachments.
+- You can migrate issues to other Redmine.
+- You can create a list of users from an Issue without administrative privileges.
+- Access via HTTP Proxy is supported.
+
 ## Install
 
 ### Quick Install

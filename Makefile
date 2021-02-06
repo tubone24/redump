@@ -9,5 +9,8 @@ set-mock-redmine:
 test:
 	go test -v -cover ./...
 
+bench:
+	go test -bench ./... -benchmem -cpuprofile=*.prof
+
 build:
 	go build cmd/redump/main.go

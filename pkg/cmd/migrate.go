@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func Migrate(projectId int) error {
+func Migrate(projectId int, silent bool) error {
 	cfg, err := config.GetConfig("")
 	if err != nil {
 		return err
@@ -38,21 +38,21 @@ func Migrate(projectId int) error {
 		return err
 	}
 	for _, v := range issues {
-		go runMigrateIssue(txtCh, v.Id)
+		go runMigrateIssue(txtCh, v.Id, silent)
 		time.Sleep(time.Millisecond * time.Duration(cfg.ServerConfig.Sleep))
 		fmt.Println(<-txtCh)
 	}
 	return nil
 }
 
-func MigrateOneIssue(issueId int) {
+func MigrateOneIssue(issueId int, silent bool) {
 	txtCh := make(chan string)
 	defer close(txtCh)
-	go runMigrateIssue(txtCh, issueId)
+	go runMigrateIssue(txtCh, issueId, silent)
 	fmt.Println(<-txtCh)
 }
 
-func runMigrateIssue(txtCh chan<- string, issueId int) {
+func runMigrateIssue(txtCh chan<- string, issueId int, silent bool) {
 	var uploadFiles []redmine.FileParam
 	cfg, err := config.GetConfig("")
 	if err != nil {
@@ -102,7 +102,7 @@ func runMigrateIssue(txtCh chan<- string, issueId int) {
 			uploadFiles = append(uploadFiles, uploadFile[0])
 		}
 	}
-	newIssue, err := redmine.ConvertNewEnv(detailIssue, *cfg)
+	newIssue, err := redmine.ConvertNewEnv(detailIssue, *cfg, silent)
 	if err != nil {
 		panic(err)
 	}

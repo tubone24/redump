@@ -5,7 +5,7 @@ import (
 	"github.com/tubone24/redump/pkg/utils"
 )
 
-func ConvertNewEnv(issue Issue, conf config.Config) (*Issue, error) {
+func ConvertNewEnv(issue Issue, conf config.Config, silent bool) (*Issue, error) {
 	var newIssue Issue
 	err := utils.DeepCopy(&newIssue, &issue)
 	if err != nil {
@@ -22,7 +22,7 @@ func ConvertNewEnv(issue Issue, conf config.Config) (*Issue, error) {
 		case "priority_id":
 			newIssue.Priority.Id = convertPriorityId(&issue, mapping.Values, mapping.Default)
 		case "user_id":
-			newIssue.AssignedTo.Id = convertUserIdToAssignedTo(&issue, mapping.Values, mapping.Default)
+			newIssue.AssignedTo.Id = convertUserIdToAssignedTo(&issue, mapping.Values, mapping.Default, silent)
 			for i, v := range convertWatcherId(&issue, mapping.Values, mapping.Default) {
 				newIssue.Watchers[i].Id = v
 			}
@@ -71,7 +71,10 @@ func convertPriorityId(issue *Issue, conf []config.MappingValue, defaultValue in
 	return defaultValue
 }
 
-func convertUserIdToAssignedTo(issue *Issue, conf []config.MappingValue, defaultValue int) int {
+func convertUserIdToAssignedTo(issue *Issue, conf []config.MappingValue, defaultValue int, silent bool) int {
+	if silent {
+		return defaultValue
+	}
 	for _, v := range conf {
 		if issue.AssignedTo.Id == v.Old {
 			return v.New

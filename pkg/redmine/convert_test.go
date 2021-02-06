@@ -63,7 +63,7 @@ func TestConvertNewEnv(t *testing.T) {
 			},
 		},
 	}}
-	actual, err := redmine.ConvertNewEnv(issueJson, cfg)
+	actual, err := redmine.ConvertNewEnv(issueJson, cfg, false)
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -81,6 +81,88 @@ func TestConvertNewEnv(t *testing.T) {
 	}
 	if actual.AssignedTo.Id != cfg.Mappings[4].Values[0].New {
 		t.Errorf("expected: %d, actual %d", cfg.Mappings[4].Values[0].New, actual.AssignedTo.Id)
+	}
+	if actual.CustomFields[0].Id != cfg.Mappings[5].Values[0].New {
+		t.Errorf("expected: %d, actual %d", cfg.Mappings[5].Values[0].New, actual.CustomFields[0].Id)
+	}
+}
+
+func TestConvertNewEnvSilent(t *testing.T) {
+	cfg := config.Config{Mappings: []config.Mapping{
+		{
+			Name: "project_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "tracker_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "status_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "priority_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "user_id",
+			Default: 5,
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "custom_field_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+	}}
+	actual, err := redmine.ConvertNewEnv(issueJson, cfg, true)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	if actual.Project.Id != cfg.Mappings[0].Values[0].New {
+		t.Errorf("expected: %d, actual %d", cfg.Mappings[0].Values[0].New, actual.Project.Id)
+	}
+	if actual.Tracker.Id != cfg.Mappings[1].Values[0].New {
+		t.Errorf("expected: %d, actual %d", cfg.Mappings[1].Values[0].New, actual.Tracker.Id)
+	}
+	if actual.Status.Id != cfg.Mappings[2].Values[0].New {
+		t.Errorf("expected: %d, actual %d", cfg.Mappings[2].Values[0].New, actual.Status.Id)
+	}
+	if actual.Priority.Id != cfg.Mappings[3].Values[0].New {
+		t.Errorf("expected: %d, actual %d", cfg.Mappings[3].Values[0].New, actual.Priority.Id)
+	}
+	if actual.AssignedTo.Id != cfg.Mappings[4].Default {
+		t.Errorf("expected: %d, actual %d", cfg.Mappings[4].Default, actual.AssignedTo.Id)
 	}
 	if actual.CustomFields[0].Id != cfg.Mappings[5].Values[0].New {
 		t.Errorf("expected: %d, actual %d", cfg.Mappings[5].Values[0].New, actual.CustomFields[0].Id)
@@ -150,7 +232,7 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 			},
 		},
 	}}
-	actual, err := redmine.ConvertNewEnv(issueJson, cfg)
+	actual, err := redmine.ConvertNewEnv(issueJson, cfg, false)
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -174,3 +256,63 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 	}
 }
 
+func BenchmarkConvertNewEnv(b *testing.B) {
+	cfg := config.Config{Mappings: []config.Mapping{
+		{
+			Name: "project_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "tracker_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "status_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "priority_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "user_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+		{
+			Name: "custom_field_id",
+			Values: []config.MappingValue{
+				{
+					Old: 1,
+					New: 2,
+				},
+			},
+		},
+	}}
+	b.ResetTimer()
+	_, _ = redmine.ConvertNewEnv(issueJson, cfg, false)
+}

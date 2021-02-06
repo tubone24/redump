@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func RestoreDataFromLocal(projectId, issueId int) error {
+func RestoreDataFromLocal(projectId, issueId int, silent bool) error {
 	cfg, err := config.GetConfig("")
 	if err != nil {
 		return err
@@ -43,7 +43,7 @@ func RestoreDataFromLocal(projectId, issueId int) error {
 		if issue.Project.Id != projectId {
 			continue
 		}
-		convertedIssue, err := redmine.ConvertNewEnv(*issue, *cfg)
+		convertedIssue, err := redmine.ConvertNewEnv(*issue, *cfg, silent)
 		if err != nil {
 			return err
 		}
