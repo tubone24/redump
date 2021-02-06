@@ -7,7 +7,6 @@ import (
 )
 
 func ListProjectId(issues Issues, filename string) ([]Project, error) {
-	var result []Project
 	var unMarshalProject Project
 	s2 := mapset.NewSet()
 	for _, issue := range issues {
@@ -17,12 +16,15 @@ func ListProjectId(issues Issues, filename string) ([]Project, error) {
 		}
 		s2.Add(string(projectIdJson))
 	}
-	for _, v := range s2.ToSlice() {
+	//var result []Project
+	result := make([]Project, len(s2.ToSlice()))
+	for i, v := range s2.ToSlice() {
 		err := json.Unmarshal([]byte(v.(string)), &unMarshalProject)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, unMarshalProject)
+		// result = append(result, unMarshalProject)
+		result[i] = unMarshalProject
 	}
 	projectJson, err := json.Marshal(result)
 	if err != nil {
@@ -37,7 +39,6 @@ func ListProjectId(issues Issues, filename string) ([]Project, error) {
 
 func ListTrackerId(issues Issues, filename string) ([]Tracker, error) {
 	s2 := mapset.NewSet()
-	var result []Tracker
 	var unMarshalTracker Tracker
 	for _, issue := range issues {
 		trackerJson, err := json.Marshal(issue.Tracker)
@@ -46,12 +47,15 @@ func ListTrackerId(issues Issues, filename string) ([]Tracker, error) {
 		}
 		s2.Add(string(trackerJson))
 	}
-	for _, v := range s2.ToSlice() {
+	// var result []Tracker
+	result := make([]Tracker, len(s2.ToSlice()))
+	for i, v := range s2.ToSlice() {
 		err := json.Unmarshal([]byte(v.(string)), &unMarshalTracker)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, unMarshalTracker)
+		// result = append(result, unMarshalTracker)
+		result[i] = unMarshalTracker
 	}
 	trackerJson, err := json.Marshal(result)
 	if err != nil {
@@ -66,7 +70,6 @@ func ListTrackerId(issues Issues, filename string) ([]Tracker, error) {
 
 func ListStatusId(issues Issues, filename string) ([]Status, error) {
 	s2 := mapset.NewSet()
-	var result []Status
 	var unMarshalStatus Status
 	for _, issue := range issues {
 		statusJson, err := json.Marshal(issue.Status)
@@ -75,12 +78,15 @@ func ListStatusId(issues Issues, filename string) ([]Status, error) {
 		}
 		s2.Add(string(statusJson))
 	}
-	for _, v := range s2.ToSlice() {
+	// var result []Status
+	result := make([]Status, len(s2.ToSlice()))
+	for i, v := range s2.ToSlice() {
 		err := json.Unmarshal([]byte(v.(string)), &unMarshalStatus)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, unMarshalStatus)
+		// result = append(result, unMarshalStatus)
+		result[i] = unMarshalStatus
 	}
 	statusJson, err := json.Marshal(result)
 	if err != nil {
@@ -95,7 +101,6 @@ func ListStatusId(issues Issues, filename string) ([]Status, error) {
 
 func ListPriorityId(issues Issues, filename string) ([]Priority, error) {
 	s2 := mapset.NewSet()
-	var result []Priority
 	var unMarshalPriority Priority
 	for _, issue := range issues {
 		priorityJson, err := json.Marshal(issue.Priority)
@@ -104,12 +109,15 @@ func ListPriorityId(issues Issues, filename string) ([]Priority, error) {
 		}
 		s2.Add(string(priorityJson))
 	}
-	for _, v := range s2.ToSlice() {
+	//var result []Priority
+	result := make([]Priority, len(s2.ToSlice()))
+	for i, v := range s2.ToSlice() {
 		err := json.Unmarshal([]byte(v.(string)), &unMarshalPriority)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, unMarshalPriority)
+		// result = append(result, unMarshalPriority)
+		result[i] = unMarshalPriority
 	}
 	priorityJson, err := json.Marshal(result)
 	if err != nil {
@@ -124,7 +132,6 @@ func ListPriorityId(issues Issues, filename string) ([]Priority, error) {
 
 func ListUserIdAssignedTo(issues Issues, filename string) ([]AssignedTo, error) {
 	s2 := mapset.NewSet()
-	var result []AssignedTo
 	var unMarshalAssignedTo AssignedTo
 	for _, issue := range issues {
 		assignedToJson, err := json.Marshal(issue.AssignedTo)
@@ -133,12 +140,15 @@ func ListUserIdAssignedTo(issues Issues, filename string) ([]AssignedTo, error) 
 		}
 		s2.Add(string(assignedToJson))
 	}
-	for _, v := range s2.ToSlice() {
+	// var result []AssignedTo
+	result := make([]AssignedTo, len(s2.ToSlice()))
+	for i, v := range s2.ToSlice() {
 		err := json.Unmarshal([]byte(v.(string)), &unMarshalAssignedTo)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, unMarshalAssignedTo)
+		// result = append(result, unMarshalAssignedTo)
+		result[i] = unMarshalAssignedTo
 	}
 	userJson, err := json.Marshal(result)
 	if err != nil {
@@ -153,7 +163,6 @@ func ListUserIdAssignedTo(issues Issues, filename string) ([]AssignedTo, error) 
 
 func ListCustomFieldsId(issues Issues, filename string) ([]CustomField, error) {
 	s2 := mapset.NewSet()
-	var result []CustomField
 	var unMarshalCustomField CustomField
 	for _, issue := range issues {
 		for _, customField := range issue.CustomFields {
@@ -164,12 +173,15 @@ func ListCustomFieldsId(issues Issues, filename string) ([]CustomField, error) {
 			s2.Add(string(customFieldJson))
 		}
 	}
-	for _, v := range s2.ToSlice() {
+	//var result []CustomField
+	result := make([]CustomField, len(s2.ToSlice()))
+	for i, v := range s2.ToSlice() {
 		err := json.Unmarshal([]byte(v.(string)), &unMarshalCustomField)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, unMarshalCustomField)
+		//result = append(result, unMarshalCustomField)
+		result[i] = unMarshalCustomField
 	}
 	customFieldsJson, err := json.Marshal(result)
 	if err != nil {

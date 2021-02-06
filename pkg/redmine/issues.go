@@ -241,19 +241,21 @@ func GetIssue(url, key string, id, timeout int, customClient *http.Client) (Issu
 }
 
 func DownloadAttachmentFiles(key string, timeout int, attachments Attachments, customClient *http.Client) ([][]byte, error) {
-	var result [][]byte
+	//var result [][]byte
+	result := make([][]byte, len(attachments))
 	var client *utils.Api
 	if customClient == nil {
 		client = utils.NewHttpClient(timeout)
 	} else {
 		client = utils.NewHttpClient(timeout, utils.OptionHTTPClient(customClient))
 	}
-	for _, file := range attachments {
+	for i, file := range attachments {
 		body, err := client.Get(file.ContentUrl + "?key=" + key)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, body)
+		//result = append(result, body)
+		result[i] = body
 	}
 	return result, nil
 }
@@ -270,9 +272,11 @@ func CreateIssueFromByteSlice(content []byte) (*Issue, error) {
 func CreateIssueParam(issue Issue, uploadFiles []FileParam) IssueParam {
 	var issueParam IssueParam
 	if issue.Attachments != nil {
-		var uploads []Uploads
-		for _, v := range uploadFiles {
-			uploads = append(uploads, Uploads{FileName: v.FileName, ContentType: v.ContentType, Token: v.Token})
+		//var uploads []Uploads
+		uploads := make([]Uploads, len(uploadFiles))
+		for i, v := range uploadFiles {
+			// uploads = append(uploads, Uploads{FileName: v.FileName, ContentType: v.ContentType, Token: v.Token})
+			uploads[i] = Uploads{FileName: v.FileName, ContentType: v.ContentType, Token: v.Token}
 		}
 		issueParam = IssueParam{
 			ProjectId:    issue.Project.Id,
@@ -347,8 +351,9 @@ func UpdateIssueJournals(url, key string, id, timeout int, journals []string, cu
 }
 
 func UploadAttachmentFiles(u, key string, timeout int, files []FileParam, customClient *http.Client) ([]FileParam, error) {
-	var newFiles []FileParam
-	for _, file := range files {
+	// var newFiles []FileParam
+	newFiles := make([]FileParam, len(files))
+	for i, file := range files {
 		params := url.Values{}
 		params.Set("key", key)
 		params.Add("filename", file.FileName)
@@ -366,15 +371,18 @@ func UploadAttachmentFiles(u, key string, timeout int, files []FileParam, custom
 		if err != nil {
 			return nil, err
 		}
-		newFiles = append(newFiles, FileParam{FileName: file.FileName, ContentType: file.ContentType, Contents: file.Contents, Token: UploadResult.Upload.Token})
+		// newFiles = append(newFiles, FileParam{FileName: file.FileName, ContentType: file.ContentType, Contents: file.Contents, Token: UploadResult.Upload.Token})
+		newFiles[i] =  FileParam{FileName: file.FileName, ContentType: file.ContentType, Contents: file.Contents, Token: UploadResult.Upload.Token}
 	}
 	return newFiles, nil
 }
 
 func CreateJournalStrings(issue Issue) []string {
-	var notes []string
-	for _, journal := range issue.Journals {
-		notes = append(notes, journal.Notes)
+	// var notes []string
+	notes := make([]string, len(issue.Journals))
+	for i, journal := range issue.Journals {
+		// notes = append(notes, journal.Notes)
+		notes[i] = journal.Notes
 	}
 	return notes
 }

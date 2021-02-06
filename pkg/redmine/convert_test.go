@@ -314,5 +314,7 @@ func BenchmarkConvertNewEnv(b *testing.B) {
 		},
 	}}
 	b.ResetTimer()
-	_, _ = redmine.ConvertNewEnv(issueJson, cfg, false)
+	for i := 0; i < 100; i++ {
+		_, _ = redmine.ConvertNewEnv(issueJson, cfg, false)
+	}
 }
