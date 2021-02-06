@@ -91,7 +91,7 @@ func TestGetConfigDefaultConfigLocation(t *testing.T) {
 			t.Errorf("Error occured %s", err)
 		}
 		_, err = config.GetConfig("")
-		if err == nil || err.Error() != "Missing Config: server.url is Required" {
+		if err == nil {
 			t.Errorf("Unexpected Error occured")
 			return
 		}
