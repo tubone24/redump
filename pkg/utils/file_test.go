@@ -117,6 +117,9 @@ func TestGetContentType(t *testing.T) {
 		{"test.wmv", "video/x-ms-wmv"},
 		{"test.flv", "video/x-flv"},
 		{"test.swf", "application/x-shockwave-flash"},
+		{"test.tar.gz", "application/x-tar"},
+		{"test.jar", "application/java-archive"},
+		{"test.sh", "application/x-sh"},
 		{"test.mse", "application/x-www-form-urlencoded"},
 	}
 
@@ -152,6 +155,59 @@ func TestReadWriteFile(t *testing.T) {
 	}
 	if actualJson.Test != testText {
 		t.Errorf("expected: %s, actual %s", testText, actualJson.Test)
+	}
+}
+
+func TestWriteFileExistDir(t *testing.T) {
+	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	defer os.RemoveAll(fileDir)
+	fileDir2 := filepath.Join(fileDir, "/dummy")
+	filename := filepath.Join(fileDir, "/dummy")
+	err = utils.MakeDir(fileDir2)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	err = utils.WriteFile(filename, []byte("aaaa"))
+	if err == nil {
+		t.Errorf("Error not occured")
+	}
+}
+
+func TestReadFileInvalidFileName(t *testing.T) {
+	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	defer os.RemoveAll(fileDir)
+	filename := filepath.Join(fileDir, "/dummy")
+	err = utils.MakeDir(fileDir)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	_, err = utils.ReadFile(filename)
+	if err == nil {
+		t.Errorf("Error not occured")
+	}
+}
+
+func TestReadFileLookUpDir(t *testing.T) {
+	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	defer os.RemoveAll(fileDir)
+	fileDir2 := filepath.Join(fileDir, "/dummy")
+	filename := filepath.Join(fileDir, "/dummy")
+	err = utils.MakeDir(fileDir2)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	_, err = utils.ReadFile(filename)
+	if err == nil {
+		t.Errorf("Error not occured")
 	}
 }
 

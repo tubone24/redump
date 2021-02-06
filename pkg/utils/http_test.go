@@ -131,6 +131,38 @@ func TestApiGet(t *testing.T) {
 	}
 }
 
+func TestApiGetInvalidUrl(t *testing.T) {
+	e := utils.NewHttpClient(1000)
+	_, err := e.Get("https://jdooudnpoowudqw.jdpofufoqf9-sjhfq-wdwhqwajasjpdjwdjqwoddjqwopdjdqdudl.com.kjpwf.coaa.coomwef.com")
+	if err == nil {
+		t.Errorf("expected error but no errors ouccured")
+	}
+}
+
+func TestApiPostInvalidUrl(t *testing.T) {
+	e := utils.NewHttpClient(1000)
+	_, err := e.Post("https://jdooudnpoowudqw.jdpofufoqf9-sjhfq-wdwhqwajasjpdjwdjqwoddjqwopdjdqdudl.com.kjpwf.coaa.coomwef.com", "application/json", []byte("{\"aaa\": \"aaa\"}"))
+	if err == nil {
+		t.Errorf("expected error but no errors ouccured")
+	}
+}
+
+func TestApiPutInvalidUrl(t *testing.T) {
+	e := utils.NewHttpClient(1000)
+	err := e.Put("https://jdooudnpoowudqw.jdpofufoqf9-sjhfq-wdwhqwajasjpdjwdjqwoddjqwopdjdqdudl.com.kjpwf.coaa.coomwef.com", "application/json", []byte("{\"aaa\": \"aaa\"}"))
+	if err == nil {
+		t.Errorf("expected error but no errors ouccured")
+	}
+}
+
+func TestApiDeleteInvalidUrl(t *testing.T) {
+	e := utils.NewHttpClient(1000)
+	err := e.Delete("https://jdooudnpoowudqw.jdpofufoqf9-sjhfq-wdwhqwajasjpdjwdjqwoddjqwopdjdqdudl.com.kjpwf.coaa.coomwef.com")
+	if err == nil {
+		t.Errorf("expected error but no errors ouccured")
+	}
+}
+
 func TestApiPost(t *testing.T) {
 	cases := map[string]struct {
 		client               *http.Client

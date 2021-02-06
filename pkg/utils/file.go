@@ -26,7 +26,7 @@ func ReadFile(file string) ([]byte, error) {
 	var content []byte
 	fp, err := os.Open(file)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer fp.Close()
 	buffer := make([]byte, bufferSize)
