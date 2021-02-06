@@ -10,7 +10,8 @@ test:
 	go test -v -cover ./...
 
 bench:
-	go test -bench ./... -benchmem -cpuprofile=*.prof
+	cd pkg/redmine && \
+	go test -bench . -benchmem -cpuprofile cpu.prof -memprofile mem.pro
 
 build:
 	go build cmd/redump/main.go

@@ -84,16 +84,19 @@ func convertUserIdToAssignedTo(issue *Issue, conf []config.MappingValue, default
 }
 
 func convertCustomFieldsId(issue *Issue, conf []config.MappingValue, defaultValue int) []int {
-	var result []int
+	// var result []int
+	result := make([]int, len(issue.CustomFields))
 	if issue.CustomFields != nil {
-		for _, v := range issue.CustomFields {
+		for i, v := range issue.CustomFields {
 			for i2, v2 := range conf {
 				if v.Id == v2.Old {
-					result = append(result, v2.New)
+					//result = append(result, v2.New)
+					result[i] = v2.New
 					break
 				} else {
 					if i2+1 == len(conf) {
-						result = append(result, defaultValue)
+						//result = append(result, defaultValue)
+						result[i] = defaultValue
 					}
 				}
 			}
@@ -103,16 +106,19 @@ func convertCustomFieldsId(issue *Issue, conf []config.MappingValue, defaultValu
 }
 
 func convertWatcherId(issue *Issue, conf []config.MappingValue, defaultValue int) []int {
-	var result []int
+	// var result []int
+	result := make([]int, len(issue.Watchers))
 	if issue.Watchers != nil {
-		for _, v := range issue.Watchers {
+		for i, v := range issue.Watchers {
 			for i2, v2 := range conf {
 				if v.Id == v2.Old {
-					result = append(result, v2.New)
+					//result = append(result, v2.New)
+					result[i] = v2.New
 					break
 				} else {
 					if i2+1 == len(conf) {
-						result = append(result, defaultValue)
+						//result = append(result, defaultValue)
+						result[i] = defaultValue
 					}
 				}
 			}
