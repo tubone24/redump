@@ -65,3 +65,18 @@ func TestDeepCopy(t *testing.T) {
 		t.Error("Destructive changes")
 	}
 }
+
+func TestDeepCopyInvalidSrc(t *testing.T) {
+	var newIssueJson redmine.Issue
+	err := utils.DeepCopy(&newIssueJson, "")
+	if err == nil {
+		t.Error("Error does not occured")
+	}
+}
+
+func TestDeepCopyInvalidDst(t *testing.T) {
+	err := utils.DeepCopy("", &issueJson)
+	if err == nil {
+		t.Error("Error does not occured")
+	}
+}

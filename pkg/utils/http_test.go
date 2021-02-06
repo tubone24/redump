@@ -2,11 +2,12 @@ package utils_test
 
 import (
 	"bytes"
+	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/utils"
 	"io/ioutil"
 	"net/http"
+	"reflect"
 	"testing"
-	"github.com/goccy/go-json"
 	"time"
 )
 
@@ -398,5 +399,15 @@ func TestApiDelete(t *testing.T) {
 				return
 			}
 		})
+	}
+}
+
+func TestNewProxyClient(t *testing.T) { //しょぼいテスト...
+	actual, err := utils.NewProxyClient("http://example.com")
+	if err != nil {
+		t.Errorf("Error occured: '%s'", err)
+	}
+	if reflect.TypeOf(actual).Kind().String() != "ptr" {
+		t.Errorf("Types not match '%s'", reflect.TypeOf(actual).Kind().String())
 	}
 }
