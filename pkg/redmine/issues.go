@@ -170,7 +170,7 @@ var UploadResult struct {
 	}
 }
 
-func unmarshalByteIssue(content []byte) (Issue, error) {
+func UnmarshalByteIssue(content []byte) (Issue, error) {
 	var emptyIssue Issue
 	err := json.Unmarshal(content, &issuesResult)
 	if err != nil {

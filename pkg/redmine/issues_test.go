@@ -396,3 +396,17 @@ func TestUploadAttachmentFiles(t *testing.T) {
 		t.Errorf("expected: %s, actual %s", uploadFile.FileName, resp[0].FileName)
 	}
 }
+
+func TestUnmarshalByteIssue(t *testing.T) {
+	resp, err := json.Marshal(&issueJson)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	actual, err := redmine.UnmarshalByteIssue(resp)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	if actual.Id != issueJson.Id {
+		t.Errorf("expected: %d, actual %d", issueJson.Id, actual.Id)
+	}
+}

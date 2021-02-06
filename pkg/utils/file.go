@@ -217,6 +217,14 @@ func GetContentType(key string) string {
 		return "application/x-latex"
 	case ".tex":
 		return "application/x-tex"
+	case ".dmt":
+		return "application/x-decomail-template"
+	case ".atom":
+		return "application/atom+xml"
+	case ".wmv":
+		return "video/x-ms-wmv"
+	case ".flv":
+		return "video/x-flv"
 	default:
 		return "application/x-www-form-urlencoded"
 	}
