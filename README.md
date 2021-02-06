@@ -155,7 +155,7 @@ $ redmup migrate -i 133
 
 ## Contributing
 
-See [the contributing file](CONTRIBUTING.md)!
+See [the contributing file](.github/CONTRIBUTING.md)!
 
 PRs accepted.
 
