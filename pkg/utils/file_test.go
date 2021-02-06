@@ -155,6 +155,79 @@ func TestReadWriteFile(t *testing.T) {
 	}
 }
 
+func TestCheckDir(t *testing.T) {
+	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	defer os.RemoveAll(fileDir)
+	actual := utils.CheckDir(fileDir)
+	if !actual {
+		t.Errorf("expected: %t, actual %t", true, actual)
+	}
+}
+
+func TestCheckDirNoDir(t *testing.T) {
+	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	defer os.RemoveAll(fileDir)
+	fileDir = filepath.Join(fileDir, "/test")
+	actual := utils.CheckDir(fileDir)
+	if actual {
+		t.Errorf("expected: %t, actual %t", false, actual)
+	}
+}
+
+func TestMakeDir(t *testing.T) {
+	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	defer os.RemoveAll(fileDir)
+	fileDir = filepath.Join(fileDir, "/test/test")
+	err = utils.MakeDir(fileDir)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+}
+
+func TestMakeDirExistsDir(t *testing.T) {
+	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	defer os.RemoveAll(fileDir)
+	fileDir = filepath.Join(fileDir, "/test/test")
+	err = utils.MakeDir(fileDir)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	err = utils.MakeDir(fileDir)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+}
+
+func TestMakeDirExistsFile(t *testing.T) {
+	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	defer os.RemoveAll(fileDir)
+	fileDir2 := filepath.Join(fileDir, "/dummy")
+	filename := filepath.Join(fileDir, "/dummy")
+	err = utils.WriteFile(filename, []byte("aaaa"))
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	err = utils.MakeDir(fileDir2)
+	if err == nil {
+		t.Errorf("Error not occured")
+	}
+}
+
 func TestSanitizeInvalidFileName(t *testing.T) {
 	testStr := "test test　testtest.com"
 	actual := utils.SanitizeInvalidFileName(testStr)

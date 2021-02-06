@@ -61,7 +61,7 @@ func GetConfig(configPath string) (*Config, error) {
 		config.ServerConfig.Timeout = 60000
 	}
 	if config.NewServerConfig.Timeout == 0 {
-		config.ServerConfig.Timeout = 60000
+		config.NewServerConfig.Timeout = 60000
 	}
 	return &config, nil
 }

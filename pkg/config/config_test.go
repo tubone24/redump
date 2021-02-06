@@ -65,3 +65,18 @@ func TestGetConfigMissingNewServerUrl(t *testing.T) {
 		t.Errorf("unexpected error message. expected '%s', actual '%s'", "Missing Config: new_server.url is Required", err.Error())
 	}
 }
+
+func TestGetConfigMissingServerTimeout(t *testing.T) {
+	dir, _ := os.Getwd()
+	filename := filepath.FromSlash(dir + "/../../tests/test_assets/config_test_missing_server_timeout.toml")
+	actual, err := config.GetConfig(filename)
+	if err != nil {
+		t.Errorf("Error occured %s", err)
+	}
+	if actual.ServerConfig.Timeout != 60000 {
+		t.Errorf("expected '%d', actual '%d'", 60000, actual.ServerConfig.Timeout)
+	}
+	if actual.NewServerConfig.Timeout != 60000 {
+		t.Errorf("expected '%d', actual '%d'", 60000, actual.NewServerConfig.Timeout)
+	}
+}

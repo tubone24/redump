@@ -1,0 +1,71 @@
+[server]
+url = "https://blog.tubone-project24.xyz"
+key = "xxxxx"
+project_id = 1
+sleep = 3000
+proxy_url = "http://127.0.0.1:8080"
+
+[new_server]
+url = "https://blog.tubone-project24.xyz"
+key = "xxxxx"
+project_id = 1
+sleep = 3000
+proxy_url = "http://127.0.0.1:8080"
+
+[[mappings]]
+  name = "project_id"
+  [[mappings.values]]
+    old = 7
+    new = 9
+  [[mappings.values]]
+    old = 1112
+    new = 1113
+
+[[mappings]]
+  name = "tracker_id"
+  default = 1
+  [[mappings.values]]
+    old = 1
+    new = 10001010
+  [[mappings.values]]
+    old = 11112
+    new = 11113
+
+[[mappings]]
+  name = "status_id"
+  default = 1
+  [[mappings.values]]
+    old = 1
+    new = 11131313
+  [[mappings.values]]
+    old = 11112
+    new = 11113
+
+[[mappings]]
+  name = "priority_id"
+  default = 14
+  [[mappings.values]]
+    old = 1
+    new = 11131311
+  [[mappings.values]]
+    old = 11112
+    new = 11113
+
+[[mappings]]
+  name = "user_id"
+  default = 1
+  [[mappings.values]]
+    old = 11111
+    new = 11111
+  [[mappings.values]]
+    old = 11112
+    new = 11113
+
+[[mappings]]
+  name = "custom_field_id"
+  [[mappings.values]]
+    old = 1
+    new = 1
+  [[mappings.values]]
+    old = 11112
+    new = 11113
