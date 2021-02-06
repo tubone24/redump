@@ -230,12 +230,12 @@ func TestGetIssues(t *testing.T) {
 }
 
 func TestGetIssue(t *testing.T) {
-	resp, err := redmine.GetIssues("https://example.com", "aaa", 0, 10000, clientIssue(t, 1000, nil))
+	resp, err := redmine.GetIssue("https://example.com", "aaa", 1, 10000, clientIssue(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
-	if resp[0].Id != issueJson.Id {
-		t.Errorf("expected: %d, actual %d", resp[0].Id, issueJson.Id)
+	if resp.Id != issueJson.Id {
+		t.Errorf("expected: %d, actual %d", resp.Id, issueJson.Id)
 	}
 }
 
