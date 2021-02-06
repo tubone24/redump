@@ -80,3 +80,21 @@ func TestGetConfigMissingServerTimeout(t *testing.T) {
 		t.Errorf("expected '%d', actual '%d'", 60000, actual.NewServerConfig.Timeout)
 	}
 }
+
+func TestGetConfigDefaultConfigLocation(t *testing.T) {
+	dir, _ := os.Getwd()
+	filename := filepath.FromSlash(dir + "/../../config.toml")
+	_, err := os.Stat(filename)
+	if err != nil {
+		_, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			t.Errorf("Error occured %s", err)
+		}
+		_, err = config.GetConfig("")
+		if err == nil || err.Error() != "Missing Config: server.url is Required" {
+			t.Errorf("Unexpected Error occured")
+			return
+		}
+	}
+	_, _ = config.GetConfig("")
+}

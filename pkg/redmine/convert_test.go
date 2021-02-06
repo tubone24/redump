@@ -173,3 +173,4 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 		t.Errorf("expected: %d, actual %d", cfg.Mappings[5].Default, actual.CustomFields[0].Id)
 	}
 }
+
