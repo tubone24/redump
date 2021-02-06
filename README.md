@@ -161,6 +161,20 @@ PRs accepted.
 
 Small note: If editing the Readme, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
+### Testing
+
+Write and run test code for the target code before submitting a PR.
+
+```
+make test
+```
+
+If you have a higher PR on performance to go along with it, it is recommended to run benchmark tests as well.
+
+```
+make bench
+```
+
 ## License
 
 [MIT © tubone24](LICENSE)
