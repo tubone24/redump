@@ -6,6 +6,7 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/utils"
 	"github.com/tubone24/redump/pkg/config"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -15,7 +16,22 @@ func Migrate(projectId int) error {
 	if err != nil {
 		return err
 	}
-	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, nil)
+	if !utils.CheckDir("data/issues/attachments") {
+		err := utils.MakeDir("data/issues/attachments")
+		if err != nil {
+			panic(err)
+		}
+	}
+	var customClient *http.Client
+	if cfg.ServerConfig.ProxyUrl != "" {
+		customClient, err = utils.NewProxyClient(cfg.ServerConfig.ProxyUrl)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		customClient = nil
+	}
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, customClient)
 	txtCh := make(chan string, 10)
 	defer close(txtCh)
 	if err != nil {
@@ -42,14 +58,32 @@ func runMigrateIssue(txtCh chan<- string, issueId int) {
 	if err != nil {
 		panic(err)
 	}
-	detailIssue, err := redmine.GetIssue(cfg.ServerConfig.Url, cfg.ServerConfig.Key, issueId, cfg.ServerConfig.Timeout, nil)
+	var oldCustomClient *http.Client
+	if cfg.ServerConfig.ProxyUrl != "" {
+		oldCustomClient, err = utils.NewProxyClient(cfg.ServerConfig.ProxyUrl)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		oldCustomClient = nil
+	}
+	var newCustomClient *http.Client
+	if cfg.NewServerConfig.ProxyUrl != "" {
+		oldCustomClient, err = utils.NewProxyClient(cfg.NewServerConfig.ProxyUrl)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		oldCustomClient = nil
+	}
+	detailIssue, err := redmine.GetIssue(cfg.ServerConfig.Url, cfg.ServerConfig.Key, issueId, cfg.ServerConfig.Timeout, oldCustomClient)
 	if err != nil {
 		panic(err)
 	}
 	issueJson, _ := json.Marshal(detailIssue)
 	err = utils.WriteFile("data/issues/"+strconv.Itoa(issueId)+".json", issueJson)
 	if detailIssue.Attachments != nil {
-		downloadBody, err := redmine.DownloadAttachmentFiles(cfg.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments, nil)
+		downloadBody, err := redmine.DownloadAttachmentFiles(cfg.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments, oldCustomClient)
 		if err != nil {
 			panic(err)
 		}
@@ -60,7 +94,7 @@ func runMigrateIssue(txtCh chan<- string, issueId int) {
 			}
 			fileParam := redmine.FileParam{FileName: detailIssue.Attachments[index].FileName, ContentType: utils.GetContentType(detailIssue.Attachments[index].FileName), Contents: file}
 			fileParams := []redmine.FileParam{fileParam}
-			uploadFile, err := redmine.UploadAttachmentFiles(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.ServerConfig.Timeout, fileParams, nil)
+			uploadFile, err := redmine.UploadAttachmentFiles(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.NewServerConfig.Timeout, fileParams, newCustomClient)
 			fmt.Println(uploadFile[0].Token)
 			if err != nil {
 				panic(err)
@@ -73,16 +107,16 @@ func runMigrateIssue(txtCh chan<- string, issueId int) {
 		panic(err)
 	}
 	newIssueParam := redmine.CreateIssueParam(*newIssue, uploadFiles)
-	newIssueId, err := redmine.CreateIssue(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.ServerConfig.Timeout, newIssueParam, nil)
+	newIssueId, err := redmine.CreateIssue(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.NewServerConfig.Timeout, newIssueParam, newCustomClient)
 	if err != nil {
 		panic(err)
 	}
 	notes := redmine.CreateJournalStrings(*newIssue)
-	err = redmine.UpdateIssueJournals(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, newIssueId, cfg.ServerConfig.Timeout, notes, nil)
+	err = redmine.UpdateIssueJournals(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, newIssueId, cfg.NewServerConfig.Timeout, notes, newCustomClient)
 	if err != nil {
 		panic(err)
 	}
-	err = redmine.UpdateWatchers(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, newIssueId, cfg.ServerConfig.Timeout, *newIssue, nil)
+	err = redmine.UpdateWatchers(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, newIssueId, cfg.NewServerConfig.Timeout, *newIssue, newCustomClient)
 	if err != nil {
 		txtCh <- "Failed: " + strconv.Itoa(issueId) + ".json"
 	}

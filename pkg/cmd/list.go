@@ -3,6 +3,8 @@ package cmd
 import (
 	"github.com/tubone24/redump/pkg/config"
 	"github.com/tubone24/redump/pkg/redmine"
+	"github.com/tubone24/redump/pkg/utils"
+	"net/http"
 )
 
 func ListAll(projectId int) error {
@@ -10,7 +12,16 @@ func ListAll(projectId int) error {
 	if err != nil {
 		return err
 	}
-	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, nil)
+	var customClient *http.Client
+	if cfg.ServerConfig.ProxyUrl != "" {
+		customClient, err = utils.NewProxyClient(cfg.ServerConfig.ProxyUrl)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		customClient = nil
+	}
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, customClient)
 	_, err = redmine.ListProjectId(issues, "")
 	if err != nil {
 		return err

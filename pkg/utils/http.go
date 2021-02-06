@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 )
@@ -153,4 +154,17 @@ func (api *Api) Delete(url string) error {
 		return &HttpClientError{StatusCode: resp.StatusCode}
 	}
 	return nil
+}
+
+func NewProxyClient(proxyUrl string) (*http.Client, error) {
+	pu, err := url.Parse(proxyUrl)
+	if err != nil {
+		return nil, err
+	}
+	client := &http.Client{
+		Transport: &http.Transport{
+			Proxy: http.ProxyURL(pu),
+		},
+	}
+	return client, nil
 }

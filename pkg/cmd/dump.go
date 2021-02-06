@@ -6,6 +6,7 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/utils"
 	"github.com/tubone24/redump/pkg/config"
+	"net/http"
 	"strconv"
 	"sync"
 	"time"
@@ -16,7 +17,23 @@ func Dump(projectId int, concurrency bool) {
 	if err != nil {
 		panic(err)
 	}
-	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, nil)
+
+	if !utils.CheckDir("data/issues/attachments") {
+		err := utils.MakeDir("data/issues/attachments")
+		if err != nil {
+			panic(err)
+		}
+	}
+	var customClient *http.Client
+	if cfg.ServerConfig.ProxyUrl != "" {
+		customClient, err = utils.NewProxyClient(cfg.ServerConfig.ProxyUrl)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		customClient = nil
+	}
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, customClient)
 	if err != nil {
 		panic(err)
 	}
@@ -27,14 +44,14 @@ func Dump(projectId int, concurrency bool) {
 		for _, v := range issues {
 			wg.Add(1)
 			go func(issue redmine.Issue, conf config.Config) {
-				detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issue.Id, cfg.ServerConfig.Timeout, nil)
+				detailIssue, err := redmine.GetIssue(conf.ServerConfig.Url, conf.ServerConfig.Key, issue.Id, cfg.ServerConfig.Timeout, customClient)
 				if err != nil {
 					panic(err)
 				}
 				issueJson, _ := json.Marshal(detailIssue)
 				err = utils.WriteFile("data/issues/"+strconv.Itoa(issue.Id)+".json", issueJson)
 				if detailIssue.Attachments != nil {
-					downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments, nil)
+					downloadBody, err := redmine.DownloadAttachmentFiles(conf.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments, customClient)
 					if err != nil {
 						panic(err)
 					}
@@ -71,14 +88,23 @@ func runDump(txtCh chan<- string, issueId int) {
 	if err != nil {
 		panic(err)
 	}
-	detailIssue, err := redmine.GetIssue(cfg.ServerConfig.Url, cfg.ServerConfig.Key, issueId, cfg.ServerConfig.Timeout, nil)
+	var customClient *http.Client
+	if cfg.ServerConfig.ProxyUrl != "" {
+		customClient, err = utils.NewProxyClient(cfg.ServerConfig.ProxyUrl)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		customClient = nil
+	}
+	detailIssue, err := redmine.GetIssue(cfg.ServerConfig.Url, cfg.ServerConfig.Key, issueId, cfg.ServerConfig.Timeout, customClient)
 	if err != nil {
 		panic(err)
 	}
 	issueJson, _ := json.Marshal(detailIssue)
 	err = utils.WriteFile("data/issues/"+strconv.Itoa(issueId)+".json", issueJson)
 	if detailIssue.Attachments != nil {
-		downloadBody, err := redmine.DownloadAttachmentFiles(cfg.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments, nil)
+		downloadBody, err := redmine.DownloadAttachmentFiles(cfg.ServerConfig.Key, cfg.ServerConfig.Timeout, detailIssue.Attachments, customClient)
 		if err != nil {
 			panic(err)
 		}

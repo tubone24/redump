@@ -1,6 +1,16 @@
 package config
 
-import "github.com/BurntSushi/toml"
+import (
+	"github.com/BurntSushi/toml"
+)
+
+type MissingConfigError struct {
+	ConfigName string
+}
+
+func (e *MissingConfigError) Error() string {
+	return "Missing Config: " + e.ConfigName + " is Required"
+}
 
 type ServerConfig struct {
 	Url       string `toml:"url"`
@@ -8,6 +18,7 @@ type ServerConfig struct {
 	ProjectId int    `toml:"project_id"`
 	Sleep     int    `toml:"sleep"`
 	Timeout   int    `toml:"timeout"`
+	ProxyUrl   string    `toml:"proxy_url"`
 }
 
 type MappingValue struct {
@@ -39,6 +50,18 @@ func GetConfig(configPath string) (*Config, error) {
 		if err != nil {
 			return nil, err
 		}
+	}
+	if config.ServerConfig.Url == "" {
+		return nil, &MissingConfigError{ConfigName: "server.url"}
+	}
+	if config.NewServerConfig.Url == "" {
+		return nil, &MissingConfigError{ConfigName: "new_server.url"}
+	}
+	if config.ServerConfig.Timeout == 0 {
+		config.ServerConfig.Timeout = 60000
+	}
+	if config.NewServerConfig.Timeout == 0 {
+		config.ServerConfig.Timeout = 60000
 	}
 	return &config, nil
 }

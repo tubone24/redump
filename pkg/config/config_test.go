@@ -12,7 +12,7 @@ func TestGetConfig(t *testing.T) {
 		ServerConfig:    config.ServerConfig{Url: "https://example.com", Key: "xxxxx", ProjectId: 1, Sleep: 3000, Timeout: 10000},
 		NewServerConfig: config.ServerConfig{Url: "https://blog.tubone-project24.xyz", Key: "xxxxx"}}
 	dir, _ := os.Getwd()
-	filename := filepath.FromSlash(dir + "/../../config.toml.example")
+	filename := filepath.FromSlash(dir + "/../../tests/test_assets/config_test.toml")
 	cfg, err := config.GetConfig(filename)
 	if err != nil {
 		t.Errorf("Error occured %s", err)
@@ -37,5 +37,31 @@ func TestGetConfig(t *testing.T) {
 	}
 	if cfg.NewServerConfig.Key != expected.NewServerConfig.Key {
 		t.Errorf("expected '%s', actual '%s'", cfg.NewServerConfig.Key, expected.NewServerConfig.Key)
+	}
+}
+
+func TestGetConfigMissingServerUrl(t *testing.T) {
+	dir, _ := os.Getwd()
+	filename := filepath.FromSlash(dir + "/../../tests/test_assets/config_test_missing_server_url.toml")
+	_, err := config.GetConfig(filename)
+	if err == nil {
+		t.Error("Error does not occured")
+		return
+	}
+	if err.Error() != "Missing Config: server.url is Required" {
+		t.Errorf("unexpected error message. expected '%s', actual '%s'", "Missing Config: server.url is Required", err.Error())
+	}
+}
+
+func TestGetConfigMissingNewServerUrl(t *testing.T) {
+	dir, _ := os.Getwd()
+	filename := filepath.FromSlash(dir + "/../../tests/test_assets/config_test_missing_new_server_url.toml")
+	_, err := config.GetConfig(filename)
+	if err == nil {
+		t.Error("Error does not occured")
+		return
+	}
+	if err.Error() != "Missing Config: new_server.url is Required" {
+		t.Errorf("unexpected error message. expected '%s', actual '%s'", "Missing Config: new_server.url is Required", err.Error())
 	}
 }

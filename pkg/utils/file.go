@@ -45,6 +45,20 @@ func ReadFile(file string) ([]byte, error) {
 	return content, nil
 }
 
+func CheckDir(dir string) bool {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+func MakeDir(dir string) error {
+	if err := os.MkdirAll(dir, 0777); err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetContentType(key string) string {
 	if strings.HasSuffix(key, ".tar.gz") {
 		return "application/x-tar"

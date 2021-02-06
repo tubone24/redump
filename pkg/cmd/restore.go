@@ -4,6 +4,7 @@ import (
 	"github.com/tubone24/redump/pkg/config"
 	"github.com/tubone24/redump/pkg/redmine"
 	"github.com/tubone24/redump/pkg/utils"
+	"net/http"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -13,6 +14,15 @@ func RestoreDataFromLocal(projectId, issueId int) error {
 	cfg, err := config.GetConfig("")
 	if err != nil {
 		return err
+	}
+	var customClient *http.Client
+	if cfg.NewServerConfig.ProxyUrl != "" {
+		customClient, err = utils.NewProxyClient(cfg.NewServerConfig.ProxyUrl)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		customClient = nil
 	}
 	var jsonFiles []string
 	if issueId != 0 {
@@ -46,7 +56,7 @@ func RestoreDataFromLocal(projectId, issueId int) error {
 				}
 				fileParam := redmine.FileParam{FileName: convertedIssue.Attachments[index].FileName, ContentType: utils.GetContentType(convertedIssue.Attachments[index].FileName), Contents: contentBytes}
 				fileParams := []redmine.FileParam{fileParam}
-				uploadFile, err := redmine.UploadAttachmentFiles(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.ServerConfig.Timeout, fileParams, nil)
+				uploadFile, err := redmine.UploadAttachmentFiles(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.ServerConfig.Timeout, fileParams, customClient)
 				if err != nil {
 					panic(err)
 				}
@@ -54,20 +64,20 @@ func RestoreDataFromLocal(projectId, issueId int) error {
 			}
 		}
 		convertedIssueParam := redmine.CreateIssueParam(*convertedIssue, uploadFiles)
-		issueId, err := redmine.CreateIssue(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.ServerConfig.Timeout, convertedIssueParam, nil)
+		issueId, err := redmine.CreateIssue(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, cfg.NewServerConfig.Timeout, convertedIssueParam, customClient)
 		if err != nil {
 			return err
 		}
 		notes := redmine.CreateJournalStrings(*convertedIssue)
-		err = redmine.UpdateIssueJournals(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, issueId, cfg.ServerConfig.Timeout, notes, nil)
+		err = redmine.UpdateIssueJournals(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, issueId, cfg.NewServerConfig.Timeout, notes, customClient)
 		if err != nil {
 			return err
 		}
-		err = redmine.UpdateWatchers(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, issueId, cfg.ServerConfig.Timeout, *convertedIssue, nil)
+		err = redmine.UpdateWatchers(cfg.NewServerConfig.Url, cfg.NewServerConfig.Key, issueId, cfg.NewServerConfig.Timeout, *convertedIssue, customClient)
 		if err != nil {
 			return err
 		}
-		time.Sleep(time.Millisecond * time.Duration(cfg.ServerConfig.Sleep))
+		time.Sleep(time.Millisecond * time.Duration(cfg.NewServerConfig.Sleep))
 	}
 	return nil
 }
