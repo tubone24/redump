@@ -1,4 +1,5 @@
 [server]
+url = "http://example.com"
 key = "xxxxx"
 project_id = 1
 sleep = 3000
