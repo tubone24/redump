@@ -86,10 +86,15 @@ key = "xxxxx" # API Key
 project_id = 1 # if you want to choose several project's issues
 sleep = 3000 # request sleep millisecond
 timeout = 10000 # timeout(millisecond) if no response over that time
+proxy_url = "http://127.0.0.1:8080" # If you use http proxy, set proxy url, port, user/pass
 
 [new_server] # new server
 url = "https://blog.tubone-project24.xyz"
-key = "xxxxx"
+key = "xxxxx" # API Key
+project_id = 1 # if you want to choose several project's issues
+sleep = 3000 # request sleep millisecond
+timeout = 10000 # timeout(millisecond) if no response over that time
+proxy_url = "http://127.0.0.1:8080" # If you use http proxy, set proxy url, port, user/pass
 ```
 
 If you have created similar `project`, `tracker`, `status`, `priority`, `user`, and `custom fields` in the destination, you can create issue tickets correctly on the migration server side by specifying the ID mapping.
