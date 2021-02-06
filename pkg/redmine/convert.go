@@ -2,12 +2,12 @@ package redmine
 
 import (
 	"github.com/tubone24/redump/pkg/config"
-	"github.com/goccy/go-json"
+	"github.com/tubone24/redump/pkg/utils"
 )
 
 func ConvertNewEnv(issue Issue, conf config.Config) (*Issue, error) {
 	var newIssue Issue
-	err := DeepCopy(&newIssue, &issue)
+	err := utils.DeepCopy(&newIssue, &issue)
 	if err != nil {
 		return nil, err
 	}
@@ -116,16 +116,4 @@ func convertWatcherId(issue *Issue, conf []config.MappingValue, defaultValue int
 		}
 	}
 	return result
-}
-
-func DeepCopy(dst interface{}, src interface{}) error {
-	bytes, err := json.Marshal(src)
-	if err != nil {
-		return err
-	}
-	err = json.Unmarshal(bytes, dst)
-	if err != nil {
-		return err
-	}
-	return nil
 }
