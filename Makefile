@@ -13,5 +13,9 @@ bench:
 	cd pkg/redmine && \
 	go test -bench . -benchmem -cpuprofile cpu.prof -memprofile mem.pro
 
+doc:
+	cd pkg && \
+	godoc -http=:8080
+
 build:
 	go build cmd/redump/main.go
