@@ -173,3 +173,15 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 		t.Errorf("expected: %d, actual %d", cfg.Mappings[5].Default, actual.CustomFields[0].Id)
 	}
 }
+
+func TestDeepCopy(t *testing.T) {
+	var newIssueJson redmine.Issue
+	err := redmine.DeepCopy(&newIssueJson, &issueJson)
+	if err != nil {
+		t.Errorf("Error occured: %s", err)
+	}
+	newIssueJson.Id = 50
+	if issueJson.Id == newIssueJson.Id {
+		t.Error("Destructive changes")
+	}
+}
