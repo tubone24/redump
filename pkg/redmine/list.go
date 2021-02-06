@@ -2,8 +2,8 @@ package redmine
 
 import (
 	mapset "github.com/deckarep/golang-set"
-	"github.com/tubone24/redump/pkg/utils"
 	"github.com/goccy/go-json"
+	"github.com/tubone24/redump/pkg/utils"
 )
 
 func ListProjectId(issues Issues, filename string) ([]Project, error) {
@@ -11,7 +11,6 @@ func ListProjectId(issues Issues, filename string) ([]Project, error) {
 	var unMarshalProject Project
 	s2 := mapset.NewSet()
 	for _, issue := range issues {
-		// result = append(result, issue.Project)
 		projectIdJson, err := json.Marshal(issue.Project)
 		if err != nil {
 			return nil, err
