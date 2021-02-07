@@ -38,6 +38,9 @@ type Config struct {
 	Mappings        []Mapping    `toml:"mappings"`
 }
 
+// GetConfig is a function to read the configuration described in toml.
+// Please refer to README for how to write config.toml.
+// https://github.com/tubone24/redump#precondition
 func GetConfig(configPath string) (*Config, error) {
 	var config Config
 	if configPath == "" {

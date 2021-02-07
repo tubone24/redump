@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"fmt"
 	"github.com/tubone24/redump/pkg/config"
 	"os"
 	"path/filepath"
@@ -97,4 +98,9 @@ func TestGetConfigDefaultConfigLocation(t *testing.T) {
 		}
 	}
 	_, _ = config.GetConfig("")
+}
+
+func ExampleGetConfig() {
+	cfg, _ := config.GetConfig("")
+	fmt.Println(cfg.ServerConfig.Url)
 }
