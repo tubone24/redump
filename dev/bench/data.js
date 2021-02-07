@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1612687909060,
+  "lastUpdate": 1612688995239,
   "repoUrl": "https://github.com/tubone24/redump",
   "entries": {
     "Redump Go Benchmark": [
@@ -124,6 +124,72 @@ window.BENCHMARK_DATA = {
           {
             "name": "BenchmarkUploadAttachmentFiles",
             "value": 0.16,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateJournalStrings",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "tubo.yyyuuu@gmail.com",
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "committer": {
+            "email": "tubo.yyyuuu@gmail.com",
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "distinct": true,
+          "id": "723de89d3a5f83b5430db87f39c11bdb02c42be3",
+          "message": "CI strong test",
+          "timestamp": "2021-02-07T18:08:38+09:00",
+          "tree_id": "27f7de6da52585fd716a37833ae744597c1a1855",
+          "url": "https://github.com/tubone24/redump/commit/723de89d3a5f83b5430db87f39c11bdb02c42be3"
+        },
+        "date": 1612688994629,
+        "tool": "go",
+        "benches": [
+          {
+            "name": "BenchmarkConvertNewEnv",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssues",
+            "value": 0.04,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssue",
+            "value": 0.04,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDownloadAttachmentFiles",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueParam",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkUploadAttachmentFiles",
+            "value": 0.17,
             "unit": "ns/op",
             "extra": "2000000000 times\n2 procs"
           },
