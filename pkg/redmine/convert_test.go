@@ -66,7 +66,7 @@ func TestConvertNewEnv(t *testing.T) {
 	}}
 	actual, err := redmine.ConvertNewEnv(issueJson, cfg, false)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if actual.Project.Id != cfg.Mappings[0].Values[0].New {
 		t.Errorf("expected: %d, actual %d", cfg.Mappings[0].Values[0].New, actual.Project.Id)
@@ -148,7 +148,7 @@ func TestConvertNewEnvSilent(t *testing.T) {
 	}}
 	actual, err := redmine.ConvertNewEnv(issueJson, cfg, true)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if actual.Project.Id != cfg.Mappings[0].Values[0].New {
 		t.Errorf("expected: %d, actual %d", cfg.Mappings[0].Values[0].New, actual.Project.Id)
@@ -235,7 +235,7 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 	}}
 	actual, err := redmine.ConvertNewEnv(issueJson, cfg, false)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if actual.Project.Id != cfg.Mappings[0].Default {
 		t.Errorf("expected: %d, actual %d", cfg.Mappings[0].Default, actual.Project.Id)

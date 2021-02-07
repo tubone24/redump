@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-//socket: too many open files
+//Todo: socket: too many open files
 func DeleteServerAllIssuesConcurrency(old bool) error {
 	cfg, err := config.GetConfig("")
 	if err != nil {

@@ -22,27 +22,27 @@ func ListAll(projectId int) error {
 		customClient = nil
 	}
 	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, customClient)
-	_, err = redmine.ListProjectId(issues, "")
+	_, err = redmine.ListProjectId(issues, "data/project_id.json")
 	if err != nil {
 		return err
 	}
-	_, err = redmine.ListTrackerId(issues, "")
+	_, err = redmine.ListTrackerId(issues, "data/tracker_id.json")
 	if err != nil {
 		return err
 	}
-	_, err = redmine.ListStatusId(issues, "")
+	_, err = redmine.ListStatusId(issues, "data/status_id.json")
 	if err != nil {
 		return err
 	}
-	_, err = redmine.ListPriorityId(issues, "")
+	_, err = redmine.ListPriorityId(issues, "data/priority_id.json")
 	if err != nil {
 		return err
 	}
-	_, err = redmine.ListUserIdAssignedTo(issues, "")
+	_, err = redmine.ListUserIdAssignedTo(issues, "data/userId.json")
 	if err != nil {
 		return err
 	}
-	_, err = redmine.ListCustomFieldsId(issues, "")
+	_, err = redmine.ListCustomFieldsId(issues, "data/custom_fields_id.json")
 	if err != nil {
 		return err
 	}

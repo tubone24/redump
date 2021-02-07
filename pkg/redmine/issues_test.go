@@ -339,7 +339,7 @@ func clientDownloadAttachmentsBench(b *testing.B, respTime time.Duration, resp *
 func TestGetIssues(t *testing.T) {
 	resp, err := redmine.GetIssues("https://example.com", "aaa", 0, 10000, clientIssues(t, 1000, nil))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if resp[0].Id != issueJson.Id {
 		t.Errorf("expected: %d, actual %d", resp[0].Id, issueJson.Id)
@@ -349,7 +349,7 @@ func TestGetIssues(t *testing.T) {
 func TestGetIssuesWithProjectId(t *testing.T) {
 	resp, err := redmine.GetIssues("https://example.com", "aaa", 1, 10000, clientIssues(t, 1000, nil))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if resp[0].Id != issueJson.Id {
 		t.Errorf("expected: %d, actual %d", resp[0].Id, issueJson.Id)
@@ -359,21 +359,21 @@ func TestGetIssuesWithProjectId(t *testing.T) {
 func TestGetIssuesInvalidUrl(t *testing.T) {
 	_, err := redmine.GetIssues("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "aaa", 1, 1000, nil)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestGetIssuesInvalidResp(t *testing.T) {
 	_, err := redmine.GetIssues("https://example.com", "aaa", 0, 10000, clientIssuesInvalidResp(t, 1000, nil))
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestGetIssue(t *testing.T) {
 	resp, err := redmine.GetIssue("https://example.com", "aaa", 1, 10000, clientIssue(t, 1000, nil))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if resp.Id != issueJson.Id {
 		t.Errorf("expected: %d, actual %d", resp.Id, issueJson.Id)
@@ -383,21 +383,21 @@ func TestGetIssue(t *testing.T) {
 func TestGetIssueInvalidUrl(t *testing.T) {
 	_, err := redmine.GetIssue("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "aaa", 1, 1000, nil)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestGetIssueInvalidResp(t *testing.T) {
 	_, err := redmine.GetIssue("https://example.com", "aaa", 1, 1000, clientIssuesInvalidResp(t, 1000, nil))
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestDownloadAttachmentFiles(t *testing.T) {
 	resp, err := redmine.DownloadAttachmentFiles("aaa", 10000, issueJson.Attachments, clientDownloadAttachments(t, 1000, nil))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if string(resp[0]) != "test" {
 		t.Errorf("expected: %s, actual %s", string(resp[0]), "test")
@@ -407,7 +407,7 @@ func TestDownloadAttachmentFiles(t *testing.T) {
 func TestDownloadAttachmentFilesInvalidUrl(t *testing.T) {
 	_, err := redmine.DownloadAttachmentFiles("aaa", 1000, issueJsonInvalidAttachmentsUrl.Attachments, nil)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
@@ -431,12 +431,12 @@ func TestCreateIssueFromByteSlice(t *testing.T) {
 			break
 		}
 		if err != nil {
-			t.Errorf("Error occured: %s", err)
+			t.Errorf("Error occurred: %s", err)
 		}
 	}
 	resp, err := redmine.CreateIssueFromByteSlice(content)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if resp.Id != 2463 {
 		t.Errorf("expected: %d, actual %d", 2463, resp.Id)
@@ -446,7 +446,7 @@ func TestCreateIssueFromByteSlice(t *testing.T) {
 func TestCreateIssueFromByteSliceInvalidBytes(t *testing.T) {
 	_, err := redmine.CreateIssueFromByteSlice([]byte("aaa"))
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
@@ -518,7 +518,7 @@ func TestCreateIssueParamNoFile(t *testing.T) {
 func TestCreateIssue(t *testing.T) {
 	issueId, err := redmine.CreateIssue("http://example.com", "xxxx", 10000, issueJsonParam, clientIssue(t, 1000, nil))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if issueId != issueJson.Id {
 		t.Errorf("expected: %d, actual %d", issueJson.Id, issueId)
@@ -528,14 +528,14 @@ func TestCreateIssue(t *testing.T) {
 func TestCreateIssueInvalidUrl(t *testing.T) {
 	_, err := redmine.CreateIssue("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "xxxx", 1000, issueJsonParam, nil)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestCreateIssueInvalidResp(t *testing.T) {
 	_, err := redmine.CreateIssue("https://example.com", "xxxx", 1000, issueJsonParam, clientIssuesInvalidResp(t, 1000, nil))
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
@@ -550,7 +550,7 @@ func TestUpdateIssueJournals(t *testing.T) {
 	journals := []string{"test1", "test2", "test3", "", "", "test4", "test5"}
 	err := redmine.UpdateIssueJournals("http://example.com", "xxxxx", 1, 10000, journals, clientIssues(t, 1000, nil))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 }
 
@@ -558,35 +558,35 @@ func TestUpdateIssueJournalsInvalidUrl(t *testing.T) {
 	journals := []string{"test1", "test2", "test3", "", "", "test4", "test5"}
 	err := redmine.UpdateIssueJournals("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "xxxxx", 1, 10000, journals, nil)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestDeleteIssue(t *testing.T) {
 	err := redmine.DeleteIssue("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "xxxxx", 1, 10000, nil)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestDeleteIssueInvalidUrl(t *testing.T) {
 	err := redmine.DeleteIssue("http://examole.com", "xxxxx", 1, 10000, clientIssues(t, 1000, nil))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 }
 
 func TestUpdateWatchers(t *testing.T) {
 	err := redmine.UpdateWatchers("http://example.com", "xxxxx", 1, 10000, issueJson, clientIssues(t, 1000, nil))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 }
 
 func TestUpdateWatchersInvalidUrl(t *testing.T) {
 	err := redmine.UpdateWatchers("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "xxxxx", 1, 1000, issueJson, nil)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
@@ -595,7 +595,7 @@ func TestUploadAttachmentFiles(t *testing.T) {
 	uploadFiles = append(uploadFiles, uploadFile)
 	resp, err := redmine.UploadAttachmentFiles("http://example.com", "xxxxx", 10000, uploadFiles, clientIssues(t, 1000, nil))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if resp[0].FileName != uploadFile.FileName {
 		t.Errorf("expected: %s, actual %s", uploadFile.FileName, resp[0].FileName)
@@ -607,7 +607,7 @@ func TestUploadAttachmentFilesInvalidUrl(t *testing.T) {
 	uploadFiles = append(uploadFiles, uploadFile)
 	_, err := redmine.UploadAttachmentFiles("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "xxxxx", 1000, uploadFiles, nil)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
@@ -616,18 +616,18 @@ func TestUploadAttachmentFilesInvalidBytes(t *testing.T) {
 	uploadFiles = append(uploadFiles, uploadFile)
 	_, err := redmine.UploadAttachmentFiles("http://example.com", "xxxxx", 10000, uploadFiles, clientIssuesInvalidResp(t, 1000, nil))
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestUnmarshalByteIssue(t *testing.T) {
 	resp, err := json.Marshal(&issueJson)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	actual, err := redmine.UnmarshalByteIssue(resp)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if actual.Id != issueJson.Id {
 		t.Errorf("expected: %d, actual %d", issueJson.Id, actual.Id)
@@ -637,7 +637,7 @@ func TestUnmarshalByteIssue(t *testing.T) {
 func TestUnmarshalByteIssueInvalidBytes(t *testing.T) {
 	_, err := redmine.UnmarshalByteIssue([]byte("{}"))
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 

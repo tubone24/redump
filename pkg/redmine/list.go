@@ -6,6 +6,8 @@ import (
 	"github.com/tubone24/redump/pkg/utils"
 )
 
+// ListProjectId is a function that creates a set of Project IDs and names from the Issues structure.
+// If filename is specified, the JSON file will be output with the specified file name.
 func ListProjectId(issues Issues, filename string) ([]Project, error) {
 	var unMarshalProject Project
 	s2 := mapset.NewSet()
@@ -30,13 +32,17 @@ func ListProjectId(issues Issues, filename string) ([]Project, error) {
 	if err != nil {
 		return nil, err
 	}
-	if filename == "" {
-		filename = "data/project_id.json"
+	if filename != "" {
+		err = utils.WriteFile(filename, projectJson)
+		if err != nil {
+			return nil, err
+		}
 	}
-	err = utils.WriteFile(filename, projectJson)
 	return result, nil
 }
 
+// ListTrackerId is a function that creates a set of Tracker IDs and names from the Issues structure.
+// If filename is specified, the JSON file will be output with the specified file name.
 func ListTrackerId(issues Issues, filename string) ([]Tracker, error) {
 	s2 := mapset.NewSet()
 	var unMarshalTracker Tracker
@@ -61,13 +67,17 @@ func ListTrackerId(issues Issues, filename string) ([]Tracker, error) {
 	if err != nil {
 		return nil, err
 	}
-	if filename == "" {
-		filename = "data/tracker_id.json"
+	if filename != "" {
+		err = utils.WriteFile(filename, trackerJson)
+		if err != nil {
+			return nil, err
+		}
 	}
-	err = utils.WriteFile(filename, trackerJson)
 	return result, nil
 }
 
+// ListStatusId is a function that creates a set of status IDs and names from the Issues structure.
+// If filename is specified, the JSON file will be output with the specified file name.
 func ListStatusId(issues Issues, filename string) ([]Status, error) {
 	s2 := mapset.NewSet()
 	var unMarshalStatus Status
@@ -92,13 +102,17 @@ func ListStatusId(issues Issues, filename string) ([]Status, error) {
 	if err != nil {
 		return nil, err
 	}
-	if filename == "" {
-		filename = "data/status_id.json"
+	if filename != "" {
+		err = utils.WriteFile(filename, statusJson)
+		if err != nil {
+			return nil, err
+		}
 	}
-	err = utils.WriteFile(filename, statusJson)
 	return result, nil
 }
 
+// ListPriorityId is a function that creates a set of Priority IDs and names from the Issues structure.
+// If filename is specified, the JSON file will be output with the specified file name.
 func ListPriorityId(issues Issues, filename string) ([]Priority, error) {
 	s2 := mapset.NewSet()
 	var unMarshalPriority Priority
@@ -123,13 +137,17 @@ func ListPriorityId(issues Issues, filename string) ([]Priority, error) {
 	if err != nil {
 		return nil, err
 	}
-	if filename == "" {
-		filename = "data/priority_id.json"
+	if filename != "" {
+		err = utils.WriteFile(filename, priorityJson)
+		if err != nil {
+			return nil, err
+		}
 	}
-	err = utils.WriteFile(filename, priorityJson)
 	return result, nil
 }
 
+// ListUserIdAssignedTo is a function that creates a set of User IDs and names from the Issues structure on assigned to objects.
+// If filename is specified, the JSON file will be output with the specified file name.
 func ListUserIdAssignedTo(issues Issues, filename string) ([]AssignedTo, error) {
 	s2 := mapset.NewSet()
 	var unMarshalAssignedTo AssignedTo
@@ -154,13 +172,17 @@ func ListUserIdAssignedTo(issues Issues, filename string) ([]AssignedTo, error) 
 	if err != nil {
 		return nil, err
 	}
-	if filename == "" {
-		filename = "data/userId.json"
+	if filename != "" {
+		err = utils.WriteFile(filename, userJson)
+		if err != nil {
+			return nil, err
+		}
 	}
-	err = utils.WriteFile(filename, userJson)
 	return result, nil
 }
 
+// ListCustomFieldsId is a function that creates a set of CustomFields IDs and names from the Issues structure.
+// If filename is specified, the JSON file will be output with the specified file name.
 func ListCustomFieldsId(issues Issues, filename string) ([]CustomField, error) {
 	s2 := mapset.NewSet()
 	var unMarshalCustomField CustomField
@@ -187,9 +209,12 @@ func ListCustomFieldsId(issues Issues, filename string) ([]CustomField, error) {
 	if err != nil {
 		return nil, err
 	}
-	if filename == "" {
-		filename = "data/custom_fields_id.json"
+	if filename != "" {
+		err = utils.WriteFile(filename, customFieldsJson)
+		if err != nil {
+			return nil, err
+		}
 	}
-	err = utils.WriteFile(filename, customFieldsJson)
+
 	return result, nil
 }

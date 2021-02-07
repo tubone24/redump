@@ -405,7 +405,7 @@ func TestApiDelete(t *testing.T) {
 func TestNewProxyClient(t *testing.T) { //しょぼいテスト...
 	actual, err := utils.NewProxyClient("http://example.com")
 	if err != nil {
-		t.Errorf("Error occured: '%s'", err)
+		t.Errorf("Error occurred: '%s'", err)
 	}
 	if reflect.TypeOf(actual).Kind().String() != "ptr" {
 		t.Errorf("Types not match '%s'", reflect.TypeOf(actual).Kind().String())

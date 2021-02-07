@@ -16,7 +16,7 @@ func TestGetConfig(t *testing.T) {
 	filename := filepath.FromSlash(dir + "/../../tests/test_assets/config_test.toml")
 	cfg, err := config.GetConfig(filename)
 	if err != nil {
-		t.Errorf("Error occured %s", err)
+		t.Errorf("Error occurred %s", err)
 	}
 	if cfg.ServerConfig.Url != expected.ServerConfig.Url {
 		t.Errorf("expected '%s', actual '%s'", expected.ServerConfig.Url, cfg.ServerConfig.Url)
@@ -46,7 +46,7 @@ func TestGetConfigMissingServerUrl(t *testing.T) {
 	filename := filepath.FromSlash(dir + "/../../tests/test_assets/config_test_missing_server_url.toml")
 	_, err := config.GetConfig(filename)
 	if err == nil {
-		t.Error("Error does not occured")
+		t.Error("Error does not occurred")
 		return
 	}
 	if err.Error() != "Missing Config: server.url is Required" {
@@ -59,7 +59,7 @@ func TestGetConfigMissingNewServerUrl(t *testing.T) {
 	filename := filepath.FromSlash(dir + "/../../tests/test_assets/config_test_missing_new_server_url.toml")
 	_, err := config.GetConfig(filename)
 	if err == nil {
-		t.Error("Error does not occured")
+		t.Error("Error does not occurred")
 		return
 	}
 	if err.Error() != "Missing Config: new_server.url is Required" {
@@ -72,7 +72,7 @@ func TestGetConfigMissingServerTimeout(t *testing.T) {
 	filename := filepath.FromSlash(dir + "/../../tests/test_assets/config_test_missing_server_timeout.toml")
 	actual, err := config.GetConfig(filename)
 	if err != nil {
-		t.Errorf("Error occured %s", err)
+		t.Errorf("Error occurred %s", err)
 	}
 	if actual.ServerConfig.Timeout != 60000 {
 		t.Errorf("expected '%d', actual '%d'", 60000, actual.ServerConfig.Timeout)
@@ -89,11 +89,11 @@ func TestGetConfigDefaultConfigLocation(t *testing.T) {
 	if err != nil {
 		_, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
-			t.Errorf("Error occured %s", err)
+			t.Errorf("Error occurred %s", err)
 		}
 		_, err = config.GetConfig("")
 		if err == nil {
-			t.Errorf("Unexpected Error occured")
+			t.Errorf("Unexpected Error occurred")
 			return
 		}
 	}

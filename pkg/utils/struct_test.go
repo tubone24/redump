@@ -58,7 +58,7 @@ func TestDeepCopy(t *testing.T) {
 	var newIssueJson redmine.Issue
 	err := utils.DeepCopy(&newIssueJson, &issueJson)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	newIssueJson.Id = 50
 	if issueJson.Id == newIssueJson.Id {
@@ -70,13 +70,13 @@ func TestDeepCopyInvalidSrc(t *testing.T) {
 	var newIssueJson redmine.Issue
 	err := utils.DeepCopy(&newIssueJson, "")
 	if err == nil {
-		t.Error("Error does not occured")
+		t.Error("Error does not occurred")
 	}
 }
 
 func TestDeepCopyInvalidDst(t *testing.T) {
 	err := utils.DeepCopy("", &issueJson)
 	if err == nil {
-		t.Error("Error does not occured")
+		t.Error("Error does not occurred")
 	}
 }

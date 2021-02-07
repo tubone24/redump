@@ -138,20 +138,20 @@ func TestReadWriteFile(t *testing.T) {
 	testText := "Hello Redmine World"
 	filedir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	defer os.RemoveAll(filedir)
 	filename := filepath.Join(filedir, "dummy.json")
 	testByte, _ := json.Marshal(testJson{testText})
 	err = utils.WriteFile(filename, testByte)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	var actualJson testJson
 	body, err := utils.ReadFile(filename)
 	_ = json.Unmarshal(body, &actualJson)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	if actualJson.Test != testText {
 		t.Errorf("expected: %s, actual %s", testText, actualJson.Test)
@@ -161,60 +161,60 @@ func TestReadWriteFile(t *testing.T) {
 func TestWriteFileExistDir(t *testing.T) {
 	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	defer os.RemoveAll(fileDir)
 	fileDir2 := filepath.Join(fileDir, "/dummy")
 	filename := filepath.Join(fileDir, "/dummy")
 	err = utils.MakeDir(fileDir2)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	err = utils.WriteFile(filename, []byte("aaaa"))
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestReadFileInvalidFileName(t *testing.T) {
 	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	defer os.RemoveAll(fileDir)
 	filename := filepath.Join(fileDir, "/dummy")
 	err = utils.MakeDir(fileDir)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	_, err = utils.ReadFile(filename)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestReadFileLookUpDir(t *testing.T) {
 	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	defer os.RemoveAll(fileDir)
 	fileDir2 := filepath.Join(fileDir, "/dummy")
 	filename := filepath.Join(fileDir, "/dummy")
 	err = utils.MakeDir(fileDir2)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	_, err = utils.ReadFile(filename)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 
 func TestCheckDir(t *testing.T) {
 	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	defer os.RemoveAll(fileDir)
 	actual := utils.CheckDir(fileDir)
@@ -226,7 +226,7 @@ func TestCheckDir(t *testing.T) {
 func TestCheckDirNoDir(t *testing.T) {
 	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	defer os.RemoveAll(fileDir)
 	fileDir = filepath.Join(fileDir, "/test")
@@ -239,48 +239,48 @@ func TestCheckDirNoDir(t *testing.T) {
 func TestMakeDir(t *testing.T) {
 	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	defer os.RemoveAll(fileDir)
 	fileDir = filepath.Join(fileDir, "/test/test")
 	err = utils.MakeDir(fileDir)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 }
 
 func TestMakeDirExistsDir(t *testing.T) {
 	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	defer os.RemoveAll(fileDir)
 	fileDir = filepath.Join(fileDir, "/test/test")
 	err = utils.MakeDir(fileDir)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	err = utils.MakeDir(fileDir)
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 }
 
 func TestMakeDirExistsFile(t *testing.T) {
 	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	defer os.RemoveAll(fileDir)
 	fileDir2 := filepath.Join(fileDir, "/dummy")
 	filename := filepath.Join(fileDir, "/dummy")
 	err = utils.WriteFile(filename, []byte("aaaa"))
 	if err != nil {
-		t.Errorf("Error occured: %s", err)
+		t.Errorf("Error occurred: %s", err)
 	}
 	err = utils.MakeDir(fileDir2)
 	if err == nil {
-		t.Errorf("Error not occured")
+		t.Errorf("Error not occurred")
 	}
 }
 

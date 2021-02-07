@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// WriteFile is a function that writes a file from a given byte slice.
 func WriteFile(filename string, output []byte) error {
 	file, err := os.Create(filename)
 	if err != nil {
@@ -21,6 +22,7 @@ func WriteFile(filename string, output []byte) error {
 	return nil
 }
 
+// ReadFile is a function that safely reads an object with a given file name using a buffer and returns a byte slice.
 func ReadFile(file string) ([]byte, error) {
 	const bufferSize = 256
 	var content []byte
@@ -45,6 +47,7 @@ func ReadFile(file string) ([]byte, error) {
 	return content, nil
 }
 
+// CheckDir is a function to check if the specified directory exists. It returns true if it exists, or false if it does not.
 func CheckDir(dir string) bool {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		return false
@@ -52,6 +55,8 @@ func CheckDir(dir string) bool {
 	return true
 }
 
+// MakeDir recursively creates the specified directory. If the same directory exists, it will return without doing anything.
+// If the same file exists, an error will occur.
 func MakeDir(dir string) error {
 	if err := os.MkdirAll(dir, 0777); err != nil {
 		return err
@@ -59,6 +64,8 @@ func MakeDir(dir string) error {
 	return nil
 }
 
+// GetContentType returns the MIME type corresponding to the extension from the file name.
+// For unregistered extensions, it returns "application/x-www-form-urlencoded" which does not indicate a specific MIME type.
 func GetContentType(key string) string {
 	if strings.HasSuffix(key, ".tar.gz") {
 		return "application/x-tar"
@@ -244,6 +251,8 @@ func GetContentType(key string) string {
 	}
 }
 
+// SanitizeInvalidFileName is a function to extract illegal characters from a file name.
+// In the future, we plan to replace it with a URL encoding function.
 func SanitizeInvalidFileName(str string) (result string) {
 	fmt.Println(str)
 	result = strings.Replace(strings.Replace(str, " ", "_", -1), "　", "_", -1)
