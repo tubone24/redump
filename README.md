@@ -11,6 +11,7 @@ You can use the API to retrieve tickets in Redmine, save them in JSON format, an
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![TestAndBuild](https://github.com/tubone24/redump/workflows/TestAndBuild/badge.svg)](https://github.com/tubone24/redump/actions)
 [![Coverage Status](https://coveralls.io/repos/github/tubone24/redump/badge.svg?branch=main)](https://coveralls.io/github/tubone24/redump?branch=main)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tubone24/redump)](https://goreportcard.com/report/github.com/tubone24/redump)
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/tubone24/redump)](https://pkg.go.dev/github.com/tubone24/redump)
 
 ## Table of Contents

@@ -65,3 +65,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           body_path: ./changelog.md
+      - name: Adding Go Proxy
+        run: |
+          wget https://proxy.golang.org/github.com/tubone24/redump/@v/${GITHUB_REF/refs\/tags\//}.info

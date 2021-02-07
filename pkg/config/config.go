@@ -1,3 +1,4 @@
+// Config package is a library for loading the configuration for running Redump from toml.
 package config
 
 import (
@@ -18,7 +19,7 @@ type ServerConfig struct {
 	ProjectId int    `toml:"project_id"`
 	Sleep     int    `toml:"sleep"`
 	Timeout   int    `toml:"timeout"`
-	ProxyUrl   string    `toml:"proxy_url"`
+	ProxyUrl  string `toml:"proxy_url"`
 }
 
 type MappingValue struct {
