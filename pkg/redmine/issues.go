@@ -1,3 +1,4 @@
+// Redmine Package is a set of accessors that provide you to get, update, and delete Redmine Issues, Wikis, files, and project-wide configuration values.
 package redmine
 
 import (
@@ -170,6 +171,9 @@ var UploadResult struct {
 	}
 }
 
+// UnmarshalByteIssue is function to create the structure of an Issue by receiving a byte slice.
+// If an invalid byte slice is received, an empty Issue structure will be returned with an error.
+// Deprecated: This function is deprecated
 func UnmarshalByteIssue(content []byte) (Issue, error) {
 	var emptyIssue Issue
 	err := json.Unmarshal(content, &issuesResult)
@@ -179,6 +183,9 @@ func UnmarshalByteIssue(content []byte) (Issue, error) {
 	return issueResult.Issue, nil
 }
 
+// GetIssues is function that you can get all issues of Redmine.
+// However, you can't get detailed information such as Watchers and Journals.
+// If you want to get them, you have to specify the Issue ID and get them individually for GetIssue.
 func GetIssues(url, key string, projectId, timeout int, customClient *http.Client) (Issues, error) {
 	var issuesUrl string
 	if projectId == 0 {
@@ -221,6 +228,7 @@ func GetIssues(url, key string, projectId, timeout int, customClient *http.Clien
 	return issues, nil
 }
 
+// GetIssue is function that you can retrieve the details by specifying the Issue ID.
 func GetIssue(url, key string, id, timeout int, customClient *http.Client) (Issue, error) {
 	var issue Issue
 	var client *utils.Api
@@ -240,6 +248,8 @@ func GetIssue(url, key string, id, timeout int, customClient *http.Client) (Issu
 	return issueResult.Issue, nil
 }
 
+// DownloadAttachmentFiles is function that you pass the Attachment structure,
+// you can store all the included attachments locally and return a byte slice of the attachment along with it
 func DownloadAttachmentFiles(key string, timeout int, attachments Attachments, customClient *http.Client) ([][]byte, error) {
 	//var result [][]byte
 	result := make([][]byte, len(attachments))
@@ -260,6 +270,8 @@ func DownloadAttachmentFiles(key string, timeout int, attachments Attachments, c
 	return result, nil
 }
 
+// CreateIssueFromByteSlice is function to create the structure of an Issue by receiving a byte slice.
+// If an invalid byte slice is received, an empty Issue structure will be returned with an error.
 func CreateIssueFromByteSlice(content []byte) (*Issue, error) {
 	var issue Issue
 	err := json.Unmarshal(content, &issue)
@@ -269,6 +281,7 @@ func CreateIssueFromByteSlice(content []byte) (*Issue, error) {
 	return &issue, nil
 }
 
+// CreateIssueParam is
 func CreateIssueParam(issue Issue, uploadFiles []FileParam) IssueParam {
 	var issueParam IssueParam
 	if issue.Attachments != nil {

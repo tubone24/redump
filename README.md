@@ -123,10 +123,10 @@ Redump is a command line tool, so it consists of a few commands and options.
 
 ```
 Usage:
-  redump migrate [-i|--issue <number>]
+  redump migrate [-i|--issue <number>] [-s|--silent]
   redump list
   redump dump [-c|--concurrency] [-i|--issue <number>]
-  redump restore [-i|--issue <number>]
+  redump restore [-i|--issue <number>] [-s|--silent]
   redump clear [-o|--old]
   redump -h|--help
   redump --version
@@ -135,6 +135,7 @@ Options:
   -h --help                  Show this screen.
   -c --concurrency           Concurrency Request Danger!
   -i --issue                 Specify Issues
+  -s --silent                Silent mode (never assign to issue)
   -o --old                   Old Server
   --version                  Show version.
 ```
@@ -151,6 +152,14 @@ set `-i` option and issues number.
 
 ```
 $ redmup migrate -i 133
+```
+
+If you are migrating a large number of issue tickets, it is recommended to use silent mode.
+
+Because notifications may be sent if you assign them to a person in charge.
+
+```
+$ redump migrate -s
 ```
 
 ## Contributing

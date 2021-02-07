@@ -2,6 +2,7 @@ package redmine_test
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/redmine"
 	"io"
@@ -686,4 +687,18 @@ func BenchmarkCreateJournalStrings(b *testing.B) {
 	bigIssueJson.Journals = journalsJson
 	b.ResetTimer()
 	_ = redmine.CreateJournalStrings(bigIssueJson)
+}
+
+func ExampleGetIssues() {
+	// All Projects
+	issues, _ := redmine.GetIssues("https://redmine.example.com", "your-api-key-1234567890", 0, 10000, nil)
+	fmt.Printf("'%#v'", issues)
+	// Several Project
+	issues, _ = redmine.GetIssues("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, nil)
+	fmt.Printf("'%#v'", issues)
+}
+
+func ExampleGetIssue() {
+	issue, _ := redmine.GetIssue("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, nil)
+	fmt.Printf("'%#v'", issue)
 }

@@ -7,6 +7,7 @@ import (
 
 // ConvertNewEnv converts the information in the source Redmine ticket
 // to that of the new Redmine ticket using the mappings that exist in Config.
+// When silent mode is enabled, only the user specified in default will be assigned.
 func ConvertNewEnv(issue Issue, conf config.Config, silent bool) (*Issue, error) {
 	var newIssue Issue
 	err := utils.DeepCopy(&newIssue, &issue)
