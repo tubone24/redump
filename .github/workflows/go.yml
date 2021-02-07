@@ -64,13 +64,20 @@ jobs:
       - name: Run benchmark
         run: |
           cd pkg/redmine
-          go test -bench . | tee output.txt
-          mv output.txt ../../
+          go test -bench . | tee output1.txt
+          mv output1.txt ../../
+          cd ../utils
+          go test -bench . | tee output2.txt
+          mv output2.txt ../../
+          cd ../../
+          cat output1.txt output2.txt > output.txt
       - name: Store benchmark result
         uses: rhysd/github-action-benchmark@v1
         with:
-          name: Redump Go Benchmark
+          name: Redump Benchmark
           tool: 'go'
           output-file-path: output.txt
           github-token: ${{ secrets.github_token }}
+          comment-on-alert: true
+          alert-comment-cc-users: '@tubone24'
           auto-push: true

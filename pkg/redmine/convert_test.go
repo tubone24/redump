@@ -258,66 +258,48 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 }
 
 func BenchmarkConvertNewEnv(b *testing.B) {
+	v1 := make([]config.MappingValue, 1000)
+	v2 := make([]config.MappingValue, 1000)
+	v3 := make([]config.MappingValue, 1000)
+	v4 := make([]config.MappingValue, 1000)
+	v5 := make([]config.MappingValue, 1000)
+	v6 := make([]config.MappingValue, 1000)
+	for i := 0; i < 1000; i++ {
+		v1[i] = config.MappingValue{Old: i, New: i+1}
+		v2[i] = config.MappingValue{Old: i, New: i+1}
+		v3[i] = config.MappingValue{Old: i, New: i+1}
+		v4[i] = config.MappingValue{Old: i, New: i+1}
+		v5[i] = config.MappingValue{Old: i, New: i+1}
+		v6[i] = config.MappingValue{Old: i, New: i+1}
+	}
 	cfg := config.Config{Mappings: []config.Mapping{
 		{
 			Name: "project_id",
-			Values: []config.MappingValue{
-				{
-					Old: 1,
-					New: 2,
-				},
-			},
+			Values: v1,
 		},
 		{
 			Name: "tracker_id",
-			Values: []config.MappingValue{
-				{
-					Old: 1,
-					New: 2,
-				},
-			},
+			Values: v2,
 		},
 		{
 			Name: "status_id",
-			Values: []config.MappingValue{
-				{
-					Old: 1,
-					New: 2,
-				},
-			},
+			Values: v3,
 		},
 		{
 			Name: "priority_id",
-			Values: []config.MappingValue{
-				{
-					Old: 1,
-					New: 2,
-				},
-			},
+			Values: v4,
 		},
 		{
 			Name: "user_id",
-			Values: []config.MappingValue{
-				{
-					Old: 1,
-					New: 2,
-				},
-			},
+			Values: v5,
 		},
 		{
 			Name: "custom_field_id",
-			Values: []config.MappingValue{
-				{
-					Old: 1,
-					New: 2,
-				},
-			},
+			Values: v6,
 		},
 	}}
 	b.ResetTimer()
-	for i := 0; i < 100; i++ {
-		_, _ = redmine.ConvertNewEnv(issueJson, cfg, false)
-	}
+	_, _ = redmine.ConvertNewEnv(issueJson, cfg, false)
 }
 
 func ExampleConvertNewEnv() {
