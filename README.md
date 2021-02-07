@@ -13,14 +13,21 @@ You can use the API to retrieve tickets in Redmine, save them in JSON format, an
 [![Coverage Status](https://coveralls.io/repos/github/tubone24/redump/badge.svg?branch=main)](https://coveralls.io/github/tubone24/redump?branch=main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tubone24/redump)](https://goreportcard.com/report/github.com/tubone24/redump)
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/tubone24/redump)](https://pkg.go.dev/github.com/tubone24/redump)
-[![see benchmark](https://img.shields.io/badge/See-Benchmark-blue)](https://tubone24.github.io/redump/dev/bench/)
+[![look at the benchmark](https://img.shields.io/badge/Look%20at-Benchmark-blue)](https://tubone24.github.io/redump/dev/bench/)
 
 ## Table of Contents
 
 - [Background](#background)
+  - [Features](#features)
 - [Install](#install)
+  - [Quick Install](#quick-install)
+  - [Manual Install](#manual-install)
 - [Usage](#usage)
+  - [Precondition](#precondition)
+  - [How to use](#how-to-use)
 - [Contributing](#contributing)
+  - [Testing](#testing)
+- [Document](#document)
 - [License](#license)
 
 ## Background
@@ -74,7 +81,7 @@ make run ARGS="dump"
 
 ## Usage
 
-#### precondition
+#### Precondition
 
 First, you need to make sure that you can use Redmine API for both Redmine source and destination. (need admin account!)
 
@@ -191,6 +198,12 @@ make bench
 Also benchmark results are graphed and stored daily.
 
 <https://tubone24.github.io/redump/dev/bench/>
+
+## Document
+
+More information? look at [pkg.go.dev](https://pkg.go.dev/github.com/tubone24/redump)
+
+<https://pkg.go.dev/github.com/tubone24/redump>
 
 ## License
 
