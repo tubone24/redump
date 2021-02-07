@@ -77,6 +77,12 @@ func Dump(projectId int, concurrency bool) {
 }
 
 func DumpOneIssue(issueId int) {
+	if !utils.CheckDir("data/issues/attachments") {
+		err := utils.MakeDir("data/issues/attachments")
+		if err != nil {
+			panic(err)
+		}
+	}
 	txtCh := make(chan string, 10)
 	defer close(txtCh)
 	go runDump(txtCh, issueId)

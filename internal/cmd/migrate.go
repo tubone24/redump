@@ -46,6 +46,12 @@ func Migrate(projectId int, silent bool) error {
 }
 
 func MigrateOneIssue(issueId int, silent bool) {
+	if !utils.CheckDir("data/issues/attachments") {
+		err := utils.MakeDir("data/issues/attachments")
+		if err != nil {
+			panic(err)
+		}
+	}
 	txtCh := make(chan string)
 	defer close(txtCh)
 	go runMigrateIssue(txtCh, issueId, silent)
