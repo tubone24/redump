@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 )
 
@@ -566,4 +567,640 @@ func ExampleListCustomFieldsId() {
 	for _, v := range resp {
 		fmt.Println(v.Name)
 	}
+}
+
+func BenchmarkListProjectId(b *testing.B) {
+	issueJsons10000 := make(redmine.Issues, 10000)
+	for i := 0; i <10000; i++ {
+		var ij redmine.Issue
+		if i % 2 == 0 {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i, Name: "testProject" + strconv.Itoa(i)},
+				Tracker: redmine.Tracker{Id: i, Name: "doing" + strconv.Itoa(i)},
+				Status:  redmine.Status{Id: i, Name: "test" + strconv.Itoa(i)}, Priority: redmine.Priority{Id: i, Name: "High" + strconv.Itoa(i)},
+				Author:      redmine.Author{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				AssignedTo:  redmine.AssignedTo{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				Subject:     "test1" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i,
+					Name:     "customField" + strconv.Itoa(i),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		} else {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i + 1, Name: "testProject" + strconv.Itoa(i + 1)},
+				Tracker: redmine.Tracker{Id: i + 1, Name: "doing" + strconv.Itoa(i + 1)},
+				Status:  redmine.Status{Id: i + 1, Name: "test" + strconv.Itoa(i + 1)}, Priority: redmine.Priority{Id: i + 1, Name: "High" + strconv.Itoa(i + 1)},
+				Author:      redmine.Author{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				AssignedTo:  redmine.AssignedTo{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				Subject:     "test" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i + 1,
+					Name:     "customField" + strconv.Itoa(i + 1),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		}
+		issueJsons10000[i] = &ij
+	}
+	_, _ = redmine.ListProjectId(issueJsons10000, "")
+}
+
+func BenchmarkListTrackerId(b *testing.B) {
+	issueJsons10000 := make(redmine.Issues, 10000)
+	for i := 0; i <10000; i++ {
+		var ij redmine.Issue
+		if i % 2 == 0 {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i, Name: "testProject" + strconv.Itoa(i)},
+				Tracker: redmine.Tracker{Id: i, Name: "doing" + strconv.Itoa(i)},
+				Status:  redmine.Status{Id: i, Name: "test" + strconv.Itoa(i)}, Priority: redmine.Priority{Id: i, Name: "High" + strconv.Itoa(i)},
+				Author:      redmine.Author{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				AssignedTo:  redmine.AssignedTo{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				Subject:     "test1" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i,
+					Name:     "customField" + strconv.Itoa(i),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		} else {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i + 1, Name: "testProject" + strconv.Itoa(i + 1)},
+				Tracker: redmine.Tracker{Id: i + 1, Name: "doing" + strconv.Itoa(i + 1)},
+				Status:  redmine.Status{Id: i + 1, Name: "test" + strconv.Itoa(i + 1)}, Priority: redmine.Priority{Id: i + 1, Name: "High" + strconv.Itoa(i + 1)},
+				Author:      redmine.Author{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				AssignedTo:  redmine.AssignedTo{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				Subject:     "test" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i + 1,
+					Name:     "customField" + strconv.Itoa(i + 1),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		}
+		issueJsons10000[i] = &ij
+	}
+	_, _ = redmine.ListTrackerId(issueJsons10000, "")
+}
+
+func BenchmarkListStatusId(b *testing.B) {
+	issueJsons10000 := make(redmine.Issues, 10000)
+	for i := 0; i <10000; i++ {
+		var ij redmine.Issue
+		if i % 2 == 0 {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i, Name: "testProject" + strconv.Itoa(i)},
+				Tracker: redmine.Tracker{Id: i, Name: "doing" + strconv.Itoa(i)},
+				Status:  redmine.Status{Id: i, Name: "test" + strconv.Itoa(i)}, Priority: redmine.Priority{Id: i, Name: "High" + strconv.Itoa(i)},
+				Author:      redmine.Author{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				AssignedTo:  redmine.AssignedTo{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				Subject:     "test1" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i,
+					Name:     "customField" + strconv.Itoa(i),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		} else {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i + 1, Name: "testProject" + strconv.Itoa(i + 1)},
+				Tracker: redmine.Tracker{Id: i + 1, Name: "doing" + strconv.Itoa(i + 1)},
+				Status:  redmine.Status{Id: i + 1, Name: "test" + strconv.Itoa(i + 1)}, Priority: redmine.Priority{Id: i + 1, Name: "High" + strconv.Itoa(i + 1)},
+				Author:      redmine.Author{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				AssignedTo:  redmine.AssignedTo{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				Subject:     "test" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i + 1,
+					Name:     "customField" + strconv.Itoa(i + 1),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		}
+		issueJsons10000[i] = &ij
+	}
+	_, _ = redmine.ListStatusId(issueJsons10000, "")
+}
+
+func BenchmarkListPriorityId(b *testing.B) {
+	issueJsons10000 := make(redmine.Issues, 10000)
+	for i := 0; i <10000; i++ {
+		var ij redmine.Issue
+		if i % 2 == 0 {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i, Name: "testProject" + strconv.Itoa(i)},
+				Tracker: redmine.Tracker{Id: i, Name: "doing" + strconv.Itoa(i)},
+				Status:  redmine.Status{Id: i, Name: "test" + strconv.Itoa(i)}, Priority: redmine.Priority{Id: i, Name: "High" + strconv.Itoa(i)},
+				Author:      redmine.Author{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				AssignedTo:  redmine.AssignedTo{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				Subject:     "test1" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i,
+					Name:     "customField" + strconv.Itoa(i),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		} else {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i + 1, Name: "testProject" + strconv.Itoa(i + 1)},
+				Tracker: redmine.Tracker{Id: i + 1, Name: "doing" + strconv.Itoa(i + 1)},
+				Status:  redmine.Status{Id: i + 1, Name: "test" + strconv.Itoa(i + 1)}, Priority: redmine.Priority{Id: i + 1, Name: "High" + strconv.Itoa(i + 1)},
+				Author:      redmine.Author{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				AssignedTo:  redmine.AssignedTo{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				Subject:     "test" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i + 1,
+					Name:     "customField" + strconv.Itoa(i + 1),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		}
+		issueJsons10000[i] = &ij
+	}
+	_, _ = redmine.ListPriorityId(issueJsons10000, "")
+}
+
+func BenchmarkListUserIdAssignedTo(b *testing.B) {
+	issueJsons10000 := make(redmine.Issues, 10000)
+	for i := 0; i <10000; i++ {
+		var ij redmine.Issue
+		if i % 2 == 0 {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i, Name: "testProject" + strconv.Itoa(i)},
+				Tracker: redmine.Tracker{Id: i, Name: "doing" + strconv.Itoa(i)},
+				Status:  redmine.Status{Id: i, Name: "test" + strconv.Itoa(i)}, Priority: redmine.Priority{Id: i, Name: "High" + strconv.Itoa(i)},
+				Author:      redmine.Author{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				AssignedTo:  redmine.AssignedTo{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				Subject:     "test1" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i,
+					Name:     "customField" + strconv.Itoa(i),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		} else {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i + 1, Name: "testProject" + strconv.Itoa(i + 1)},
+				Tracker: redmine.Tracker{Id: i + 1, Name: "doing" + strconv.Itoa(i + 1)},
+				Status:  redmine.Status{Id: i + 1, Name: "test" + strconv.Itoa(i + 1)}, Priority: redmine.Priority{Id: i + 1, Name: "High" + strconv.Itoa(i + 1)},
+				Author:      redmine.Author{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				AssignedTo:  redmine.AssignedTo{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				Subject:     "test" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i + 1,
+					Name:     "customField" + strconv.Itoa(i + 1),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		}
+		issueJsons10000[i] = &ij
+	}
+	_, _ = redmine.ListUserIdAssignedTo(issueJsons10000, "")
+}
+
+func BenchmarkListCustomFieldsId(b *testing.B) {
+	issueJsons10000 := make(redmine.Issues, 10000)
+	for i := 0; i <10000; i++ {
+		var ij redmine.Issue
+		if i % 2 == 0 {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i, Name: "testProject" + strconv.Itoa(i)},
+				Tracker: redmine.Tracker{Id: i, Name: "doing" + strconv.Itoa(i)},
+				Status:  redmine.Status{Id: i, Name: "test" + strconv.Itoa(i)}, Priority: redmine.Priority{Id: i, Name: "High" + strconv.Itoa(i)},
+				Author:      redmine.Author{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				AssignedTo:  redmine.AssignedTo{Id: i, Name: "testUser" + strconv.Itoa(i)},
+				Subject:     "test1" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i,
+					Name:     "customField" + strconv.Itoa(i),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		} else {
+			ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: i + 1, Name: "testProject" + strconv.Itoa(i + 1)},
+				Tracker: redmine.Tracker{Id: i + 1, Name: "doing" + strconv.Itoa(i + 1)},
+				Status:  redmine.Status{Id: i + 1, Name: "test" + strconv.Itoa(i + 1)}, Priority: redmine.Priority{Id: i + 1, Name: "High" + strconv.Itoa(i + 1)},
+				Author:      redmine.Author{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				AssignedTo:  redmine.AssignedTo{Id: i + 1, Name: "testUser" + strconv.Itoa(i + 1)},
+				Subject:     "test" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       i + 1,
+					Name:     "customField" + strconv.Itoa(i + 1),
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+		}
+		issueJsons10000[i] = &ij
+	}
+	_, _ = redmine.ListCustomFieldsId(issueJsons10000, "")
 }

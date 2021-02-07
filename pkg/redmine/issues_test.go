@@ -668,7 +668,7 @@ func BenchmarkGetIssues(b *testing.B) {
 	issueJsons100 := make(redmine.Issues, 100)
 	for i := 0; i <100; i++ {
 		ij := redmine.Issue{
-			Id:      1,
+			Id:      i,
 			Project: redmine.Project{Id: 1, Name: "testProject"},
 			Tracker: redmine.Tracker{Id: 1, Name: "doing"},
 			Status:  redmine.Status{Id: 1, Name: "test"}, Priority: redmine.Priority{Id: 1, Name: "High"},
