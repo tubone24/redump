@@ -48,10 +48,10 @@ var issueJson = redmine.Issue{
 				Property: "change",
 				Name:     "upload",
 				OldValue: "aaa",
-				NewValue: "bbb"}},},
+				NewValue: "bbb"}}},
 	},
 	Watchers: redmine.Watchers{&redmine.Watcher{
-		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
 }
 
 func TestDeepCopy(t *testing.T) {

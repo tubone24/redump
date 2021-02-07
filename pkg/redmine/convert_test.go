@@ -127,7 +127,7 @@ func TestConvertNewEnvSilent(t *testing.T) {
 			},
 		},
 		{
-			Name: "user_id",
+			Name:    "user_id",
 			Default: 5,
 			Values: []config.MappingValue{
 				{
@@ -173,7 +173,7 @@ func TestConvertNewEnvSilent(t *testing.T) {
 func TestConvertNewEnvDefaultValue(t *testing.T) {
 	cfg := config.Config{Mappings: []config.Mapping{
 		{
-			Name: "project_id",
+			Name:    "project_id",
 			Default: 5,
 			Values: []config.MappingValue{
 				{
@@ -183,7 +183,7 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 			},
 		},
 		{
-			Name: "tracker_id",
+			Name:    "tracker_id",
 			Default: 5,
 			Values: []config.MappingValue{
 				{
@@ -193,7 +193,7 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 			},
 		},
 		{
-			Name: "status_id",
+			Name:    "status_id",
 			Default: 5,
 			Values: []config.MappingValue{
 				{
@@ -203,7 +203,7 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 			},
 		},
 		{
-			Name: "priority_id",
+			Name:    "priority_id",
 			Default: 5,
 			Values: []config.MappingValue{
 				{
@@ -213,7 +213,7 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 			},
 		},
 		{
-			Name: "user_id",
+			Name:    "user_id",
 			Default: 5,
 			Values: []config.MappingValue{
 				{
@@ -223,7 +223,7 @@ func TestConvertNewEnvDefaultValue(t *testing.T) {
 			},
 		},
 		{
-			Name: "custom_field_id",
+			Name:    "custom_field_id",
 			Default: 5,
 			Values: []config.MappingValue{
 				{
@@ -363,10 +363,10 @@ func ExampleConvertNewEnv() {
 					Property: "change",
 					Name:     "upload",
 					OldValue: "aaa",
-					NewValue: "bbb"}},},
+					NewValue: "bbb"}}},
 		},
 		Watchers: redmine.Watchers{&redmine.Watcher{
-			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
 	}
 	cfg := config.Config{Mappings: []config.Mapping{
 		{

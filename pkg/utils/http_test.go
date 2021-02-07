@@ -61,43 +61,43 @@ func TestApiGet(t *testing.T) {
 		"normal": {
 			client:         client(t, 0, nil),
 			expectHasError: false,
-			timeout: 10000,
+			timeout:        10000,
 			expectedText:   "{\"Status\":\"OK\"}",
 		},
 		"204NoContent": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusNoContent,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("{\"Status\":\"OK\"}"))),
 				Header:     make(http.Header),
 			}),
 			expectHasError: false,
-			timeout: 10000,
+			timeout:        10000,
 			expectedText:   "{\"Status\":\"OK\"}",
 		},
 		"timeout": {
-			client:         client(t, 0, nil),
-			expectHasError: true,
-			timeout: 0,
+			client:               client(t, 0, nil),
+			expectHasError:       true,
+			timeout:              0,
 			expectedErrorMessage: "HTTP request cancelled",
 		},
 		"500Error": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusInternalServerError,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
 				Header:     make(http.Header),
 			}),
-			expectHasError: true,
-			timeout: 10000,
+			expectHasError:       true,
+			timeout:              10000,
 			expectedErrorMessage: "HTTP Client error!: 500",
 		},
 		"400Error": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusBadRequest,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
 				Header:     make(http.Header),
 			}),
-			expectHasError: true,
-			timeout: 10000,
+			expectHasError:       true,
+			timeout:              10000,
 			expectedErrorMessage: "HTTP Client error!: 400",
 		},
 	}
@@ -175,43 +175,43 @@ func TestApiPost(t *testing.T) {
 		"normal": {
 			client:         client(t, 0, nil),
 			expectHasError: false,
-			timeout: 10000,
+			timeout:        10000,
 			expectedText:   "{\"Status\":\"OK\"}",
 		},
 		"204NoContent": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusNoContent,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("{\"Status\":\"OK\"}"))),
 				Header:     make(http.Header),
 			}),
 			expectHasError: false,
-			timeout: 10000,
+			timeout:        10000,
 			expectedText:   "{\"Status\":\"OK\"}",
 		},
 		"timeout": {
-			client:         client(t, 0, nil),
-			expectHasError: true,
-			timeout: 0,
+			client:               client(t, 0, nil),
+			expectHasError:       true,
+			timeout:              0,
 			expectedErrorMessage: "HTTP request cancelled",
 		},
 		"500Error": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusInternalServerError,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
 				Header:     make(http.Header),
 			}),
-			expectHasError: true,
-			timeout: 10000,
+			expectHasError:       true,
+			timeout:              10000,
 			expectedErrorMessage: "HTTP Client error!: 500",
 		},
 		"400Error": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusBadRequest,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
 				Header:     make(http.Header),
 			}),
-			expectHasError: true,
-			timeout: 10000,
+			expectHasError:       true,
+			timeout:              10000,
 			expectedErrorMessage: "HTTP Client error!: 400",
 		},
 	}
@@ -257,43 +257,43 @@ func TestApiPut(t *testing.T) {
 		"normal": {
 			client:         client(t, 0, nil),
 			expectHasError: false,
-			timeout: 10000,
+			timeout:        10000,
 			expectedText:   "{\"Status\":\"OK\"}",
 		},
 		"204NoContent": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusNoContent,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("{\"Status\":\"OK\"}"))),
 				Header:     make(http.Header),
 			}),
 			expectHasError: false,
-			timeout: 10000,
+			timeout:        10000,
 			expectedText:   "{\"Status\":\"OK\"}",
 		},
 		"timeout": {
-			client:         client(t, 0, nil),
-			expectHasError: true,
-			timeout: 0,
+			client:               client(t, 0, nil),
+			expectHasError:       true,
+			timeout:              0,
 			expectedErrorMessage: "HTTP request cancelled",
 		},
 		"500Error": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusInternalServerError,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
 				Header:     make(http.Header),
 			}),
-			expectHasError: true,
-			timeout: 10000,
+			expectHasError:       true,
+			timeout:              10000,
 			expectedErrorMessage: "HTTP Client error!: 500",
 		},
 		"400Error": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusBadRequest,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
 				Header:     make(http.Header),
 			}),
-			expectHasError: true,
-			timeout: 10000,
+			expectHasError:       true,
+			timeout:              10000,
 			expectedErrorMessage: "HTTP Client error!: 400",
 		},
 	}
@@ -335,43 +335,43 @@ func TestApiDelete(t *testing.T) {
 		"normal": {
 			client:         client(t, 0, nil),
 			expectHasError: false,
-			timeout: 10000,
+			timeout:        10000,
 			expectedText:   "{\"Status\":\"OK\"}",
 		},
 		"204NoContent": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusNoContent,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("{\"Status\":\"OK\"}"))),
 				Header:     make(http.Header),
 			}),
 			expectHasError: false,
-			timeout: 10000,
+			timeout:        10000,
 			expectedText:   "{\"Status\":\"OK\"}",
 		},
 		"timeout": {
-			client:         client(t, 0, nil),
-			expectHasError: true,
-			timeout: 0,
+			client:               client(t, 0, nil),
+			expectHasError:       true,
+			timeout:              0,
 			expectedErrorMessage: "HTTP request cancelled",
 		},
 		"500Error": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusInternalServerError,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
 				Header:     make(http.Header),
 			}),
-			expectHasError: true,
-			timeout: 10000,
+			expectHasError:       true,
+			timeout:              10000,
 			expectedErrorMessage: "HTTP Client error!: 500",
 		},
 		"400Error": {
-			client:         client(t, 0, &http.Response{
+			client: client(t, 0, &http.Response{
 				StatusCode: http.StatusBadRequest,
 				Body:       ioutil.NopCloser(bytes.NewBuffer([]byte("error"))),
 				Header:     make(http.Header),
 			}),
-			expectHasError: true,
-			timeout: 10000,
+			expectHasError:       true,
+			timeout:              10000,
 			expectedErrorMessage: "HTTP Client error!: 400",
 		},
 	}

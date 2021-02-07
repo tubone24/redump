@@ -29,10 +29,10 @@ func NewTestClient(fn RoundTripFunc) *http.Client {
 }
 
 var uploadFile = redmine.FileParam{
-	FileName: "test.png",
+	FileName:    "test.png",
 	ContentType: "image/png",
-	Contents: []byte{},
-	Token: "tokentoken",
+	Contents:    []byte{},
+	Token:       "tokentoken",
 }
 
 var issueJson = redmine.Issue{
@@ -77,10 +77,10 @@ var issueJson = redmine.Issue{
 				Property: "change",
 				Name:     "upload",
 				OldValue: "aaa",
-				NewValue: "bbb"}},},
+				NewValue: "bbb"}}},
 	},
 	Watchers: redmine.Watchers{&redmine.Watcher{
-		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
 }
 
 var issueJsonNoAttachments = redmine.Issue{
@@ -98,8 +98,8 @@ var issueJsonNoAttachments = redmine.Issue{
 		Name:     "customField1",
 		Multiple: true,
 		Value:    []string{"aaaa", "bbb", "ccc"}}},
-	CreatedOn: "2020-01-01T00:00:00Z",
-	UpdatedOn: "2020-01-01T00:00:00Z",
+	CreatedOn:   "2020-01-01T00:00:00Z",
+	UpdatedOn:   "2020-01-01T00:00:00Z",
 	Attachments: nil,
 	Journals: redmine.Journals{&redmine.Journal{
 		Id:        1,
@@ -119,10 +119,10 @@ var issueJsonNoAttachments = redmine.Issue{
 				Property: "change",
 				Name:     "upload",
 				OldValue: "aaa",
-				NewValue: "bbb"}},},
+				NewValue: "bbb"}}},
 	},
 	Watchers: redmine.Watchers{&redmine.Watcher{
-		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
 }
 
 var issueJsonInvalidAttachmentsUrl = redmine.Issue{
@@ -167,19 +167,19 @@ var issueJsonInvalidAttachmentsUrl = redmine.Issue{
 				Property: "change",
 				Name:     "upload",
 				OldValue: "aaa",
-				NewValue: "bbb"}},},
+				NewValue: "bbb"}}},
 	},
 	Watchers: redmine.Watchers{&redmine.Watcher{
-		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+		Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
 }
 
 var issueJsonParam = redmine.IssueParam{
-	ProjectId: 1,
-	TrackerId: 1,
-	StatusId: 1,
-	PriorityId: 1,
-	Subject: "test1",
-	Description: "testtesttesttest",
+	ProjectId:    1,
+	TrackerId:    1,
+	StatusId:     1,
+	PriorityId:   1,
+	Subject:      "test1",
+	Description:  "testtesttesttest",
 	AssignedToId: 1,
 	CustomFields: redmine.CustomFields{
 		&redmine.CustomField{Id: 1},
@@ -187,8 +187,8 @@ var issueJsonParam = redmine.IssueParam{
 	Notes: "testNote",
 	Uploads: []redmine.Uploads{
 		redmine.Uploads{
-			Token: "aaa",
-			FileName: "aaa.png",
+			Token:       "aaa",
+			FileName:    "aaa.png",
 			ContentType: "image/png",
 		},
 	},
@@ -526,14 +526,14 @@ func TestCreateIssue(t *testing.T) {
 }
 
 func TestCreateIssueInvalidUrl(t *testing.T) {
-	_, err := redmine.CreateIssue("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "xxxx", 1000, issueJsonParam,nil)
+	_, err := redmine.CreateIssue("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "xxxx", 1000, issueJsonParam, nil)
 	if err == nil {
 		t.Errorf("Error not occured")
 	}
 }
 
 func TestCreateIssueInvalidResp(t *testing.T) {
-	_, err := redmine.CreateIssue("https://example.com", "xxxx", 1000, issueJsonParam,clientIssuesInvalidResp(t, 1000, nil))
+	_, err := redmine.CreateIssue("https://example.com", "xxxx", 1000, issueJsonParam, clientIssuesInvalidResp(t, 1000, nil))
 	if err == nil {
 		t.Errorf("Error not occured")
 	}
@@ -718,18 +718,18 @@ func ExampleDownloadAttachmentFiles() {
 	resp, _ := redmine.DownloadAttachmentFiles("https://redmine.example.com", 10000, attachment, nil)
 	// Return byte slice's slice. So for loop.
 	for i, v := range resp {
-		_ = utils.WriteFile("test" +  strconv.Itoa(i) + ".png", v)
+		_ = utils.WriteFile("test"+strconv.Itoa(i)+".png", v)
 	}
 }
 
 func ExampleCreateIssue() {
 	var exampleParam = redmine.IssueParam{
-		ProjectId: 1,
-		TrackerId: 1,
-		StatusId: 1,
-		PriorityId: 1,
-		Subject: "test1",
-		Description: "testtesttesttest",
+		ProjectId:    1,
+		TrackerId:    1,
+		StatusId:     1,
+		PriorityId:   1,
+		Subject:      "test1",
+		Description:  "testtesttesttest",
 		AssignedToId: 1,
 		CustomFields: redmine.CustomFields{
 			&redmine.CustomField{Id: 1},
@@ -737,8 +737,8 @@ func ExampleCreateIssue() {
 		Notes: "testNote",
 		Uploads: []redmine.Uploads{
 			redmine.Uploads{
-				Token: "aaa",
-				FileName: "aaa.png",
+				Token:       "aaa",
+				FileName:    "aaa.png",
 				ContentType: "image/png",
 			},
 		},
@@ -797,17 +797,17 @@ func ExampleCreateIssueParam() {
 					Property: "change",
 					Name:     "upload",
 					OldValue: "aaa",
-					NewValue: "bbb"}},},
+					NewValue: "bbb"}}},
 		},
 		Watchers: redmine.Watchers{&redmine.Watcher{
-			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
 	}
 	exampleUploadFiles := []redmine.FileParam{
 		{
-			FileName: "test.png",
+			FileName:    "test.png",
 			ContentType: "image/png",
-			Contents: []byte{},
-			Token: "tokentoken",
+			Contents:    []byte{},
+			Token:       "tokentoken",
 		},
 	}
 	resp := redmine.CreateIssueParam(exampleIssue, exampleUploadFiles)
@@ -857,10 +857,10 @@ func ExampleCreateJournalStrings() {
 					Property: "change",
 					Name:     "upload",
 					OldValue: "aaa",
-					NewValue: "bbb"}},},
+					NewValue: "bbb"}}},
 		},
 		Watchers: redmine.Watchers{&redmine.Watcher{
-			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
 	}
 	resp := redmine.CreateJournalStrings(exampleIssue)
 	for _, v := range resp {
@@ -920,10 +920,10 @@ func ExampleUpdateWatchers() {
 					Property: "change",
 					Name:     "upload",
 					OldValue: "aaa",
-					NewValue: "bbb"}},},
+					NewValue: "bbb"}}},
 		},
 		Watchers: redmine.Watchers{&redmine.Watcher{
-			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
 	}
 	_ = redmine.UpdateWatchers("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, exampleIssue, nil)
 }

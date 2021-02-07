@@ -1,6 +1,6 @@
 package utils
 
-import 	"github.com/goccy/go-json"
+import "github.com/goccy/go-json"
 
 func DeepCopy(dst interface{}, src interface{}) error {
 	bytes, err := json.Marshal(src)

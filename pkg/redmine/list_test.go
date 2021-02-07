@@ -1,22 +1,22 @@
 package redmine_test
 
 import (
+	"github.com/tubone24/redump/pkg/redmine"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
-	"github.com/tubone24/redump/pkg/redmine"
 )
 
 func TestListProjectId(t *testing.T) {
 	issuesJson := redmine.Issues{&issueJson}
-	filedir, err :=  ioutil.TempDir("", "redump_test")
+	filedir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
 	defer os.RemoveAll(filedir)
 	filename := filepath.Join(filedir, "project_id.json")
-	resp, err  := redmine.ListProjectId(issuesJson, filename)
+	resp, err := redmine.ListProjectId(issuesJson, filename)
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -30,13 +30,13 @@ func TestListProjectId(t *testing.T) {
 
 func TestListTrackerId(t *testing.T) {
 	issuesJson := redmine.Issues{&issueJson}
-	filedir, err :=  ioutil.TempDir("", "redump_test")
+	filedir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
 	defer os.RemoveAll(filedir)
 	filename := filepath.Join(filedir, "tracker_id.json")
-	resp, err  := redmine.ListTrackerId(issuesJson, filename)
+	resp, err := redmine.ListTrackerId(issuesJson, filename)
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -50,13 +50,13 @@ func TestListTrackerId(t *testing.T) {
 
 func TestListStatusId(t *testing.T) {
 	issuesJson := redmine.Issues{&issueJson}
-	filedir, err :=  ioutil.TempDir("", "redump_test")
+	filedir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
 	defer os.RemoveAll(filedir)
 	filename := filepath.Join(filedir, "status_id.json")
-	resp, err  := redmine.ListStatusId(issuesJson, filename)
+	resp, err := redmine.ListStatusId(issuesJson, filename)
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -70,13 +70,13 @@ func TestListStatusId(t *testing.T) {
 
 func TestListPriorityId(t *testing.T) {
 	issuesJson := redmine.Issues{&issueJson}
-	filedir, err :=  ioutil.TempDir("", "redump_test")
+	filedir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
 	defer os.RemoveAll(filedir)
 	filename := filepath.Join(filedir, "priority_id.json")
-	resp, err  := redmine.ListPriorityId(issuesJson, filename)
+	resp, err := redmine.ListPriorityId(issuesJson, filename)
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -90,13 +90,13 @@ func TestListPriorityId(t *testing.T) {
 
 func TestListUserIdAssignedTo(t *testing.T) {
 	issuesJson := redmine.Issues{&issueJson}
-	filedir, err :=  ioutil.TempDir("", "redump_test")
+	filedir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
 	defer os.RemoveAll(filedir)
 	filename := filepath.Join(filedir, "user_id.json")
-	resp, err  := redmine.ListUserIdAssignedTo(issuesJson, filename)
+	resp, err := redmine.ListUserIdAssignedTo(issuesJson, filename)
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -110,13 +110,13 @@ func TestListUserIdAssignedTo(t *testing.T) {
 
 func TestListCustomFieldsId(t *testing.T) {
 	issuesJson := redmine.Issues{&issueJson}
-	filedir, err :=  ioutil.TempDir("", "redump_test")
+	filedir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
 	defer os.RemoveAll(filedir)
 	filename := filepath.Join(filedir, "custom_fields_id_list.json")
-	resp, err  := redmine.ListCustomFieldsId(issuesJson, filename)
+	resp, err := redmine.ListCustomFieldsId(issuesJson, filename)
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}

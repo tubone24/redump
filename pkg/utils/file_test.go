@@ -1,12 +1,12 @@
 package utils_test
 
 import (
+	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/utils"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
-	"github.com/goccy/go-json"
 )
 
 func TestGetContentType(t *testing.T) {
@@ -136,7 +136,7 @@ func TestReadWriteFile(t *testing.T) {
 		Test string
 	}
 	testText := "Hello Redmine World"
-	filedir, err :=  ioutil.TempDir("", "redump_test")
+	filedir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -159,7 +159,7 @@ func TestReadWriteFile(t *testing.T) {
 }
 
 func TestWriteFileExistDir(t *testing.T) {
-	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -177,7 +177,7 @@ func TestWriteFileExistDir(t *testing.T) {
 }
 
 func TestReadFileInvalidFileName(t *testing.T) {
-	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -194,7 +194,7 @@ func TestReadFileInvalidFileName(t *testing.T) {
 }
 
 func TestReadFileLookUpDir(t *testing.T) {
-	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -212,7 +212,7 @@ func TestReadFileLookUpDir(t *testing.T) {
 }
 
 func TestCheckDir(t *testing.T) {
-	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -224,7 +224,7 @@ func TestCheckDir(t *testing.T) {
 }
 
 func TestCheckDirNoDir(t *testing.T) {
-	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -237,7 +237,7 @@ func TestCheckDirNoDir(t *testing.T) {
 }
 
 func TestMakeDir(t *testing.T) {
-	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -250,7 +250,7 @@ func TestMakeDir(t *testing.T) {
 }
 
 func TestMakeDirExistsDir(t *testing.T) {
-	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}
@@ -267,7 +267,7 @@ func TestMakeDirExistsDir(t *testing.T) {
 }
 
 func TestMakeDirExistsFile(t *testing.T) {
-	fileDir, err :=  ioutil.TempDir("", "redump_test")
+	fileDir, err := ioutil.TempDir("", "redump_test")
 	if err != nil {
 		t.Errorf("Error occured: %s", err)
 	}

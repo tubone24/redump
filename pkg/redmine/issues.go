@@ -400,7 +400,7 @@ func UploadAttachmentFiles(u, key string, timeout int, files []FileParam, custom
 			return nil, err
 		}
 		// newFiles = append(newFiles, FileParam{FileName: file.FileName, ContentType: file.ContentType, Contents: file.Contents, Token: UploadResult.Upload.Token})
-		newFiles[i] =  FileParam{FileName: file.FileName, ContentType: file.ContentType, Contents: file.Contents, Token: UploadResult.Upload.Token}
+		newFiles[i] = FileParam{FileName: file.FileName, ContentType: file.ContentType, Contents: file.Contents, Token: UploadResult.Upload.Token}
 	}
 	return newFiles, nil
 }
