@@ -2,6 +2,7 @@ package utils_test
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/utils"
 	"io/ioutil"
@@ -410,4 +411,34 @@ func TestNewProxyClient(t *testing.T) { //しょぼいテスト...
 	if reflect.TypeOf(actual).Kind().String() != "ptr" {
 		t.Errorf("Types not match '%s'", reflect.TypeOf(actual).Kind().String())
 	}
+}
+
+func ExampleApi_Get() {
+	client := utils.NewHttpClient(10000)
+	resp, _ := client.Get("https://aws-health-dashboard.vercel.app/api/aws")
+	fmt.Println(string(resp))
+}
+
+func ExampleApi_Post() {
+	client := utils.NewHttpClient(10000)
+	resp, _ := client.Post("https://aws-health-dashboard.vercel.app/api/aws", "application/json", []byte("{\"test\": \"test\"}"))
+	fmt.Println(string(resp))
+}
+
+func ExampleApi_Put() {
+	client := utils.NewHttpClient(10000)
+	_ := client.Put("https://example.com/test", "application/json", []byte("{\"test\": \"test\"}"))
+}
+
+func ExampleApi_Delete() {
+	client := utils.NewHttpClient(10000)
+	_ := client.Delete("https://example.com/test")
+}
+
+func ExampleNewProxyClient() {
+	proxy, _ := utils.NewProxyClient("http://tubone24:password@127.0.0.1:8080")
+	client := utils.NewHttpClient(10000,  utils.OptionHTTPClient(proxy))
+	// via Proxy
+	resp, _ := client.Get("https://aws-health-dashboard.vercel.app/api/aws")
+	fmt.Println(string(resp))
 }

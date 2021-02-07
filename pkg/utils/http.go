@@ -35,6 +35,7 @@ func NewHttpClient(timeout int, opts ...Option) *Api {
 
 type Option func(*Api)
 
+// OptionHTTPClient is a function used to specify a custom client.
 func OptionHTTPClient(c *http.Client) Option {
 	return func(api *Api) {
 		api.httpclient = c
@@ -77,6 +78,7 @@ func (e *HttpClientError) Error() string {
 	return "HTTP Client error!: " + strconv.Itoa(e.StatusCode)
 }
 
+// Get function is a function to HTTP GET. The result can be obtained as a byte slice.
 func (api *Api) Get(url string) ([]byte, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -99,6 +101,7 @@ func (api *Api) Get(url string) ([]byte, error) {
 	return body, nil
 }
 
+// Post function is a function to HTTP POST. The result can be obtained as a byte slice.
 func (api *Api) Post(url, contentType string, data []byte) ([]byte, error) {
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(data))
 	if err != nil {
@@ -122,6 +125,7 @@ func (api *Api) Post(url, contentType string, data []byte) ([]byte, error) {
 	return body, nil
 }
 
+// // Put function is a function to HTTP PUT. The result can be obtained as a byte slice.
 func (api *Api) Put(url, contentType string, data []byte) error {
 	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(data))
 	if err != nil {
@@ -141,6 +145,7 @@ func (api *Api) Put(url, contentType string, data []byte) error {
 	return nil
 }
 
+// Delete function is a function to HTTP DELETE. The result can be obtained as a byte slice.
 func (api *Api) Delete(url string) error {
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
@@ -159,6 +164,7 @@ func (api *Api) Delete(url string) error {
 	return nil
 }
 
+// NewProxyClient can create an http client with proxy settings by specifying the URL of the HTTP Proxy.
 func NewProxyClient(proxyUrl string) (*http.Client, error) {
 	pu, err := url.Parse(proxyUrl)
 	if err != nil {

@@ -1,6 +1,7 @@
 package utils_test
 
 import (
+	"fmt"
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/utils"
 	"io/ioutil"
@@ -290,4 +291,37 @@ func TestSanitizeInvalidFileName(t *testing.T) {
 	if actual != "test_test_testtest.com" {
 		t.Errorf("expected: %s, actual %s", "test_test_testtest.com", testStr)
 	}
+}
+
+func ExampleCheckDir() {
+	resp := utils.CheckDir("test")
+	fmt.Printf("%t", resp)
+}
+
+func ExampleMakeDir() {
+	_ = utils.MakeDir("test")
+	resp := utils.CheckDir("test")
+	// true
+	fmt.Printf("%t", resp)
+}
+
+func ExampleGetContentType() {
+	resp := utils.GetContentType("test.png")
+	// image/png
+	fmt.Println(resp)
+}
+
+func ExampleReadFile() {
+	resp, _ := utils.ReadFile("test.json")
+	fmt.Println(string(resp))
+}
+
+func ExampleWriteFile() {
+	_ = utils.WriteFile("test.json", []byte("{\"some_json\": \"tubone24\"}"))
+}
+
+func ExampleSanitizeInvalidFileName() {
+	resp := utils.SanitizeInvalidFileName("test test　testtest test 　test")
+	// testtesttesttesttesttest
+	fmt.Println(resp)
 }

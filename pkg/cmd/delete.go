@@ -1,3 +1,4 @@
+// cmd package is a controller to run on the command line when Redump is started by itself.
 package cmd
 
 import (
