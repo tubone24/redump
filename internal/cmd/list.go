@@ -12,6 +12,12 @@ func ListAll(projectId int) error {
 	if err != nil {
 		return err
 	}
+	if !utils.CheckDir("data/issues/attachments") {
+		err := utils.MakeDir("data/issues/attachments")
+		if err != nil {
+			panic(err)
+		}
+	}
 	var customClient *http.Client
 	if cfg.ServerConfig.ProxyUrl != "" {
 		customClient, err = utils.NewProxyClient(cfg.ServerConfig.ProxyUrl)
