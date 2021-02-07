@@ -934,7 +934,7 @@ func ExampleUploadAttachmentFiles() {
 			FileName:    "test.png",
 			ContentType: "image/png",
 			Contents:    []byte{},
-		}
+		},
 	}
 	fileParams, _ := redmine.UploadAttachmentFiles("https://redmine.example.com", "your-api-key-1234567890", 10000, ExampleuploadFile, nil)
 	fmt.Println(fileParams[0].Token)
