@@ -6,7 +6,7 @@
 
 You can use the API to retrieve tickets in Redmine, save them in JSON format, and migrate them to another Redmine.
 
-![redump - Go Version](https://img.shields.io/badge/go-1.12-blue.svg)
+![redump - Go Version](https://img.shields.io/badge/go-1.12--1.15-blue)
 [![license](https://img.shields.io/github/license/tubone24/redump.svg)](LICENSE)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![TestAndBuild](https://github.com/tubone24/redump/workflows/TestAndBuild/badge.svg)](https://github.com/tubone24/redump/actions)
