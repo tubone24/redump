@@ -27,8 +27,8 @@ jobs:
       run: go test -v ./... -count=1
       env:
         GOGC: 1
-    - name: test with race detector
-      run: go test -v -race ./... -count=1
+#    - name: test with race detector
+#      run: go test -v -race ./... -count=1
 
   coverage:
     runs-on: ubuntu-latest
