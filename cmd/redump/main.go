@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/docopt/docopt-go"
-	"github.com/tubone24/redump/pkg/cmd"
+	"github.com/tubone24/redump/internal/cmd"
 	"github.com/tubone24/redump/pkg/config"
 )
 
