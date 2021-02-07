@@ -37,7 +37,10 @@ type Config struct {
 	ServerConfig    ServerConfig `toml:"server"`
 	NewServerConfig ServerConfig `toml:"new_server"`
 	Mappings        []Mapping    `toml:"mappings"`
+	Version         string
 }
+
+const VERSION = "v1.0.2"
 
 // GetConfig is a function to read the configuration described in toml.
 // Please refer to README for how to write config.toml.
@@ -67,5 +70,6 @@ func GetConfig(configPath string) (*Config, error) {
 	if config.NewServerConfig.Timeout == 0 {
 		config.NewServerConfig.Timeout = 60000
 	}
+	config.Version = VERSION
 	return &config, nil
 }

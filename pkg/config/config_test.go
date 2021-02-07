@@ -34,10 +34,13 @@ func TestGetConfig(t *testing.T) {
 		t.Errorf("expected '%d', actual '%d'", expected.ServerConfig.Timeout, cfg.ServerConfig.Timeout)
 	}
 	if cfg.NewServerConfig.Url != expected.NewServerConfig.Url {
-		t.Errorf("expected '%s', actual '%s'", cfg.NewServerConfig.Url, expected.NewServerConfig.Url)
+		t.Errorf("expected '%s', actual '%s'", expected.NewServerConfig.Url, cfg.NewServerConfig.Url)
 	}
 	if cfg.NewServerConfig.Key != expected.NewServerConfig.Key {
-		t.Errorf("expected '%s', actual '%s'", cfg.NewServerConfig.Key, expected.NewServerConfig.Key)
+		t.Errorf("expected '%s', actual '%s'", expected.NewServerConfig.Key, cfg.NewServerConfig.Key)
+	}
+	if cfg.Version != config.VERSION {
+		t.Errorf("expected '%s', actual '%s'", config.VERSION, cfg.Version)
 	}
 }
 

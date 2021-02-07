@@ -22,3 +22,6 @@ doc:
 
 build:
 	go build -o redump cmd/redump/main.go
+
+build-windows:
+	go build -o redump.exe cmd/redump/main.go

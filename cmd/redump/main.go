@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/docopt/docopt-go"
 	"github.com/tubone24/redump/internal/cmd"
 	"github.com/tubone24/redump/pkg/config"
@@ -77,6 +78,10 @@ Options:
 		if err != nil {
 			panic(err)
 		}
+	}
+	if cmd.DocOptConf.Version {
+		fmt.Println("redump " + cfg.Version)
+		fmt.Println("   ©tubone24 All rights reserved")
 	}
 
 }
