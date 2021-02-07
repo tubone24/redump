@@ -65,10 +65,10 @@ jobs:
         run: |
           cd pkg/redmine
           go test -bench . | tee output1.txt
-          mv output.txt ../../
+          mv output1.txt ../../
           cd ../utils
           go test -bench . | tee output2.txt
-          mv output.txt ../../
+          mv output2.txt ../../
           cd ../../
           cat output1.txt output2.txt > output.txt
       - name: Store benchmark result
