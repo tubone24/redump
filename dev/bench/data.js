@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1612689486845,
+  "lastUpdate": 1612689700980,
   "repoUrl": "https://github.com/tubone24/redump",
   "entries": {
     "Redump Go Benchmark": [
@@ -287,6 +287,72 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/tubone24/redump/commit/fd617db978828f37398ecab697abfb51af34267f"
         },
         "date": 1612689486268,
+        "tool": "go",
+        "benches": [
+          {
+            "name": "BenchmarkConvertNewEnv",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssues",
+            "value": 0.03,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssue",
+            "value": 0.03,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDownloadAttachmentFiles",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueParam",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkUploadAttachmentFiles",
+            "value": 0.15,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateJournalStrings",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "tubo.yyyuuu@gmail.com",
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "committer": {
+            "email": "tubo.yyyuuu@gmail.com",
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "distinct": true,
+          "id": "8822c3df2049802c5529c7854fd8f4eb64e7833f",
+          "message": "fix coverage test and build version change",
+          "timestamp": "2021-02-07T18:20:21+09:00",
+          "tree_id": "6f700e686734e1d900401c9593e91583f5d8a811",
+          "url": "https://github.com/tubone24/redump/commit/8822c3df2049802c5529c7854fd8f4eb64e7833f"
+        },
+        "date": 1612689700370,
         "tool": "go",
         "benches": [
           {
