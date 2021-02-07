@@ -21,4 +21,4 @@ doc:
 	godoc -http=:8080
 
 build:
-	go build cmd/redump/main.go
+	go build -o redump cmd/redump/main.go
