@@ -122,8 +122,6 @@ func GetContentType(key string) string {
 		return "application/zip"
 	case ".lzh", ".lha":
 		return "application/x-lzh"
-	case ".tar.gz":
-		return "application/x-tar"
 	case ".tgz":
 		return "application/x-tar"
 	case ".tar":
