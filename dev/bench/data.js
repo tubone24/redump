@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1612706696063,
+  "lastUpdate": 1612706983451,
   "repoUrl": "https://github.com/tubone24/redump",
   "entries": {
     "Redump Go Benchmark": [
@@ -747,6 +747,90 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/tubone24/redump/commit/a5ac5ede6d7d7431884c291229ff3e2f9025b892"
         },
         "date": 1612706695499,
+        "tool": "go",
+        "benches": [
+          {
+            "name": "BenchmarkConvertNewEnv",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssues",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDownloadAttachmentFiles",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueParam",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkUploadAttachmentFiles",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateJournalStrings",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueFromByteSlice",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDeleteIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDeepCopy",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "tubo.yyyuuu@gmail.com",
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "committer": {
+            "email": "tubo.yyyuuu@gmail.com",
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "distinct": true,
+          "id": "b97b4f4a28da8c82f4d2644b27df21eaf643ed57",
+          "message": ":bug: run one issue does not create dir",
+          "timestamp": "2021-02-07T23:08:36+09:00",
+          "tree_id": "a207f7ee6637f85d1e21623724e536b7c5e2039d",
+          "url": "https://github.com/tubone24/redump/commit/b97b4f4a28da8c82f4d2644b27df21eaf643ed57"
+        },
+        "date": 1612706982871,
         "tool": "go",
         "benches": [
           {
