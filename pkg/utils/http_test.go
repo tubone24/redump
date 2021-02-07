@@ -427,12 +427,12 @@ func ExampleApi_Post() {
 
 func ExampleApi_Put() {
 	client := utils.NewHttpClient(10000)
-	_ := client.Put("https://example.com/test", "application/json", []byte("{\"test\": \"test\"}"))
+	_ = client.Put("https://example.com/test", "application/json", []byte("{\"test\": \"test\"}"))
 }
 
 func ExampleApi_Delete() {
 	client := utils.NewHttpClient(10000)
-	_ := client.Delete("https://example.com/test")
+	_ = client.Delete("https://example.com/test")
 }
 
 func ExampleNewProxyClient() {
