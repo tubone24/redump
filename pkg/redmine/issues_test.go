@@ -243,7 +243,7 @@ func clientIssuesInvalidResp(t *testing.T, respTime time.Duration, resp *http.Re
 	})
 }
 
-func clientIssuesBench(b *testing.B, respTime time.Duration, resp *http.Response) *http.Client {
+func clientIssuesBench(b *testing.B, respTime time.Duration, resp *http.Response, issues redmine.Issues) *http.Client {
 	var issuesResult struct {
 		Issues     redmine.Issues `json:"issues"`
 		TotalCount int            `json:"total_count"`
@@ -251,15 +251,38 @@ func clientIssuesBench(b *testing.B, respTime time.Duration, resp *http.Response
 		Limit      int            `json:"limit"`
 	}
 	issuesResult.Issues = redmine.Issues{}
-	issuesResult.TotalCount = 10000
+	issuesResult.TotalCount = 100000
 	issuesResult.Limit = 100
 	issuesResult.Offset = 0
-	for i := 0; i < 100; i++ {
-		issuesResult.Issues = append(issuesResult.Issues, &issueJson)
-	}
+	issuesResult.Issues = issues
 	b.Helper()
 
 	bu, err := json.Marshal(&issuesResult)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	return NewTestClient(func(req *http.Request) *http.Response {
+		time.Sleep(respTime)
+		if resp != nil {
+			return resp
+		}
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       ioutil.NopCloser(bytes.NewBuffer(bu)),
+			Header:     make(http.Header),
+		}
+	})
+}
+
+func clientIssueBench(b *testing.B, respTime time.Duration, resp *http.Response) *http.Client {
+	var issueResult struct {
+		Issue redmine.Issue `json:"issue"`
+	}
+	issueResult.Issue = issueJson
+	b.Helper()
+
+	bu, err := json.Marshal(&issueResult)
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -320,7 +343,7 @@ func clientDownloadAttachments(t *testing.T, respTime time.Duration, resp *http.
 }
 
 func clientDownloadAttachmentsBench(b *testing.B, respTime time.Duration, resp *http.Response) *http.Client {
-	bu := []byte("test")
+	bu, _ := json.Marshal(issueJson)
 
 	return NewTestClient(func(req *http.Request) *http.Response {
 		time.Sleep(respTime)
@@ -562,14 +585,14 @@ func TestUpdateIssueJournalsInvalidUrl(t *testing.T) {
 	}
 }
 
-func TestDeleteIssue(t *testing.T) {
+func TestDeleteIssueInvalidUrl(t *testing.T) {
 	err := redmine.DeleteIssue("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "xxxxx", 1, 10000, nil)
 	if err == nil {
 		t.Errorf("Error not occurred")
 	}
 }
 
-func TestDeleteIssueInvalidUrl(t *testing.T) {
+func TestDeleteIssue(t *testing.T) {
 	err := redmine.DeleteIssue("http://examole.com", "xxxxx", 1, 10000, clientIssues(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
@@ -642,30 +665,94 @@ func TestUnmarshalByteIssueInvalidBytes(t *testing.T) {
 }
 
 func BenchmarkGetIssues(b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < 100; i++ {
-		_, _ = redmine.GetIssue("https://example.com", "aaa", 1, 10000, clientIssuesBench(b, 0, nil))
+	issueJsons100 := make(redmine.Issues, 100)
+	for i := 0; i <100; i++ {
+		ij := redmine.Issue{
+			Id:      1,
+			Project: redmine.Project{Id: 1, Name: "testProject"},
+			Tracker: redmine.Tracker{Id: 1, Name: "doing"},
+			Status:  redmine.Status{Id: 1, Name: "test"}, Priority: redmine.Priority{Id: 1, Name: "High"},
+			Author:      redmine.Author{Id: 1, Name: "testUser"},
+			AssignedTo:  redmine.AssignedTo{Id: 1, Name: "testUser"},
+			Subject:     "test1" + strconv.Itoa(i),
+			Description: "testtesttesttest" + strconv.Itoa(i),
+			StartDate:   "2020-01-01T00:00:00Z",
+			CustomFields: redmine.CustomFields{&redmine.CustomField{
+				Id:       1,
+				Name:     "customField1",
+				Multiple: true,
+				Value:    []string{"aaaa", "bbb", "ccc"}}},
+			CreatedOn: "2020-01-01T00:00:00Z",
+			UpdatedOn: "2020-01-01T00:00:00Z",
+			Attachments: redmine.Attachments{&redmine.Attachment{
+				Id: 1, FileName: "test.png",
+				FileSize:    12000,
+				ContentUrl:  "http://example.com/test.png",
+				Description: "testFile",
+				Author:      redmine.Author{Id: 1, Name: "testUser"},
+				CreatedOn:   "2020-01-01T00:00:00Z"}},
+			Journals: redmine.Journals{&redmine.Journal{
+				Id:        1,
+				User:      redmine.User{Id: 1, Name: "testUser"},
+				Notes:     "testtest",
+				CreatedOn: "2020-01-01T00:00:00Z"},
+				&redmine.Journal{
+					Id:        2,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest2",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+				&redmine.Journal{
+					Id:        3,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+						Property: "change",
+						Name:     "upload",
+						OldValue: "aaa",
+						NewValue: "bbb"}}},
+			},
+			Watchers: redmine.Watchers{&redmine.Watcher{
+				Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+		}
+		issueJsons100[i] = &ij
 	}
+	b.ResetTimer()
+	_, _ = redmine.GetIssue("https://example.com", "aaa", 1, 10000, clientIssuesBench(b, 0, nil, issueJsons100))
 }
 
 func BenchmarkGetIssue(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < 100; i++ {
-		_, _ = redmine.GetIssue("https://example.com", "aaa", 1, 10000, clientIssuesBench(b, 0, nil))
+		_, _ = redmine.GetIssue("https://example.com", "aaa", i, 10000, clientIssueBench(b, 0, nil))
 	}
 }
 
 func BenchmarkDownloadAttachmentFiles(b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < 100; i++ {
-		_, _ = redmine.DownloadAttachmentFiles("aaa", 10000, issueJson.Attachments, clientDownloadAttachmentsBench(b, 0, nil))
+	bigAttachment := make(redmine.Attachments, 1000)
+	for i := 0; i < 1000; i++ {
+		at := redmine.Attachment{
+			Id: 1, FileName: "test" + strconv.Itoa(i) + ".png",
+			FileSize:    12000,
+			ContentUrl:  "http://example.com/test" + strconv.Itoa(i) + ".png",
+			Description: "testFile",
+			Author:      redmine.Author{Id: 1, Name: "testUser"},
+			CreatedOn:   "2020-01-01T00:00:00Z"}
+		bigAttachment[i] = &at
 	}
+	b.ResetTimer()
+	_, _ = redmine.DownloadAttachmentFiles("aaa", 10000, bigAttachment, clientDownloadAttachmentsBench(b, 0, nil))
 }
 
 func BenchmarkCreateIssueParam(b *testing.B) {
 	uploadFiles := make([]redmine.FileParam, 1000)
 	for i := 0; i < 1000; i++ {
-		uploadFiles[i] = uploadFile
+		uf := redmine.FileParam{
+			FileName:    "test" + strconv.Itoa(i) + ".png",
+			ContentType: "image/png",
+			Contents:    []byte("testtesttesttesttesttesttesttesttesttesttest"),
+			Token:       "tokentoken" + strconv.Itoa(i),
+		}
+		uploadFiles[i] = uf
 	}
 	b.ResetTimer()
 	_ = redmine.CreateIssueParam(issueJson, uploadFiles)
@@ -674,21 +761,92 @@ func BenchmarkCreateIssueParam(b *testing.B) {
 func BenchmarkUploadAttachmentFiles(b *testing.B) {
 	uploadFiles := make([]redmine.FileParam, 1000)
 	for i := 0; i < 1000; i++ {
-		uploadFiles[i] = uploadFile
+		uf := redmine.FileParam{
+			FileName:    "test" + strconv.Itoa(i) + ".png",
+			ContentType: "image/png",
+			Contents:    []byte("testtesttesttesttesttesttesttesttesttesttest"),
+			Token:       "tokentoken" + strconv.Itoa(i),
+		}
+		uploadFiles[i] = uf
 	}
 	b.ResetTimer()
-	_, _ = redmine.UploadAttachmentFiles("http://example.com", "xxxxx", 10000, uploadFiles, clientIssuesBench(b, 0, nil))
+	_, _ = redmine.UploadAttachmentFiles("http://example.com", "xxxxx", 10000, uploadFiles, clientIssueBench(b, 0, nil))
 }
 
 func BenchmarkCreateJournalStrings(b *testing.B) {
 	var bigIssueJson redmine.Issue
-	journalsJson := make(redmine.Journals, 1000)
-	for i := 0; i < 1000; i++ {
+	journalsJson := make(redmine.Journals, 10000)
+	for i := 0; i < 10000; i++ {
 		journalsJson[i] = &redmine.Journal{Notes: "testtesttesttesttesttest"}
 	}
 	bigIssueJson.Journals = journalsJson
 	b.ResetTimer()
 	_ = redmine.CreateJournalStrings(bigIssueJson)
+}
+
+func BenchmarkCreateIssue(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < 100; i++ {
+		_, _ = redmine.CreateIssue("http://example.com", "xxxx", 10000, issueJsonParam, clientIssueBench(b, 0, nil))
+	}
+}
+
+func BenchmarkCreateIssueFromByteSlice(b *testing.B) {
+	const bufferSize = 256
+	var content []byte
+	dir, _ := os.Getwd()
+	filename := filepath.FromSlash(dir + "/../../tests/test_assets/2463.json")
+	fp, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+	buffer := make([]byte, bufferSize)
+	for {
+		n, err := fp.Read(buffer)
+		if 0 < n {
+			content = append(content, buffer...)
+		}
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			b.Errorf("Error occurred: %s", err)
+		}
+	}
+	b.ResetTimer()
+	_, _ = redmine.CreateIssueFromByteSlice(content)
+}
+
+func BenchmarkDeleteIssue(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < 100; i++ {
+		_ = redmine.DeleteIssue("http://examole.com", "xxxxx", i, 10000, clientIssueBench(b, 0, nil))
+	}
+}
+
+func BenchmarkUpdateIssueJournals(b *testing.B) {
+	benchJournals := make([]string, 10000)
+	for i := 0; i < 10000; i++ {
+		benchJournals[i] = "test journal!!"
+	}
+	b.ResetTimer()
+	_ = redmine.UpdateIssueJournals("http://example.com", "xxxxx", 1, 10000, benchJournals, clientIssueBench(b, 0, nil))
+}
+
+func BenchmarkUpdateWatchers(b *testing.B) {
+	bigWatcher := make(redmine.Watchers, 1000)
+	for i := 0; i < 1000; i++ {
+		watcher := redmine.Watcher{
+			Id: i,
+			Name: "testUser",
+		}
+		bigWatcher[i] = &watcher
+	}
+	var bigWatcherIssue redmine.Issue
+	bigWatcherIssue.Watchers = bigWatcher
+	b.ResetTimer()
+	_ = redmine.UpdateWatchers("http://example.com", "xxxxx", 1, 10000, bigWatcherIssue, clientIssueBench(b, 0, nil))
 }
 
 func ExampleGetIssues() {
@@ -736,7 +894,7 @@ func ExampleCreateIssue() {
 		},
 		Notes: "testNote",
 		Uploads: []redmine.Uploads{
-			redmine.Uploads{
+			{
 				Token:       "aaa",
 				FileName:    "aaa.png",
 				ContentType: "image/png",

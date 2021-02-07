@@ -6,6 +6,9 @@ run:
 set-mock-redmine:
 	cd docker/mock_redmine && docker-compose up -d
 
+stop-mock-redmine:
+	cd docker/mock_redmine && docker-compose down
+
 test:
 	go test -v -cover ./...
 
