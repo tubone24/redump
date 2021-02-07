@@ -186,6 +186,7 @@ func UnmarshalByteIssue(content []byte) (Issue, error) {
 // GetIssues is function that you can get all issues of Redmine.
 // However, you can't get detailed information such as Watchers and Journals.
 // If you want to get them, you have to specify the Issue ID and get them individually for GetIssue.
+// You can also customize it to plant round trips, go through proxies, or disable TLS validation by using a custom http client.
 func GetIssues(url, key string, projectId, timeout int, customClient *http.Client) (Issues, error) {
 	var issuesUrl string
 	if projectId == 0 {
@@ -229,6 +230,7 @@ func GetIssues(url, key string, projectId, timeout int, customClient *http.Clien
 }
 
 // GetIssue is function that you can retrieve the details by specifying the Issue ID.
+// You can also customize it to plant round trips, go through proxies, or disable TLS validation by using a custom http client.
 func GetIssue(url, key string, id, timeout int, customClient *http.Client) (Issue, error) {
 	var issue Issue
 	var client *utils.Api
@@ -250,6 +252,7 @@ func GetIssue(url, key string, id, timeout int, customClient *http.Client) (Issu
 
 // DownloadAttachmentFiles is function that you pass the Attachment structure,
 // you can store all the included attachments locally and return a byte slice of the attachment along with it
+// You can also customize it to plant round trips, go through proxies, or disable TLS validation by using a custom http client.
 func DownloadAttachmentFiles(key string, timeout int, attachments Attachments, customClient *http.Client) ([][]byte, error) {
 	//var result [][]byte
 	result := make([][]byte, len(attachments))
@@ -281,7 +284,8 @@ func CreateIssueFromByteSlice(content []byte) (*Issue, error) {
 	return &issue, nil
 }
 
-// CreateIssueParam is
+// CreateIssueParam is creating a structure that contains the parameters required for creating an Issue from the Issue structure.
+// If you have attachments, you will also need to create a FileParam slice in advance.
 func CreateIssueParam(issue Issue, uploadFiles []FileParam) IssueParam {
 	var issueParam IssueParam
 	if issue.Attachments != nil {
@@ -315,6 +319,9 @@ func CreateIssueParam(issue Issue, uploadFiles []FileParam) IssueParam {
 	return issueParam
 }
 
+// CreateIssue is function to create an Issue from an IssueParam.
+// As a return value, the ID of the created Issue will be returned.
+// You can also customize it to plant round trips, go through proxies, or disable TLS validation by using a custom http client.
 func CreateIssue(url, key string, timeout int, issue IssueParam, customClient *http.Client) (int, error) {
 	issueJson, err := json.Marshal(IssueParamJson{Issue: issue})
 	if err != nil {
@@ -338,6 +345,10 @@ func CreateIssue(url, key string, timeout int, issue IssueParam, customClient *h
 	return issueResult.Issue.Id, nil
 }
 
+// UpdateIssueJournals is function that updating Journal notes on specific issue.
+// you must input a slice of a string, which can be created in advance with CreateJournalStrings function.
+// Also, if the string is empty, (which is often the case for ticket status updates without note updates) no updates will be made.
+// You can also customize it to plant round trips, go through proxies, or disable TLS validation by using a custom http client.
 func UpdateIssueJournals(url, key string, id, timeout int, journals []string, customClient *http.Client) error {
 	for _, journal := range journals {
 		if journal == "" {
@@ -363,6 +374,10 @@ func UpdateIssueJournals(url, key string, id, timeout int, journals []string, cu
 	return nil
 }
 
+// UploadAttachmentFiles is a function that updates the attachment files on Redmine.
+// When you perform a file upload to Redmine, a token is returned, so when you run CreateIssue,
+// you can specify a FileParam that contains the token in the return value to complete the attachment to the ticket.
+// You can also customize it to plant round trips, go through proxies, or disable TLS validation by using a custom http client.
 func UploadAttachmentFiles(u, key string, timeout int, files []FileParam, customClient *http.Client) ([]FileParam, error) {
 	// var newFiles []FileParam
 	newFiles := make([]FileParam, len(files))
@@ -390,6 +405,8 @@ func UploadAttachmentFiles(u, key string, timeout int, files []FileParam, custom
 	return newFiles, nil
 }
 
+// CreateJournalStrings is a function that can create a slice of a Note from an Issue structure.
+// This function is used in conjunction with UpdateIssueJournals.
 func CreateJournalStrings(issue Issue) []string {
 	// var notes []string
 	notes := make([]string, len(issue.Journals))
@@ -400,6 +417,9 @@ func CreateJournalStrings(issue Issue) []string {
 	return notes
 }
 
+// UpdateWatchers is a function that allows you to postfix watchers to a specific issue.
+//In Redmine, it is recommended to run this function after all ticket updates are completed, because the issue with a watcher will be notified every time there is an update.
+// You can also customize it to plant round trips, go through proxies, or disable TLS validation by using a custom http client.
 func UpdateWatchers(url, key string, id, timeout int, issue Issue, customClient *http.Client) error {
 	watcherSet := mapset.NewSet()
 	for _, watcher := range issue.Watchers {
@@ -425,6 +445,8 @@ func UpdateWatchers(url, key string, id, timeout int, issue Issue, customClient 
 	return nil
 }
 
+// DeleteIssue is a function to delete a specific Issue.
+// You can also customize it to plant round trips, go through proxies, or disable TLS validation by using a custom http client.
 func DeleteIssue(url, key string, id, timeout int, customClient *http.Client) error {
 	var client *utils.Api
 	if customClient == nil {

@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"github.com/goccy/go-json"
 	"github.com/tubone24/redump/pkg/redmine"
+	"github.com/tubone24/redump/pkg/utils"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -693,12 +695,247 @@ func ExampleGetIssues() {
 	// All Projects
 	issues, _ := redmine.GetIssues("https://redmine.example.com", "your-api-key-1234567890", 0, 10000, nil)
 	fmt.Printf("'%#v'", issues)
-	// Several Project
+	// Several Project (ex. ID is 1)
 	issues, _ = redmine.GetIssues("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, nil)
 	fmt.Printf("'%#v'", issues)
 }
 
 func ExampleGetIssue() {
+	// Several Project (ex. ID is 1)
 	issue, _ := redmine.GetIssue("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, nil)
 	fmt.Printf("'%#v'", issue)
+}
+
+func ExampleDownloadAttachmentFiles() {
+	attachment := redmine.Attachments{&redmine.Attachment{
+		Id: 1, FileName: "test.png",
+		FileSize:    12000,
+		ContentUrl:  "http://example.com/test.png",
+		Description: "testFile",
+		Author:      redmine.Author{Id: 1, Name: "testUser"},
+		CreatedOn:   "2020-01-01T00:00:00Z"}}
+
+	resp, _ := redmine.DownloadAttachmentFiles("https://redmine.example.com", 10000, attachment, nil)
+	// Return byte slice's slice. So for loop.
+	for i, v := range resp {
+		_ = utils.WriteFile("test" +  strconv.Itoa(i) + ".png", v)
+	}
+}
+
+func ExampleCreateIssue() {
+	var exampleParam = redmine.IssueParam{
+		ProjectId: 1,
+		TrackerId: 1,
+		StatusId: 1,
+		PriorityId: 1,
+		Subject: "test1",
+		Description: "testtesttesttest",
+		AssignedToId: 1,
+		CustomFields: redmine.CustomFields{
+			&redmine.CustomField{Id: 1},
+		},
+		Notes: "testNote",
+		Uploads: []redmine.Uploads{
+			redmine.Uploads{
+				Token: "aaa",
+				FileName: "aaa.png",
+				ContentType: "image/png",
+			},
+		},
+	}
+	resp, _ := redmine.CreateIssue("https://redmine.example.com", "your-api-key-1234567890", 10000, exampleParam, nil)
+	// Issue ID
+	fmt.Printf("'%d'", resp)
+}
+
+func ExampleCreateIssueFromByteSlice() {
+	resp, _ := utils.ReadFile("test.json")
+	issue, _ := redmine.CreateIssueFromByteSlice(resp)
+	fmt.Printf("'%d'", issue.Id)
+}
+
+func ExampleCreateIssueParam() {
+	var exampleIssue = redmine.Issue{
+		Id:      1,
+		Project: redmine.Project{Id: 1, Name: "testProject"},
+		Tracker: redmine.Tracker{Id: 1, Name: "doing"},
+		Status:  redmine.Status{Id: 1, Name: "test"}, Priority: redmine.Priority{Id: 1, Name: "High"},
+		Author:      redmine.Author{Id: 1, Name: "testUser"},
+		AssignedTo:  redmine.AssignedTo{Id: 1, Name: "testUser"},
+		Subject:     "test1",
+		Description: "testtesttesttest",
+		StartDate:   "2020-01-01T00:00:00Z",
+		CustomFields: redmine.CustomFields{&redmine.CustomField{
+			Id:       1,
+			Name:     "customField1",
+			Multiple: true,
+			Value:    []string{"aaaa", "bbb", "ccc"}}},
+		CreatedOn: "2020-01-01T00:00:00Z",
+		UpdatedOn: "2020-01-01T00:00:00Z",
+		Attachments: redmine.Attachments{&redmine.Attachment{
+			Id: 1, FileName: "test.png",
+			FileSize:    12000,
+			ContentUrl:  "http://example.com/test.png",
+			Description: "testFile",
+			Author:      redmine.Author{Id: 1, Name: "testUser"},
+			CreatedOn:   "2020-01-01T00:00:00Z"}},
+		Journals: redmine.Journals{&redmine.Journal{
+			Id:        1,
+			User:      redmine.User{Id: 1, Name: "testUser"},
+			Notes:     "testtest",
+			CreatedOn: "2020-01-01T00:00:00Z"},
+			&redmine.Journal{
+				Id:        2,
+				User:      redmine.User{Id: 1, Name: "testUser"},
+				Notes:     "testtest2",
+				CreatedOn: "2020-01-01T00:00:00Z"},
+			&redmine.Journal{
+				Id:        3,
+				User:      redmine.User{Id: 1, Name: "testUser"},
+				Notes:     "testtest",
+				CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+					Property: "change",
+					Name:     "upload",
+					OldValue: "aaa",
+					NewValue: "bbb"}},},
+		},
+		Watchers: redmine.Watchers{&redmine.Watcher{
+			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+	}
+	exampleUploadFiles := []redmine.FileParam{
+		{
+			FileName: "test.png",
+			ContentType: "image/png",
+			Contents: []byte{},
+			Token: "tokentoken",
+		},
+	}
+	resp := redmine.CreateIssueParam(exampleIssue, exampleUploadFiles)
+	fmt.Printf("'%#v'", resp)
+}
+
+func ExampleCreateJournalStrings() {
+	var exampleIssue = redmine.Issue{
+		Id:      1,
+		Project: redmine.Project{Id: 1, Name: "testProject"},
+		Tracker: redmine.Tracker{Id: 1, Name: "doing"},
+		Status:  redmine.Status{Id: 1, Name: "test"}, Priority: redmine.Priority{Id: 1, Name: "High"},
+		Author:      redmine.Author{Id: 1, Name: "testUser"},
+		AssignedTo:  redmine.AssignedTo{Id: 1, Name: "testUser"},
+		Subject:     "test1",
+		Description: "testtesttesttest",
+		StartDate:   "2020-01-01T00:00:00Z",
+		CustomFields: redmine.CustomFields{&redmine.CustomField{
+			Id:       1,
+			Name:     "customField1",
+			Multiple: true,
+			Value:    []string{"aaaa", "bbb", "ccc"}}},
+		CreatedOn: "2020-01-01T00:00:00Z",
+		UpdatedOn: "2020-01-01T00:00:00Z",
+		Attachments: redmine.Attachments{&redmine.Attachment{
+			Id: 1, FileName: "test.png",
+			FileSize:    12000,
+			ContentUrl:  "http://example.com/test.png",
+			Description: "testFile",
+			Author:      redmine.Author{Id: 1, Name: "testUser"},
+			CreatedOn:   "2020-01-01T00:00:00Z"}},
+		Journals: redmine.Journals{&redmine.Journal{
+			Id:        1,
+			User:      redmine.User{Id: 1, Name: "testUser"},
+			Notes:     "testtest",
+			CreatedOn: "2020-01-01T00:00:00Z"},
+			&redmine.Journal{
+				Id:        2,
+				User:      redmine.User{Id: 1, Name: "testUser"},
+				Notes:     "testtest2",
+				CreatedOn: "2020-01-01T00:00:00Z"},
+			&redmine.Journal{
+				Id:        3,
+				User:      redmine.User{Id: 1, Name: "testUser"},
+				Notes:     "testtest",
+				CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+					Property: "change",
+					Name:     "upload",
+					OldValue: "aaa",
+					NewValue: "bbb"}},},
+		},
+		Watchers: redmine.Watchers{&redmine.Watcher{
+			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+	}
+	resp := redmine.CreateJournalStrings(exampleIssue)
+	for _, v := range resp {
+		fmt.Println(v)
+	}
+}
+
+func ExampleUpdateIssueJournals() {
+	exampleJournalsString := []string{"test", "test2", "test3"}
+	_ = redmine.UpdateIssueJournals("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, exampleJournalsString, nil)
+}
+
+func ExampleDeleteIssue() {
+	_ = redmine.DeleteIssue("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, nil)
+}
+
+func ExampleUpdateWatchers() {
+	var exampleIssue = redmine.Issue{
+		Id:      1,
+		Project: redmine.Project{Id: 1, Name: "testProject"},
+		Tracker: redmine.Tracker{Id: 1, Name: "doing"},
+		Status:  redmine.Status{Id: 1, Name: "test"}, Priority: redmine.Priority{Id: 1, Name: "High"},
+		Author:      redmine.Author{Id: 1, Name: "testUser"},
+		AssignedTo:  redmine.AssignedTo{Id: 1, Name: "testUser"},
+		Subject:     "test1",
+		Description: "testtesttesttest",
+		StartDate:   "2020-01-01T00:00:00Z",
+		CustomFields: redmine.CustomFields{&redmine.CustomField{
+			Id:       1,
+			Name:     "customField1",
+			Multiple: true,
+			Value:    []string{"aaaa", "bbb", "ccc"}}},
+		CreatedOn: "2020-01-01T00:00:00Z",
+		UpdatedOn: "2020-01-01T00:00:00Z",
+		Attachments: redmine.Attachments{&redmine.Attachment{
+			Id: 1, FileName: "test.png",
+			FileSize:    12000,
+			ContentUrl:  "http://example.com/test.png",
+			Description: "testFile",
+			Author:      redmine.Author{Id: 1, Name: "testUser"},
+			CreatedOn:   "2020-01-01T00:00:00Z"}},
+		Journals: redmine.Journals{&redmine.Journal{
+			Id:        1,
+			User:      redmine.User{Id: 1, Name: "testUser"},
+			Notes:     "testtest",
+			CreatedOn: "2020-01-01T00:00:00Z"},
+			&redmine.Journal{
+				Id:        2,
+				User:      redmine.User{Id: 1, Name: "testUser"},
+				Notes:     "testtest2",
+				CreatedOn: "2020-01-01T00:00:00Z"},
+			&redmine.Journal{
+				Id:        3,
+				User:      redmine.User{Id: 1, Name: "testUser"},
+				Notes:     "testtest",
+				CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+					Property: "change",
+					Name:     "upload",
+					OldValue: "aaa",
+					NewValue: "bbb"}},},
+		},
+		Watchers: redmine.Watchers{&redmine.Watcher{
+			Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"},},
+	}
+	_ = redmine.UpdateWatchers("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, exampleIssue, nil)
+}
+
+func ExampleUploadAttachmentFiles() {
+	ExampleuploadFile := []redmine.FileParam{
+		{
+			FileName:    "test.png",
+			ContentType: "image/png",
+			Contents:    []byte{},
+		}
+	}
+	fileParams, _ := redmine.UploadAttachmentFiles("https://redmine.example.com", "your-api-key-1234567890", 10000, ExampleuploadFile, nil)
+	fmt.Println(fileParams[0].Token)
 }
