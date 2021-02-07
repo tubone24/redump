@@ -187,6 +187,10 @@ If you have a higher PR on performance to go along with it, it is recommended to
 make bench
 ```
 
+Also benchmark results are graphed and stored daily.
+
+<https://tubone24.github.io/redump/dev/bench/>
+
 ## License
 
 [MIT © tubone24](LICENSE)
