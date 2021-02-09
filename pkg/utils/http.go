@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -115,7 +114,6 @@ func (api *Api) Post(url, contentType string, data []byte) ([]byte, error) {
 		return nil, err
 	}
 	if resp.StatusCode >= http.StatusBadRequest {
-		fmt.Println(resp.StatusCode)
 		return nil, &HttpClientError{StatusCode: resp.StatusCode}
 	}
 	body, err := ioutil.ReadAll(resp.Body)
@@ -139,7 +137,6 @@ func (api *Api) Put(url, contentType string, data []byte) error {
 		return err
 	}
 	if resp.StatusCode >= http.StatusBadRequest {
-		fmt.Println(resp.StatusCode)
 		return &HttpClientError{StatusCode: resp.StatusCode}
 	}
 	return nil
@@ -158,7 +155,6 @@ func (api *Api) Delete(url string) error {
 		return err
 	}
 	if resp.StatusCode >= http.StatusBadRequest {
-		fmt.Println(resp.StatusCode)
 		return &HttpClientError{StatusCode: resp.StatusCode}
 	}
 	return nil

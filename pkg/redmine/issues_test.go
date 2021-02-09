@@ -201,24 +201,78 @@ func clientIssues(t *testing.T, respTime time.Duration, resp *http.Response) *ht
 		Offset     int            `json:"offset"`
 		Limit      int            `json:"limit"`
 	}
-	issuesResult.Issues = redmine.Issues{}
 	issuesResult.TotalCount = 10000
 	issuesResult.Limit = 100
-	issuesResult.Offset = 0
-	for i := 0; i < 100; i++ {
-		issuesResult.Issues = append(issuesResult.Issues, &issueJson)
-	}
 	t.Helper()
-
-	b, err := json.Marshal(&issuesResult)
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	return NewTestClient(func(req *http.Request) *http.Response {
 		time.Sleep(respTime)
+		offset, err := strconv.Atoi(req.URL.Query().Get("offset"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if req.URL.Query().Get("key") != "valid_key" {
+			t.Fatal(err)
+		}
+		issues := make(redmine.Issues, 100)
+		for i := offset; i < offset + 100; i++ {
+			var ij = redmine.Issue{
+				Id:      i,
+				Project: redmine.Project{Id: 1, Name: "testProject"},
+				Tracker: redmine.Tracker{Id: 1, Name: "doing"},
+				Status:  redmine.Status{Id: 1, Name: "test"}, Priority: redmine.Priority{Id: 1, Name: "High"},
+				Author:      redmine.Author{Id: 1, Name: "testUser"},
+				AssignedTo:  redmine.AssignedTo{Id: 1, Name: "testUser"},
+				Subject:     "test" + strconv.Itoa(i),
+				Description: "testtesttesttest" + strconv.Itoa(i),
+				StartDate:   "2020-01-01T00:00:00Z",
+				CustomFields: redmine.CustomFields{&redmine.CustomField{
+					Id:       1,
+					Name:     "customField1",
+					Multiple: true,
+					Value:    []string{"aaaa", "bbb", "ccc"}}},
+				CreatedOn: "2020-01-01T00:00:00Z",
+				UpdatedOn: "2020-01-01T00:00:00Z",
+				Attachments: redmine.Attachments{&redmine.Attachment{
+					Id: 1, FileName: "test.png",
+					FileSize:    12000,
+					ContentUrl:  "http://example.com/test.png",
+					Description: "testFile",
+					Author:      redmine.Author{Id: 1, Name: "testUser"},
+					CreatedOn:   "2020-01-01T00:00:00Z"}},
+				Journals: redmine.Journals{&redmine.Journal{
+					Id:        1,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        2,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest2",
+						CreatedOn: "2020-01-01T00:00:00Z"},
+					&redmine.Journal{
+						Id:        3,
+						User:      redmine.User{Id: 1, Name: "testUser"},
+						Notes:     "testtest",
+						CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+							Property: "change",
+							Name:     "upload",
+							OldValue: "aaa",
+							NewValue: "bbb"}}},
+				},
+				Watchers: redmine.Watchers{&redmine.Watcher{
+					Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+			}
+			issues[i - offset] = &ij
+		}
+		issuesResult.Offset = offset
+		issuesResult.Issues = issues
 		if resp != nil {
 			return resp
+		}
+		b, err := json.Marshal(&issuesResult)
+		if err != nil {
+			t.Fatal(err)
 		}
 		return &http.Response{
 			StatusCode: http.StatusOK,
@@ -360,27 +414,31 @@ func clientDownloadAttachmentsBench(b *testing.B, respTime time.Duration, resp *
 }
 
 func TestGetIssues(t *testing.T) {
-	resp, err := redmine.GetIssues("https://example.com", "aaa", 0, 10000, clientIssues(t, 1000, nil))
+	resp, err := redmine.GetIssues("https://example.com", "valid_key", 0, 10000, clientIssues(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
-	if resp[0].Id != issueJson.Id {
-		t.Errorf("expected: %d, actual %d", resp[0].Id, issueJson.Id)
+	for i := 0; i < 10000; i++ {
+		if i != resp[i].Id {
+			t.Errorf("expected: %d, actual %d", resp[i].Id, i)
+		}
 	}
 }
 
 func TestGetIssuesWithProjectId(t *testing.T) {
-	resp, err := redmine.GetIssues("https://example.com", "aaa", 1, 10000, clientIssues(t, 1000, nil))
+	resp, err := redmine.GetIssues("https://example.com", "valid_key", 1, 10000, clientIssues(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
-	if resp[0].Id != issueJson.Id {
-		t.Errorf("expected: %d, actual %d", resp[0].Id, issueJson.Id)
+	for i := 0; i < 10000; i++ {
+		if i != resp[i].Id {
+			t.Errorf("expected: %d, actual %d", resp[i].Id, i)
+		}
 	}
 }
 
 func TestGetIssuesInvalidUrl(t *testing.T) {
-	_, err := redmine.GetIssues("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "aaa", 1, 1000, nil)
+	_, err := redmine.GetIssues("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "valid_key", 1, 1000, nil)
 	if err == nil {
 		t.Errorf("Error not occurred")
 	}
@@ -394,7 +452,7 @@ func TestGetIssuesInvalidResp(t *testing.T) {
 }
 
 func TestGetIssue(t *testing.T) {
-	resp, err := redmine.GetIssue("https://example.com", "aaa", 1, 10000, clientIssue(t, 1000, nil))
+	resp, err := redmine.GetIssue("https://example.com", "valid_key", 1, 10000, clientIssue(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
@@ -571,7 +629,7 @@ func TestCreateJournalStrings(t *testing.T) {
 
 func TestUpdateIssueJournals(t *testing.T) {
 	journals := []string{"test1", "test2", "test3", "", "", "test4", "test5"}
-	err := redmine.UpdateIssueJournals("http://example.com", "xxxxx", 1, 10000, journals, clientIssues(t, 1000, nil))
+	err := redmine.UpdateIssueJournals("http://example.com", "xxxxx", 1, 10000, journals, clientIssue(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
@@ -593,14 +651,14 @@ func TestDeleteIssueInvalidUrl(t *testing.T) {
 }
 
 func TestDeleteIssue(t *testing.T) {
-	err := redmine.DeleteIssue("http://examole.com", "xxxxx", 1, 10000, clientIssues(t, 1000, nil))
+	err := redmine.DeleteIssue("http://examole.com", "xxxxx", 1, 10000, clientIssue(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
 }
 
 func TestUpdateWatchers(t *testing.T) {
-	err := redmine.UpdateWatchers("http://example.com", "xxxxx", 1, 10000, issueJson, clientIssues(t, 1000, nil))
+	err := redmine.UpdateWatchers("http://example.com", "xxxxx", 1, 10000, issueJson, clientIssue(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
@@ -616,7 +674,7 @@ func TestUpdateWatchersInvalidUrl(t *testing.T) {
 func TestUploadAttachmentFiles(t *testing.T) {
 	var uploadFiles []redmine.FileParam
 	uploadFiles = append(uploadFiles, uploadFile)
-	resp, err := redmine.UploadAttachmentFiles("http://example.com", "xxxxx", 10000, uploadFiles, clientIssues(t, 1000, nil))
+	resp, err := redmine.UploadAttachmentFiles("http://example.com", "xxxxx", 10000, uploadFiles, clientIssue(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}

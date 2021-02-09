@@ -194,7 +194,6 @@ func GetIssues(url, key string, projectId, timeout int, customClient *http.Clien
 	} else {
 		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*&project_id=" + strconv.Itoa(projectId)
 	}
-	var issues Issues
 	var client *utils.Api
 	if customClient == nil {
 		client = utils.NewHttpClient(timeout)
@@ -210,6 +209,7 @@ func GetIssues(url, key string, projectId, timeout int, customClient *http.Clien
 		return nil, err
 	}
 	fmt.Println(issuesResult.TotalCount)
+	issues := make(Issues, issuesResult.TotalCount)
 	for offset := 0; offset < issuesResult.TotalCount; offset += 100 {
 		if projectId == 0 {
 			issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=*&sort=updated_on:asc"
@@ -220,11 +220,13 @@ func GetIssues(url, key string, projectId, timeout int, customClient *http.Clien
 		if err != nil {
 			return nil, err
 		}
-		err2 := json.Unmarshal(body, &issuesResult)
-		if err2 != nil {
-			panic(err2)
+		err = json.Unmarshal(body, &issuesResult)
+		if err != nil {
+			return nil, err
 		}
-		issues = append(issues, issuesResult.Issues...)
+		for i, issue := range issuesResult.Issues {
+			issues[i+offset] = issue
+		}
 	}
 	return issues, nil
 }
