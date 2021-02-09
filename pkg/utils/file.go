@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -252,8 +251,6 @@ func GetContentType(key string) string {
 // SanitizeInvalidFileName is a function to extract illegal characters from a file name.
 // In the future, we plan to replace it with a URL encoding function.
 func SanitizeInvalidFileName(str string) (result string) {
-	fmt.Println(str)
 	result = strings.Replace(strings.Replace(str, " ", "_", -1), "　", "_", -1)
-	fmt.Println(result)
 	return
 }

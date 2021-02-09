@@ -2,7 +2,7 @@ style: github
 template: CHANGELOG.tpl.md
 info:
   title: CHANGELOG
-  repository_url: https://github.com/tubone24/post_twitter_on_work
+  repository_url: https://github.com/tubone24/redump
 options:
   commits:
   # filters:

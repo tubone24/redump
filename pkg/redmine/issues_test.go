@@ -206,7 +206,54 @@ func clientIssues(t *testing.T, respTime time.Duration, resp *http.Response) *ht
 	issuesResult.Limit = 100
 	issuesResult.Offset = 0
 	for i := 0; i < 100; i++ {
-		issuesResult.Issues = append(issuesResult.Issues, &issueJson)
+		var ij = redmine.Issue{
+			Id:      i,
+			Project: redmine.Project{Id: 1, Name: "testProject"},
+			Tracker: redmine.Tracker{Id: 1, Name: "doing"},
+			Status:  redmine.Status{Id: 1, Name: "test"}, Priority: redmine.Priority{Id: 1, Name: "High"},
+			Author:      redmine.Author{Id: 1, Name: "testUser"},
+			AssignedTo:  redmine.AssignedTo{Id: 1, Name: "testUser"},
+			Subject:     "test1",
+			Description: "testtesttesttest",
+			StartDate:   "2020-01-01T00:00:00Z",
+			CustomFields: redmine.CustomFields{&redmine.CustomField{
+				Id:       1,
+				Name:     "customField1",
+				Multiple: true,
+				Value:    []string{"aaaa", "bbb", "ccc"}}},
+			CreatedOn: "2020-01-01T00:00:00Z",
+			UpdatedOn: "2020-01-01T00:00:00Z",
+			Attachments: redmine.Attachments{&redmine.Attachment{
+				Id: 1, FileName: "test.png",
+				FileSize:    12000,
+				ContentUrl:  "http://example.com/test.png",
+				Description: "testFile",
+				Author:      redmine.Author{Id: 1, Name: "testUser"},
+				CreatedOn:   "2020-01-01T00:00:00Z"}},
+			Journals: redmine.Journals{&redmine.Journal{
+				Id:        1,
+				User:      redmine.User{Id: 1, Name: "testUser"},
+				Notes:     "testtest",
+				CreatedOn: "2020-01-01T00:00:00Z"},
+				&redmine.Journal{
+					Id:        2,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest2",
+					CreatedOn: "2020-01-01T00:00:00Z"},
+				&redmine.Journal{
+					Id:        3,
+					User:      redmine.User{Id: 1, Name: "testUser"},
+					Notes:     "testtest",
+					CreatedOn: "2020-01-01T00:00:00Z", Details: redmine.Details{&redmine.Detail{
+						Property: "change",
+						Name:     "upload",
+						OldValue: "aaa",
+						NewValue: "bbb"}}},
+			},
+			Watchers: redmine.Watchers{&redmine.Watcher{
+				Id: 1, Name: "testUser"}, &redmine.Watcher{Id: 2, Name: "testUser2"}, &redmine.Watcher{Id: 3, Name: "testUser3"}},
+		}
+		issuesResult.Issues = append(issuesResult.Issues, &ij)
 	}
 	t.Helper()
 
@@ -364,8 +411,17 @@ func TestGetIssues(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
-	if resp[0].Id != issueJson.Id {
-		t.Errorf("expected: %d, actual %d", resp[0].Id, issueJson.Id)
+	if resp[0].Id != 0 {
+		t.Errorf("expected: %d, actual %d", resp[0].Id, 0)
+	}
+	if resp[99].Id != 99 {
+		t.Errorf("expected: %d, actual %d", resp[0].Id, 99)
+	}
+	if resp[100].Id != 0 {
+		t.Errorf("expected: %d, actual %d", resp[0].Id, 0)
+	}
+	if resp[101].Id != 1 {
+		t.Errorf("expected: %d, actual %d", resp[0].Id, 1)
 	}
 }
 
@@ -374,8 +430,8 @@ func TestGetIssuesWithProjectId(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
-	if resp[0].Id != issueJson.Id {
-		t.Errorf("expected: %d, actual %d", resp[0].Id, issueJson.Id)
+	if resp[0].Id != 0 {
+		t.Errorf("expected: %d, actual %d", resp[0].Id, 0)
 	}
 }
 
@@ -600,7 +656,7 @@ func TestDeleteIssue(t *testing.T) {
 }
 
 func TestUpdateWatchers(t *testing.T) {
-	err := redmine.UpdateWatchers("http://example.com", "xxxxx", 1, 10000, issueJson, clientIssues(t, 1000, nil))
+	err := redmine.UpdateWatchers("http://example.com", "xxxxx", 1, 10000, issueJson, clientIssue(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
@@ -616,7 +672,7 @@ func TestUpdateWatchersInvalidUrl(t *testing.T) {
 func TestUploadAttachmentFiles(t *testing.T) {
 	var uploadFiles []redmine.FileParam
 	uploadFiles = append(uploadFiles, uploadFile)
-	resp, err := redmine.UploadAttachmentFiles("http://example.com", "xxxxx", 10000, uploadFiles, clientIssues(t, 1000, nil))
+	resp, err := redmine.UploadAttachmentFiles("http://example.com", "xxxxx", 10000, uploadFiles, clientIssue(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
