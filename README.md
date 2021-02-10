@@ -103,6 +103,7 @@ We have prepared `config.toml.example` as a template, so we will copy that first
 url = "https://example.com"
 key = "xxxxx" # API Key
 project_id = 1 # if you want to choose several project's issues
+status = "" # "closed" or "open" if set status
 sleep = 3000 # request sleep millisecond
 timeout = 10000 # timeout(millisecond) if no response over that time
 proxy_url = "http://127.0.0.1:8080" # If you use http proxy, set proxy url, port, user/pass
