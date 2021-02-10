@@ -83,5 +83,4 @@ Options:
 		fmt.Println("redump " + cfg.Version)
 		fmt.Println("   ©tubone24 All rights reserved")
 	}
-
 }

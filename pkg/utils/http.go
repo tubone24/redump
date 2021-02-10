@@ -113,6 +113,7 @@ func (api *Api) Post(url, contentType string, data []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode >= http.StatusBadRequest {
 		return nil, &HttpClientError{StatusCode: resp.StatusCode}
 	}
@@ -136,6 +137,7 @@ func (api *Api) Put(url, contentType string, data []byte) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode >= http.StatusBadRequest {
 		return &HttpClientError{StatusCode: resp.StatusCode}
 	}
@@ -154,6 +156,7 @@ func (api *Api) Delete(url string) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode >= http.StatusBadRequest {
 		return &HttpClientError{StatusCode: resp.StatusCode}
 	}

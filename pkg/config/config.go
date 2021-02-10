@@ -5,6 +5,7 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
+// Error that occurs when there is no required config.
 type MissingConfigError struct {
 	ConfigName string
 }
