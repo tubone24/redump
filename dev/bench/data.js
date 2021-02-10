@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1612886089893,
+  "lastUpdate": 1612968772256,
   "repoUrl": "https://github.com/tubone24/redump",
   "entries": {
     "Redump Go Benchmark": [
@@ -1564,6 +1564,122 @@ window.BENCHMARK_DATA = {
           {
             "name": "BenchmarkListCustomFieldsId",
             "value": 0.05,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDeepCopy",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "committer": {
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "id": "f4a282e8f67c3d80a12646821b6c66e536d166c7",
+          "message": "status",
+          "timestamp": "2021-02-09T15:30:36Z",
+          "url": "https://github.com/tubone24/redump/pull/7/commits/f4a282e8f67c3d80a12646821b6c66e536d166c7"
+        },
+        "date": 1612968768844,
+        "tool": "go",
+        "benches": [
+          {
+            "name": "BenchmarkConvertNewEnv",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssues",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDownloadAttachmentFiles",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueParam",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkUploadAttachmentFiles",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateJournalStrings",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueFromByteSlice",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDeleteIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListProjectId",
+            "value": 0.06,
+            "unit": "ns/op",
+            "extra": "1000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListTrackerId",
+            "value": 0.03,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListStatusId",
+            "value": 0.05,
+            "unit": "ns/op",
+            "extra": "1000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListPriorityId",
+            "value": 0.07,
+            "unit": "ns/op",
+            "extra": "1000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListUserIdAssignedTo",
+            "value": 0.02,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListCustomFieldsId",
+            "value": 0.04,
             "unit": "ns/op",
             "extra": "2000000000 times\n2 procs"
           },
