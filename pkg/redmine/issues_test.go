@@ -631,6 +631,18 @@ func TestGetIssuesWithStatusClosed(t *testing.T) {
 	}
 }
 
+func TestGetIssuesWithStatusClosedWithProjectId(t *testing.T) {
+	resp, err := redmine.GetIssues("https://example.com", "valid_key", 1, 10000, "closed", clientIssuesStatusClosed(t, 1000, nil))
+	if err != nil {
+		t.Errorf("Error occurred: %s", err)
+	}
+	for i := 0; i < 10000; i++ {
+		if i != resp[i].Id {
+			t.Errorf("expected: %d, actual %d", resp[i].Id, i)
+		}
+	}
+}
+
 func TestGetIssuesInvalidUrl(t *testing.T) {
 	_, err := redmine.GetIssues("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "valid_key", 1, 1000, "", nil)
 	if err == nil {
