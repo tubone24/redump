@@ -27,7 +27,7 @@ func ListAll(projectId int) error {
 	} else {
 		customClient = nil
 	}
-	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, customClient)
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, cfg.ServerConfig.Status, customClient)
 	_, err = redmine.ListProjectId(issues, "data/project_id.json")
 	if err != nil {
 		return err

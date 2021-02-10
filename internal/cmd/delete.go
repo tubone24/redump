@@ -30,7 +30,7 @@ func DeleteServerAllIssuesConcurrency(old bool) error {
 	scanner.Scan()
 	if scanner.Text() == "y" {
 		var wg sync.WaitGroup
-		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout, nil)
+		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout,  cfg.ServerConfig.Status, nil)
 		if err != nil {
 			return err
 		}
@@ -69,7 +69,7 @@ func DeleteServerAllIssues(old bool) error {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	if scanner.Text() == "y" {
-		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout, nil)
+		issues, err := redmine.GetIssues(serverUrl, serverKey, 0, cfg.ServerConfig.Timeout,  cfg.ServerConfig.Status, nil)
 		if err != nil {
 			return err
 		}

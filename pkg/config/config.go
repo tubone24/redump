@@ -17,6 +17,7 @@ type ServerConfig struct {
 	Url       string `toml:"url"`
 	Key       string `toml:"key"`
 	ProjectId int    `toml:"project_id"`
+	Status    string  `toml:"status"`
 	Sleep     int    `toml:"sleep"`
 	Timeout   int    `toml:"timeout"`
 	ProxyUrl  string `toml:"proxy_url"`

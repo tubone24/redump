@@ -31,7 +31,7 @@ func Migrate(projectId int, silent bool) error {
 	} else {
 		customClient = nil
 	}
-	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, customClient)
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, cfg.ServerConfig.Status, customClient)
 	txtCh := make(chan string, 10)
 	defer close(txtCh)
 	if err != nil {

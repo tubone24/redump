@@ -414,7 +414,7 @@ func clientDownloadAttachmentsBench(b *testing.B, respTime time.Duration, resp *
 }
 
 func TestGetIssues(t *testing.T) {
-	resp, err := redmine.GetIssues("https://example.com", "valid_key", 0, 10000, clientIssues(t, 1000, nil))
+	resp, err := redmine.GetIssues("https://example.com", "valid_key", 0, 10000, "", clientIssues(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
@@ -426,7 +426,7 @@ func TestGetIssues(t *testing.T) {
 }
 
 func TestGetIssuesWithProjectId(t *testing.T) {
-	resp, err := redmine.GetIssues("https://example.com", "valid_key", 1, 10000, clientIssues(t, 1000, nil))
+	resp, err := redmine.GetIssues("https://example.com", "valid_key", 1, 10000, "", clientIssues(t, 1000, nil))
 	if err != nil {
 		t.Errorf("Error occurred: %s", err)
 	}
@@ -438,14 +438,14 @@ func TestGetIssuesWithProjectId(t *testing.T) {
 }
 
 func TestGetIssuesInvalidUrl(t *testing.T) {
-	_, err := redmine.GetIssues("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "valid_key", 1, 1000, nil)
+	_, err := redmine.GetIssues("https://examphoiaiho.dq.dq.hfnqwopfq.c,cpckckpc.kdjow-wq-d-qdqd-qdd-qdqdccwsccl.le.com.jkp.laala.com.com.com", "valid_key", 1, 1000, "", nil)
 	if err == nil {
 		t.Errorf("Error not occurred")
 	}
 }
 
 func TestGetIssuesInvalidResp(t *testing.T) {
-	_, err := redmine.GetIssues("https://example.com", "aaa", 0, 10000, clientIssuesInvalidResp(t, 1000, nil))
+	_, err := redmine.GetIssues("https://example.com", "aaa", 0, 10000, "", clientIssuesInvalidResp(t, 1000, nil))
 	if err == nil {
 		t.Errorf("Error not occurred")
 	}
@@ -909,10 +909,13 @@ func BenchmarkUpdateWatchers(b *testing.B) {
 
 func ExampleGetIssues() {
 	// All Projects
-	issues, _ := redmine.GetIssues("https://redmine.example.com", "your-api-key-1234567890", 0, 10000, nil)
+	issues, _ := redmine.GetIssues("https://redmine.example.com", "your-api-key-1234567890", 0, 10000, "", nil)
 	fmt.Printf("'%#v'", issues)
 	// Several Project (ex. ID is 1)
-	issues, _ = redmine.GetIssues("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, nil)
+	issues, _ = redmine.GetIssues("https://redmine.example.com", "your-api-key-1234567890", 1, 10000, "", nil)
+	fmt.Printf("'%#v'", issues)
+	// Only Closed Status
+	issues, _ = redmine.GetIssues("https://redmine.example.com", "your-api-key-1234567890", 0, 10000, "closed", nil)
 	fmt.Printf("'%#v'", issues)
 }
 
