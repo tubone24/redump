@@ -187,12 +187,20 @@ func UnmarshalByteIssue(content []byte) (Issue, error) {
 // However, you can't get detailed information such as Watchers and Journals.
 // If you want to get them, you have to specify the Issue ID and get them individually for GetIssue.
 // You can also customize it to plant round trips, go through proxies, or disable TLS validation by using a custom http client.
-func GetIssues(url, key string, projectId, timeout int, customClient *http.Client) (Issues, error) {
+func GetIssues(url, key string, projectId, timeout int, status string, customClient *http.Client) (Issues, error) {
 	var issuesUrl string
 	if projectId == 0 {
-		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*"
+		if status == ""{
+			issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*"
+		} else {
+			issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=" + status
+		}
 	} else {
-		issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*&project_id=" + strconv.Itoa(projectId)
+		if status == "" {
+			issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=*&project_id=" + strconv.Itoa(projectId)
+		} else {
+			issuesUrl = url + "/issues.json?key=" + key + "&limit=1&offset=0&status_id=" + status + "&project_id=" + strconv.Itoa(projectId)
+		}
 	}
 	var client *utils.Api
 	if customClient == nil {
@@ -212,9 +220,19 @@ func GetIssues(url, key string, projectId, timeout int, customClient *http.Clien
 	issues := make(Issues, issuesResult.TotalCount)
 	for offset := 0; offset < issuesResult.TotalCount; offset += 100 {
 		if projectId == 0 {
-			issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=*&sort=updated_on:asc"
+			if status == "" {
+				issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=*&sort=updated_on:asc"
+			} else {
+				issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=" + status + "&sort=updated_on:asc"
+			}
+
 		} else {
-			issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=*&sort=updated_on:asc&project_id=" + strconv.Itoa(projectId)
+			if status == "" {
+				issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=*&sort=updated_on:asc&project_id=" + strconv.Itoa(projectId)
+			} else {
+				issuesUrl = url + "/issues.json?key=" + key + "&limit=100&offset=" + strconv.Itoa(offset) + "&status_id=" + status + "&sort=updated_on:asc&project_id=" + strconv.Itoa(projectId)
+			}
+
 		}
 		body, err := client.Get(issuesUrl)
 		if err != nil {

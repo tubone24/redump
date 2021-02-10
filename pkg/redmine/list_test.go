@@ -672,6 +672,7 @@ func BenchmarkListProjectId(b *testing.B) {
 		}
 		issueJsons10000[i] = &ij
 	}
+	b.ResetTimer()
 	_, _ = redmine.ListProjectId(issueJsons10000, "")
 }
 
@@ -778,6 +779,7 @@ func BenchmarkListTrackerId(b *testing.B) {
 		}
 		issueJsons10000[i] = &ij
 	}
+	b.ResetTimer()
 	_, _ = redmine.ListTrackerId(issueJsons10000, "")
 }
 
@@ -884,6 +886,7 @@ func BenchmarkListStatusId(b *testing.B) {
 		}
 		issueJsons10000[i] = &ij
 	}
+	b.ResetTimer()
 	_, _ = redmine.ListStatusId(issueJsons10000, "")
 }
 
@@ -990,6 +993,7 @@ func BenchmarkListPriorityId(b *testing.B) {
 		}
 		issueJsons10000[i] = &ij
 	}
+	b.ResetTimer()
 	_, _ = redmine.ListPriorityId(issueJsons10000, "")
 }
 
@@ -1096,6 +1100,7 @@ func BenchmarkListUserIdAssignedTo(b *testing.B) {
 		}
 		issueJsons10000[i] = &ij
 	}
+	b.ResetTimer()
 	_, _ = redmine.ListUserIdAssignedTo(issueJsons10000, "")
 }
 
@@ -1202,5 +1207,6 @@ func BenchmarkListCustomFieldsId(b *testing.B) {
 		}
 		issueJsons10000[i] = &ij
 	}
+	b.ResetTimer()
 	_, _ = redmine.ListCustomFieldsId(issueJsons10000, "")
 }

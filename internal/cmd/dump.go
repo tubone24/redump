@@ -33,7 +33,7 @@ func Dump(projectId int, concurrency bool) {
 	} else {
 		customClient = nil
 	}
-	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, customClient)
+	issues, err := redmine.GetIssues(cfg.ServerConfig.Url, cfg.ServerConfig.Key, projectId, cfg.ServerConfig.Timeout, cfg.ServerConfig.Status, customClient)
 	if err != nil {
 		panic(err)
 	}
