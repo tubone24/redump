@@ -9,7 +9,7 @@
   >
     <img 
       src="https://raw.githubusercontent.com/tubone24/redump/main/docs/images/redump_logo.png" 
-      alt="material-table" 
+      alt="redump" 
     />
   </a>
 </p>
