@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1636180393607,
+  "lastUpdate": 1636185210369,
   "repoUrl": "https://github.com/tubone24/redump",
   "entries": {
     "Redump Benchmark": [
@@ -2852,6 +2852,126 @@ window.BENCHMARK_DATA = {
           {
             "name": "BenchmarkListCustomFieldsId",
             "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDeepCopy",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "tubo.yyyuuu@gmail.com",
+            "name": "tubone(Yu Otsubo)",
+            "username": "tubone24"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "80de478ad20017b7864f32bfc202f6a507142674",
+          "message": "Merge pull request #17 from tubone24/renovate/github.com-burntsushi-toml-0.x\n\nUpdate module github.com/BurntSushi/toml to v0.4.1",
+          "timestamp": "2021-11-06T16:52:16+09:00",
+          "tree_id": "5fe54f9b69e413386b6aaf630dece2ccfbbf0b38",
+          "url": "https://github.com/tubone24/redump/commit/80de478ad20017b7864f32bfc202f6a507142674"
+        },
+        "date": 1636185209372,
+        "tool": "go",
+        "benches": [
+          {
+            "name": "BenchmarkConvertNewEnv",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssues",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDownloadAttachmentFiles",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueParam",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkUploadAttachmentFiles",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateJournalStrings",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueFromByteSlice",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDeleteIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListProjectId",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListTrackerId",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListStatusId",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListPriorityId",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListUserIdAssignedTo",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListCustomFieldsId",
+            "value": 0.02,
             "unit": "ns/op",
             "extra": "2000000000 times\n2 procs"
           },
