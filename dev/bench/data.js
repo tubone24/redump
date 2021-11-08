@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1636294736642,
+  "lastUpdate": 1636332831353,
   "repoUrl": "https://github.com/tubone24/redump",
   "entries": {
     "Redump Benchmark": [
@@ -3340,6 +3340,126 @@ window.BENCHMARK_DATA = {
           {
             "name": "BenchmarkListUserIdAssignedTo",
             "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListCustomFieldsId",
+            "value": 0.02,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDeepCopy",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "tubo.yyyuuu@gmail.com",
+            "name": "tubone(Yu Otsubo)",
+            "username": "tubone24"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c7d5fdd9c5eeeb97d3ef02ca19d2b09320f01e7f",
+          "message": "Merge pull request #21 from tubone24/renovate/actions-checkout-2.x\n\nUpdate actions/checkout action to v2",
+          "timestamp": "2021-11-08T09:52:42+09:00",
+          "tree_id": "942644f3ffa7fec04de3837846c1ff7f4fef7227",
+          "url": "https://github.com/tubone24/redump/commit/c7d5fdd9c5eeeb97d3ef02ca19d2b09320f01e7f"
+        },
+        "date": 1636332830815,
+        "tool": "go",
+        "benches": [
+          {
+            "name": "BenchmarkConvertNewEnv",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssues",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkGetIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDownloadAttachmentFiles",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueParam",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkUploadAttachmentFiles",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateJournalStrings",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueFromByteSlice",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkDeleteIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListProjectId",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListTrackerId",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListStatusId",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListPriorityId",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n2 procs"
+          },
+          {
+            "name": "BenchmarkListUserIdAssignedTo",
+            "value": 0.01,
             "unit": "ns/op",
             "extra": "2000000000 times\n2 procs"
           },
