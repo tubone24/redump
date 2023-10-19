@@ -20,7 +20,7 @@ jobs:
             asset_name_suffix: ''
             asset_content_type: application/octet-stream
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -51,7 +51,7 @@ jobs:
   update-release-note:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Generate Release Note
         id: generate_release_note
         run: |
