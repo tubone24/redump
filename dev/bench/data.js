@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1759862715955,
+  "lastUpdate": 1763656320653,
   "repoUrl": "https://github.com/tubone24/redump",
   "entries": {
     "Redump Benchmark": [
@@ -8029,6 +8029,122 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/tubone24/redump/pull/55/commits/874cb7326753602c5e05ac0538b22370a27f33cd"
         },
         "date": 1759862715388,
+        "tool": "go",
+        "benches": [
+          {
+            "name": "BenchmarkConvertNewEnv",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkGetIssues",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkGetIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkDownloadAttachmentFiles",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueParam",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkUploadAttachmentFiles",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkCreateJournalStrings",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueFromByteSlice",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkDeleteIssue",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListProjectId",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListTrackerId",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListStatusId",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListPriorityId",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListUserIdAssignedTo",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListCustomFieldsId",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkDeepCopy",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "committer": {
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "id": "94e9e0da700f8dcb78cc6afd516186c6dda023ee",
+          "message": "Update actions/checkout action to v6",
+          "timestamp": "2024-01-16T06:33:20Z",
+          "url": "https://github.com/tubone24/redump/pull/56/commits/94e9e0da700f8dcb78cc6afd516186c6dda023ee"
+        },
+        "date": 1763656320329,
         "tool": "go",
         "benches": [
           {
