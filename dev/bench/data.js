@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1776735057704,
+  "lastUpdate": 1776796988169,
   "repoUrl": "https://github.com/tubone24/redump",
   "entries": {
     "Redump Benchmark": [
@@ -8486,6 +8486,122 @@ window.BENCHMARK_DATA = {
           {
             "name": "BenchmarkListUserIdAssignedTo (github.com/tubone24/redump/pkg/redmine)",
             "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListCustomFieldsId (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkDeepCopy (github.com/tubone24/redump/pkg/utils)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "committer": {
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "id": "acf8dfdeefe5b80a8715b52141a2879d6333795b",
+          "message": "Update tubone24/update_release action to v1.3.1",
+          "timestamp": "2024-01-16T06:33:20Z",
+          "url": "https://github.com/tubone24/redump/pull/57/commits/acf8dfdeefe5b80a8715b52141a2879d6333795b"
+        },
+        "date": 1776796987642,
+        "tool": "go",
+        "benches": [
+          {
+            "name": "BenchmarkConvertNewEnv (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkGetIssues (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkGetIssue (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkDownloadAttachmentFiles (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueParam (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkUploadAttachmentFiles (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0.01,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkCreateJournalStrings (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkCreateIssueFromByteSlice (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkDeleteIssue (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListProjectId (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListTrackerId (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListStatusId (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListPriorityId (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          },
+          {
+            "name": "BenchmarkListUserIdAssignedTo (github.com/tubone24/redump/pkg/redmine)",
+            "value": 0,
             "unit": "ns/op",
             "extra": "2000000000 times\n4 procs"
           },
