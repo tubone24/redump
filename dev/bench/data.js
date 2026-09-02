@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1788318286835,
+  "lastUpdate": 1788388762777,
   "repoUrl": "https://github.com/tubone24/redump",
   "entries": {
     "Redump Benchmark": [
@@ -9345,6 +9345,32 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/tubone24/redump/pull/19/commits/ee424f1564538f14825093eda81e2cabab4b7585"
         },
         "date": 1788318286078,
+        "tool": "go",
+        "benches": [
+          {
+            "name": "BenchmarkDeepCopy",
+            "value": 0,
+            "unit": "ns/op",
+            "extra": "2000000000 times\n4 procs"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "committer": {
+            "name": "tubone24",
+            "username": "tubone24"
+          },
+          "id": "ee424f1564538f14825093eda81e2cabab4b7585",
+          "message": "Update module github.com/goccy/go-json to v0.10.6",
+          "timestamp": "2024-01-16T06:33:20Z",
+          "url": "https://github.com/tubone24/redump/pull/19/commits/ee424f1564538f14825093eda81e2cabab4b7585"
+        },
+        "date": 1788388762144,
         "tool": "go",
         "benches": [
           {
